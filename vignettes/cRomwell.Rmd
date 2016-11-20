@@ -40,5 +40,4 @@ wdlInputs = data.frame(test.hello.name=randomStrings)
 z = cromwellBatch(wdlSource = hello_wdl,workflowInputs=toJSON(wdlInputs))
 Sys.sleep(10)
 cromwellQuery()
-
 ```
