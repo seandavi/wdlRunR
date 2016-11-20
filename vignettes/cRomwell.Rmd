@@ -1,7 +1,7 @@
 ---
-Author: 'Sean Davis'
-Title: Introduction to the cRomwell package
-Date: '`r Sys.Date()`'
+author: 'Sean Davis'
+title: 'Introduction to the cRomwell package'
+date: '`r Sys.Date()`'
 output: html_document
 ---
 
@@ -12,6 +12,8 @@ setwd(tmpdir)
 httr::GET('https://github.com/broadinstitute/cromwell/releases/download/0.22/cromwell-0.22.jar',
           httr::write_disk('cromwell.jar'))
 system('java -jar cromwell.jar server > cromwell.log 2>&1 &')
+# let server start up
+Sys.sleep(20)
 system('ps aux | grep cromwell')
 setwd(cwd)
 ```
@@ -38,6 +40,9 @@ options(cromwell_base = 'http://localhost:8000')
 randomStrings = sapply(1:10,function(r) {paste(sample(LETTERS,10),collapse="")})
 wdlInputs = data.frame(test.hello.name=randomStrings)
 z = cromwellBatch(wdlSource = hello_wdl,workflowInputs=toJSON(wdlInputs))
-Sys.sleep(10)
+Sys.sleep(20)
 cromwellQuery()
+# messy!
+system('pgrep java | xargs -I {} kill -9 {}')
+unlink(file.path(tmpdir,'cromwell*'),recursive=TRUE)
 ```

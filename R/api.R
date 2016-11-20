@@ -11,6 +11,8 @@
 #' @param query Any query terms as a named character vector
 #' @param ... passed directly to httr `POST` (for including `timeouts`, `handles`, etc.)
 #'
+#' @importFrom httr modify_url
+#'
 cromwell_GET <- function(path,query=NULL,...) {
     url <- modify_url(.cromwell_base(), path = path, query = query)
     print(url)
@@ -18,13 +20,15 @@ cromwell_GET <- function(path,query=NULL,...) {
     return(.cromwell_process_response(resp))
 }
 
-#' Perform a GET request to cromwell server
+#' Perform a POST request to cromwell server
 #'
 #' See the docmentation at \href{https://github.com/broadinstitute/cromwell#rest-api}{the cromwell github site} for details. Generally, this is not meant to be called by the end user. Rather, use the endpoint-specific functions.
 #'
 #' @param path The path part of the URL
 #' @param body A list that will become the multipart form that is passed as the request body
 #' @param ... passed directly to httr `POST` (for including `timeouts`, `handles`, etc.)
+#'
+#' @importFrom httr modify_url
 #'
 cromwell_POST = function(path,body,...) {
     url = modify_url(.cromwell_base(), path = path)
@@ -34,17 +38,17 @@ cromwell_POST = function(path,body,...) {
 }
 
 
-.cromwell_process_response = function(resp) {                    
+.cromwell_process_response = function(resp) {
     if (http_type(resp) != "application/json") {
         stop("API did not return json", call. = FALSE)
     }
-    
+
     parsed <- jsonlite::fromJSON(content(resp, "text"), simplifyVector = FALSE)
-    
+
     if (status_code(resp) != 200) {
         stop(
             sprintf(
-                "Cromwell API request failed [%s]\n%s\n<%s>", 
+                "Cromwell API request failed [%s]\n%s\n<%s>",
                 status_code(resp),
                 parsed$message,
                 parsed$documentation_url
@@ -52,7 +56,7 @@ cromwell_POST = function(path,body,...) {
             call. = FALSE
         )
     }
-    
+
     structure(
         list(
             content = parsed,
@@ -79,12 +83,12 @@ cromwell_POST = function(path,body,...) {
 #'   \item{page}{if paging is used, what page to select}
 #'   \item{pagesize}{if paging is used, how many records per page}
 #' }
-#' 
+#'
 #' @return a data.frame of query results
 #'
 #' @importFrom httr GET
 #' @importFrom plyr rbind.fill
-#' 
+#'
 #' @examples
 #' #cromwellQuery(terms=c(status='Succeeded',name='taskName'))
 #' @export
@@ -93,11 +97,11 @@ cromwellQuery = function(terms=NULL, ...) {
     resp = cromwell_GET(path=path,query=terms)
 
     x = do.call(rbind.fill,lapply(resp$content$results,as.data.frame))
-    if('start' %in% colnames(x)) 
+    if('start' %in% colnames(x))
         x$start = strptime(substr(as.character(x$start),1,19),format="%Y-%m-%dT%H:%M:%S",tz="UTC")
     else
         x$start = NA
-    if('end' %in% colnames(x)) 
+    if('end' %in% colnames(x))
         x$end = strptime(substr(as.character(x$end),1,19),format="%Y-%m-%dT%H:%M:%S",tz="UTC")
     else
         x$end = NA
@@ -113,7 +117,7 @@ cromwellQuery = function(terms=NULL, ...) {
 #'
 #' @param id A cromwell id as a string
 #' @param ... passed directly to httr `GET` (for including `timeouts`, `handles`, etc.)
-#' 
+#'
 #' @return a list of metadata lists
 #'
 #' @importFrom httr GET
@@ -136,9 +140,9 @@ cromwellMetadata = function(id, ...) {
 #'
 #' @param id A cromwell id as a string
 #' @param ... passed directly to httr `GET` (for including `timeouts`, `handles`, etc.)
-#' 
+#'
 #' @importFrom httr GET
-#' 
+#'
 #' @examples
 #' #cromwellQuery(ids=c('1','2','abc'))
 #' @export
@@ -198,7 +202,7 @@ cromwellLogs = function(id, ...) {
 #' This function submits a set of one or more inputs to cromwell. It is much more efficient
 #' than submitting a single job at a time.  See
 #' \href{https://github.com/broadinstitute/cromwell#post-apiworkflowsversionbatch}{the cromwell \code{batch} API documentation} for details.
-#' 
+#'
 #' @param wdlSource A \code{list}, a JSON string (as a \code{character} vector of length 1,
 #'   or an \code{\link[httr]{upload_file}} object. See details below.
 #' @param workflowInputs A \code{list}, a JSON string (as a \code{character} vector of length 1,

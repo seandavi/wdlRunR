@@ -2,7 +2,7 @@
 % Please edit documentation in R/api.R
 \name{cromwell_POST}
 \alias{cromwell_POST}
-\title{Perform a GET request to cromwell server}
+\title{Perform a POST request to cromwell server}
 \usage{
 cromwell_POST(path, body, ...)
 }
