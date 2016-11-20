@@ -4,10 +4,12 @@
 \alias{cromwellAbort}
 \title{Abort a cromwell job}
 \usage{
-cromwellAbort(id)
+cromwellAbort(id, ...)
 }
 \arguments{
-\item{id}{}
+\item{id}{A cromwell id as a string}
+
+\item{...}{passed directly to httr `GET` (for including `timeouts`, `handles`, etc.)}
 }
 \description{
 Abort a cromwell job

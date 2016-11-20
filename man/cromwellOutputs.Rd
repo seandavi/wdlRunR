@@ -4,10 +4,12 @@
 \alias{cromwellOutputs}
 \title{Get output paths associated with one or more workflow ids}
 \usage{
-cromwellOutputs(id)
+cromwellOutputs(id, ...)
 }
 \arguments{
-\item{id}{}
+\item{id}{a cromwell job id}
+
+\item{...}{passed directly to httr `POST` (for including `timeouts`, `handles`, etc.)}
 }
 \value{
 a list of output lists

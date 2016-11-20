@@ -1,13 +1,16 @@
 Package: cRomwell
-Title: Access a cromwell workflow manager via REST API
+Title: Interact with the Broad Institute Cromwell workflow manager
 Version: 0.0.0.9000
-Authors@R: person("First", "Last", email = "first.last@example.com", role = c("aut", "cre"))
+Authors@R: person("Sean", "Davis", email = "seandavi@gmail.com", role = c("aut", "cre"))
 Description: What the package does (one paragraph).
 Depends:
-    R (>= 3.3.1)
-License: What license is it under?
+    R (>= 3.3.1),
+    shiny,
+    DT
+Imports:
+    httr,
+    plyr
+License: MIT
 Encoding: UTF-8
 LazyData: true
-Maintainer: Sean Davis <seandavi@gmail.com>
-Author: Sean Davis
 RoxygenNote: 5.0.1

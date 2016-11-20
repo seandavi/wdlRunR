@@ -4,15 +4,20 @@
 \alias{cromwellLogs}
 \title{Get output paths associated with one or more workflow ids}
 \usage{
-cromwellLogs(id)
+cromwellLogs(id, ...)
 }
 \arguments{
-\item{id}{}
+\item{id}{a cromwell job id}
+
+\item{...}{passed directly to httr `POST` (for including `timeouts`, `handles`, etc.)}
 }
 \value{
 a list of logfile lists
 }
 \description{
 Get output paths associated with one or more workflow ids
+}
+\examples{
+#cromwellLogs(id)
 }
 
