@@ -66,6 +66,19 @@ cromwell_POST = function(path,body,...) {
 #'
 #' @param terms terms about the workflow
 #' @param ... passed directly to httr `GET` (for including `timeouts`, `handles`, etc.)
+#'
+#' @details
+#' Each of the following terms can be specified one or more times. Simply create a named list
+#' or named character vector.
+#' \describe{
+#'   \item{name}{The name of a job; may be specified more than once}
+#'   \item{status}{one of Succeeded, Failed, Running}
+#'   \item{id}{an id of a cromwell job}
+#'   \item{start}{a timestamp of the form "2015-11-01T07:45:52.000-05:00", including mandatory offset}
+#'   \item{end}{a timestamp of the form "2015-11-01T07:45:52.000-05:00", including mandatory offset}
+#'   \item{page}{if paging is used, what page to select}
+#'   \item{pagesize}{if paging is used, how many records per page}
+#' }
 #' 
 #' @return a data.frame of query results
 #'
