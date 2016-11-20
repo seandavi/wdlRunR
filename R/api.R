@@ -115,7 +115,7 @@ cromwellMetadata = function(id, ...) {
     x = resp$content
     attr(x,'when') = Sys.time()
     attr(x,'path') = path
-    class(x) = c('cromwell_metadata','cromwell_api',class(x))
+    class(x) = c('cromwell_metadata','cromwell_api')
     x
 }
 
