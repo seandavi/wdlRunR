@@ -85,7 +85,7 @@ wdlInputs = data.frame(test.hello.name=randomStrings)
 We can submit a batch of jobs to cromwell by simply posting to the correct API endpoint and the function `cromwellBatch()` wraps this process in R.
 
 ```{r}
-cromwellBatch(wdlSource = hello_wdl,workflowInputs=toJSON(wdlInputs))
+res = cromwellBatch(wdlSource = hello_wdl,workflowInputs=toJSON(wdlInputs))
 # and we do this to allow the jobs to get running
 Sys.sleep(10)
 ```
@@ -112,6 +112,57 @@ if(require(babynames))
 z = cromwellBatch(wdlSource = hello_remote_wdl,workflowInputs=toJSON(wdlInputs))
 Sys.sleep(20)
 cromwellQuery()
+```
+
+To make things a bit more interesting, we can simulate long-running jobs using a "sleeping" variation of "Hello, WDL."
+
+
+```{r}
+hello_wdl_sleep = "task hello {
+  String name
+
+  command {
+    echo 'Hello ${name}!' && sleep 60
+  }
+  output {
+    File response = stdout()
+  }
+}
+
+workflow test {
+  call hello
+}"
+```
+
+```{r eval=FALSE}
+randomStrings = sapply(1:10,function(r) {paste(sample(LETTERS,10),collapse="")})
+wdlInputs = data.frame(test.hello.name=randomStrings)
+z = cromwellBatch(wdlSource = hello_wdl_sleep,workflowInputs=toJSON(wdlInputs))
+# to let Cromwell get started with the jobs.
+sleep(10)
+```
+
+At this point, checking `cromwellQuery()` will show running jobs (if done within 60 seconds, of course). Limiting to "Running" jobs is also easy.
+
+```{r eval=FALSE}
+cromwellQuery(status='Running')
+```
+
+And we can check for outputs as well.
+
+```{r}
+results = cromwellQuery(status='Succeeded')
+outputs = cromwellOutputs(results$id[1])$outputs
+outputs
+readLines(outputs$test.hello.response)
+```
+
+```{r}
+logs = cromwellLogs(results$id[1])
+# stderr
+readLines(logs$test.hello[[1]]$stderr)
+# stdout
+readLines(logs$test.hello[[1]]$stdout)
 ```
 
 # cleanup
