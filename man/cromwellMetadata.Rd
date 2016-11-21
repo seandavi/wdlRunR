@@ -18,6 +18,6 @@ a list of metadata lists
 Get metadata associated with one or more workflow ids
 }
 \examples{
-#cromwellQuery(ids=c('1','2','abc'))
+#cromwellMetadata(ids='INSERT_HASH_HERE')
 }
 
