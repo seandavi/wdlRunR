@@ -42,6 +42,20 @@ wdlInputs = data.frame(test.hello.name=randomStrings)
 z = cromwellBatch(wdlSource = hello_wdl,workflowInputs=toJSON(wdlInputs))
 Sys.sleep(20)
 cromwellQuery()
+```
+
+```{r}
+#read from github or other URL
+hello_remote_wdl = content(GET("https://raw.githubusercontent.com/DockstoreTestUser/dockstore-whalesay/master/Dockstore.wdl"),'text')
+if(require(babyNames))
+    wdlInputs = data.frame(test.hello.name=sample(babynames$name,10))
+z = cromwellBatch(wdlSource = hello_remote_wdl,workflowInputs=toJSON(wdlInputs))
+Sys.sleep(20)
+cromwellQuery()
+```
+
+
+```{r}
 # messy!
 system('pgrep java | xargs -I {} kill -9 {}')
 unlink(file.path(tmpdir,'cromwell*'),recursive=TRUE)
