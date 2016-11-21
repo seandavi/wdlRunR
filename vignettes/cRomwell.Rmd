@@ -5,18 +5,56 @@ date: '`r Sys.Date()`'
 output: html_document
 ---
 
+```{r init,echo=FALSE,results='hide'}
+library(knitr)
+opts_chunk$set(cache=TRUE)
+```
+
+# Background
+
+[Big Data](https://en.wikipedia.org/wiki/Big_data) in biology is a reality. Operating on large-scale biological data, particularly when the data flows require interdependencies and multiple steps, requires smart workflow management tools. Such workflow managers should, ideally:
+
+- Allow scaling of tasks across available compute infrastructure.
+- Encourage reproducible research by enabling and encouraging workflows to be described using text files.
+- Maintain provenance over tools, workflows, inputs, and outputs.
+- Be robust to failure.
+- Support restarts and, potentially, work caching to reduce redundant recompute and cost.
+- Support multiple compute resources, enabling workflow portability and reuse.
+
+The [Cromwell](https://github.com/broadinstitute/cromwell) is such a workflow system. The `[cRomwell](https://github.com/seandavi/cRomwell)` R package allows users of the R statistical programming environment to interact with the Cromwell workflow system. The cRomwell R package can act as the "orchestrator" for job submission to the Cromwell workflow system. The R ecosystem provides functionality for documentation, literate programming, publication-quality graphics, statistical analysis, and powerful data and metadata manipulation capabilities. Workflows of nearly arbitrary size to be described and then run using the Cromwell to run large-scale data processing steps, but with the entire workflow, including data munging, workflow metadata management, cloud orchestration and data management, and analysis of processed data described as R code or literate programming documents.
+
+Cromwell is available as a `java` jarfile and runs as a server or as a command-line executor of single workflows. This package is focused on interacting with Cromwell as a server and accessing it via its [documented REST API](https://github.com/broadinstitute/cromwell#rest-api).
+
+Cromwell jobs are described using Workflow Description Language (WDL). WDL resources are available:
+
+- [WDL github site](https://github.com/broadinstitute/wdl)
+- [WDL software and tutorial site at the Broad](https://software.broadinstitute.org/wdl/)
+
+# Getting started
+
+As a first step, we download the current released version of Cromwell. We then run the server and put the log file into a `tempdir()` using R code and a call to `system()`.
+
 ```{r}
-cwd = getwd()
 tmpdir = tempdir()
-setwd(tmpdir)
+cromwell_jar = file.path(tmpdir,'cromwell-0.22.jar')
+cromwell_log = file.path(tmpdir,'cromwell.log')
+unlink(cromwell_jar)
+unlink(cromwell_log)
 httr::GET('https://github.com/broadinstitute/cromwell/releases/download/0.22/cromwell-0.22.jar',
-          httr::write_disk('cromwell.jar'))
-system('java -jar cromwell.jar server > cromwell.log 2>&1 &')
+          httr::write_disk(cromwell_jar))
+system(sprintf('java -jar %s server > %s 2>&1 &', cromwell_jar, cromwell_log))
 # let server start up
 Sys.sleep(20)
-system('ps aux | grep cromwell')
-setwd(cwd)
 ```
+
+Cromwell should now be running in the background and we can verify by checking for processes with "cromwell" in the name.
+
+```{r}
+system('ps aux | grep cromwell')
+```
+# Workflows
+
+The simplest example (and one that runs in the time needed for a demo!) is a "Hello, WDL" workflow. Right now, we simply describe a WDL workflow as text or as a text file (see below).
 
 ```{r}
 hello_wdl = "task hello {
@@ -35,28 +73,56 @@ workflow test {
 }"
 ```
 
+## Submit a batch job
+
+We are going to submit a batch of jobs (10 of them) with randomly-generated names. The input to the `cromwellBatch()` function is a `data.frame` with columns named for the WDL inputs. Each row of the `data.frame` will become a workflow that will be run (locally in this case) by Cromwell.
+
 ```{r}
 options(cromwell_base = 'http://localhost:8000')
 randomStrings = sapply(1:10,function(r) {paste(sample(LETTERS,10),collapse="")})
 wdlInputs = data.frame(test.hello.name=randomStrings)
-z = cromwellBatch(wdlSource = hello_wdl,workflowInputs=toJSON(wdlInputs))
-Sys.sleep(20)
+```
+We can submit a batch of jobs to cromwell by simply posting to the correct API endpoint and the function `cromwellBatch()` wraps this process in R.
+
+```{r}
+cromwellBatch(wdlSource = hello_wdl,workflowInputs=toJSON(wdlInputs))
+# and we do this to allow the jobs to get running
+Sys.sleep(10)
+```
+
+## Monitoring jobs
+
+Once jobs are submitted, they will enter the Cromwell workflow monitoring system. We can query this system at any time. Look at the [API documentation]() and `help('cromwellQuery')` in R for some more details.
+
+```{r}
 cromwellQuery()
 ```
+
+We can use any R functionality to manage our WDL and inputs. For example, we can get a WDL workflow from a [github-hosted](https://github.com/DockstoreTestUser/dockstore-whalesay/blob/master/Dockstore.wdl) WDL workflow. Here is an example of using the same "Hello, WDL" workflow.
 
 ```{r}
 #read from github or other URL
 hello_remote_wdl = content(GET("https://raw.githubusercontent.com/DockstoreTestUser/dockstore-whalesay/master/Dockstore.wdl"),'text')
-if(require(babyNames))
+```
+And we can use R for creating inputs in any way we like. Here, we use the [babynames R package](https://cran.r-project.org/package=babynames) to set the names.
+
+```{r}
+if(require(babynames))
     wdlInputs = data.frame(test.hello.name=sample(babynames$name,10))
 z = cromwellBatch(wdlSource = hello_remote_wdl,workflowInputs=toJSON(wdlInputs))
 Sys.sleep(20)
 cromwellQuery()
 ```
 
+# cleanup
 
 ```{r}
 # messy!
 system('pgrep java | xargs -I {} kill -9 {}')
-unlink(file.path(tmpdir,'cromwell*'),recursive=TRUE)
+```
+
+# sessionInfo
+
+```{r sessionInfo}
+sessionInfo()
 ```
