@@ -33,7 +33,6 @@ cromwell_GET <- function(path,query=NULL,...) {
 cromwell_POST = function(path,body,...) {
     url = modify_url(.cromwell_base(), path = path)
     resp = POST(url, body = body, ...)
-    return(resp)
     return(.cromwell_process_response(resp))
 }
 
@@ -43,7 +42,7 @@ cromwell_POST = function(path,body,...) {
         stop("API did not return json", call. = FALSE)
     }
 
-    parsed <- jsonlite::fromJSON(content(resp, "text"), simplifyVector = FALSE)
+    parsed <- httr::content(resp,'parsed')
 
     if (status_code(resp) != 200) {
         stop(
@@ -123,7 +122,7 @@ cromwellQuery = function(terms=NULL, ...) {
 #' @importFrom httr GET
 #'
 #' @examples
-#' #cromwellQuery(ids=c('1','2','abc'))
+#' #cromwellMetadata(ids='INSERT_HASH_HERE')
 #' @export
 cromwellMetadata = function(id, ...) {
     path=sprintf('api/workflows/v1/%s/metadata',id)
@@ -165,7 +164,7 @@ cromwellAbort = function(id, ...) {
 cromwellOutputs = function(id, ...) {
     path = sprintf('api/workflows/v1/%s/outputs', id)
     resp = cromwell_GET(path = path)
-    ret = resp$content$calls
+    ret = resp$content
     attr(ret,'path') = path
     attr(ret,'when') = Sys.time()
     class(ret) = c('cromwell_logs','cromwell_api',class(ret))
@@ -192,7 +191,7 @@ cromwellLogs = function(id, ...) {
     ret = resp$content$calls
     attr(ret,'path') = path
     attr(ret,'when') = Sys.time()
-    class(ret) = c('cromwell_logs','cromwell_api',class(ret))
+    class(ret) = c('cromwell_api',class(ret))
     return(ret)
 }
 
@@ -231,4 +230,48 @@ cromwellBatch = function(wdlSource,
     return(cromwell_POST('/api/workflows/v1/batch',body = body, encode = 'multipart',
                 timeout(timeout), ...))
 }
+
+
+#' List available backends for a cromwell endpoint
+#'
+#' @param ... passed directly to httr `GET` (for including `timeouts`, `handles`, etc.)
+#'
+#' @return a
+#'
+#' @importFrom httr GET
+#'
+#' @examples
+#' #cromwellBackends()
+#' @export
+cromwellBackends = function(...) {
+    path = 'api/workflows/v1/backends'
+    resp = cromwell_GET(path = path)
+    ret = resp$content
+    attr(ret,'path') = path
+    attr(ret,'when') = Sys.time()
+    class(ret) = c('cromwell_backends','cromwell_api',class(ret))
+    return(ret)
+}
+
+#' Get current statistics for cromwell endpoint
+#'
+#' @param ... passed directly to httr `GET` (for including `timeouts`, `handles`, etc.)
+#'
+#' @return a list
+#'
+#' @importFrom httr GET
+#'
+#' @examples
+#' #cromwellStats()
+#' @export
+cromwellStats = function(...) {
+    path = 'api/engine/v1/stats'
+    resp = cromwell_GET(path = path)
+    ret = resp$content
+    attr(ret,'path') = path
+    attr(ret,'when') = Sys.time()
+    class(ret) = c('cromwell_stats','cromwell_api',class(ret))
+    return(ret)
+}
+
 
