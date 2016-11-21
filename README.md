@@ -15,7 +15,4 @@ devtools::install_github('seandavi/cRomwell', ref = "develop")
 
 ## Introductory workflow
 
-```{r}
-library(cRomwell)
-vignette(package="cRomwell")
-```
+See [vignettes](vignettes)
