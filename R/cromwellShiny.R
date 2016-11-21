@@ -1,7 +1,6 @@
 library(shiny)
 library(shinydashboard)
 library(jsonlite)
-options('cromwell_base'="http://104.196.210.249:8000")
 
 pct = function(x) {sprintf('%4.2f %%',x*100)}
 
