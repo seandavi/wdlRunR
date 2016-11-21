@@ -122,7 +122,7 @@ cromwellQuery = function(terms=NULL, ...) {
 #' @importFrom httr GET
 #'
 #' @examples
-#' #cromwellQuery(ids=c('1','2','abc'))
+#' #cromwellMetadata(ids='INSERT_HASH_HERE')
 #' @export
 cromwellMetadata = function(id, ...) {
     path=sprintf('api/workflows/v1/%s/metadata',id)
@@ -164,7 +164,7 @@ cromwellAbort = function(id, ...) {
 cromwellOutputs = function(id, ...) {
     path = sprintf('api/workflows/v1/%s/outputs', id)
     resp = cromwell_GET(path = path)
-    ret = resp$content$calls
+    ret = resp$content
     attr(ret,'path') = path
     attr(ret,'when') = Sys.time()
     class(ret) = c('cromwell_logs','cromwell_api',class(ret))
@@ -191,7 +191,7 @@ cromwellLogs = function(id, ...) {
     ret = resp$content$calls
     attr(ret,'path') = path
     attr(ret,'when') = Sys.time()
-    class(ret) = c('cromwell_logs','cromwell_api',class(ret))
+    class(ret) = c('cromwell_api',class(ret))
     return(ret)
 }
 
