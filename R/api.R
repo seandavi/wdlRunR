@@ -13,7 +13,7 @@
 #' # set a bogus host
 #' options('cromwell_base' = 'http://example.com:8111')
 #' cromwell_base()
-#' 
+#'
 #' # and set back to NULL to get the default behavior
 #' options('cromwell_base' = NULL)
 #' cromwell_base()
@@ -25,7 +25,7 @@ cromwell_base <- function() {
 #' Perform a GET request to cromwell server
 #'
 #' See the docmentation at \href{https://github.com/broadinstitute/cromwell#rest-api}{the cromwell github site} for details. Generally, this is not meant to be called by the end user. Rather, use the endpoint-specific functions. See \code{\link{cromwell_base}} for details of setting the base URL and port.
-#' 
+#'
 #' @param path The path part of the URL
 #' @param query Any query terms as a named character vector
 #' @param ... passed directly to httr `POST` (for including `timeouts`, `handles`, etc.)
@@ -51,7 +51,7 @@ cromwell_GET <- function(path,query=NULL,...) {
 #' @importFrom httr POST
 #'
 #' @seealso \code{\link{cromwellBatch}}
-#' 
+#'
 cromwell_POST = function(path,body,...) {
     url = modify_url(cromwell_base(), path = path)
     resp = POST(url, body = body, ...)
@@ -64,7 +64,7 @@ cromwell_POST = function(path,body,...) {
 #'
 #' @return a simple list that includes the actual `content` and the complete `response` object.
 #'
-#' @import httr 
+#' @import httr
 #'
 .cromwell_process_response = function(resp) {
     if (http_type(resp) != "application/json") {
@@ -231,7 +231,7 @@ cromwellLogs = function(id, ...) {
 #' than submitting a single job at a time.  See
 #' \href{https://github.com/broadinstitute/cromwell#post-apiworkflowsversionbatch}{the cromwell \code{batch} API documentation} for details.
 #'
-#' @param wdlSource Represents the \href{https://software.broadinstitute.org/wdl/}{WDL}A string (character vector of length 1) 
+#' @param wdlSource Represents the \href{https://software.broadinstitute.org/wdl/}{WDL}A string (character vector of length 1)
 #'   or an \code{\link[httr]{upload_file}} object. See details below.
 #' @param workflowInputs A \code{data.frame} that will be coerced to a json array or a JSON string (as a \code{character} vector of length 1),
 #'   or an \code{\link[httr]{upload_file}} object. See details below.
@@ -243,7 +243,7 @@ cromwellLogs = function(id, ...) {
 #' @param ... passed directly to httr `POST` (for including `timeouts`, `handles`, etc.)
 #'
 #' @return If a timeout does not occur (this is pretty common....), then a list that contains the submission status.
-#' 
+#'
 #' @details TODO details
 #'
 #' @importFrom jsonlite toJSON
@@ -256,16 +256,19 @@ cromwellBatch = function(wdlSource,
                          ...) {
     if(!(is.data.frame(workflowInputs) | (is.character(workflowInputs) & length(workflowInputs)==1)))
         stop('workflowInputs should be a data.frame or a character vector of length 1')
-    if(is.data.frame(workflowInputs)) 
+    if(is.data.frame(workflowInputs))
         inputs = toJSON(workflowInputs)
     else
         inputs = workflowInputs
+    opts = workflowOptions
+    if(!is.null(workflowOptions)) {
     if(!(is.list(workflowOptions) | (is.character(workflowOptions) & length(workflowOptions)==1)))
         stop('workflowOptions should be a data.frame or a character vector of length 1')
-    if(is.list(workflowOptions)) 
+    if(is.list(workflowOptions))
         opts = toJSON(workflowOptions)
     else
         opts = workflowOptions
+    }
     body = list(wdlSource       = wdlSource,
                 workflowInputs  = inputs,
                 workflowOptions = opts)

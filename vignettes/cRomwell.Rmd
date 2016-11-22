@@ -87,7 +87,7 @@ wdlInputs = data.frame(test.hello.name=randomStrings)
 We can submit a batch of jobs to cromwell by simply posting to the correct API endpoint and the function `cromwellBatch()` wraps this process in R.
 
 ```{r}
-res = cromwellBatch(wdlSource = hello_wdl,workflowInputs=toJSON(wdlInputs))
+res = cromwellBatch(wdlSource = hello_wdl,workflowInputs=wdlInputs)
 # and we do this to allow the jobs to get running
 Sys.sleep(20)
 ```
@@ -111,7 +111,7 @@ And we can use R for creating inputs in any way we like. Here, we use the [babyn
 ```{r}
 if(require(babynames))
     wdlInputs = data.frame(test.hello.name=sample(babynames$name,10))
-z = cromwellBatch(wdlSource = hello_remote_wdl,workflowInputs=toJSON(wdlInputs))
+z = cromwellBatch(wdlSource = hello_remote_wdl,workflowInputs=wdlInputs)
 Sys.sleep(20)
 cromwellQuery()
 ```
@@ -139,7 +139,7 @@ workflow test {
 ```{r eval=FALSE}
 randomStrings = sapply(1:10,function(r) {paste(sample(LETTERS,10),collapse="")})
 wdlInputs = data.frame(test.hello.name=randomStrings)
-z = cromwellBatch(wdlSource = hello_wdl_sleep,workflowInputs=toJSON(wdlInputs))
+z = cromwellBatch(wdlSource = hello_wdl_sleep,workflowInputs=wdlInputs)
 # to let Cromwell get started with the jobs.
 sleep(10)
 ```

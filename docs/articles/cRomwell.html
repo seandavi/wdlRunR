@@ -64,8 +64,8 @@ cromwell_log =<span class="st"> </span><span class="kw">file.path</span>(tmpdir,
 <span class="kw">unlink</span>(cromwell_log)
 httr::<span class="kw">GET</span>(<span class="st">'https://github.com/broadinstitute/cromwell/releases/download/0.22/cromwell-0.22.jar'</span>,
           httr::<span class="kw">write_disk</span>(cromwell_jar))</code></pre></div>
-<pre><code>## Response [https://github-cloud.s3.amazonaws.com/releases/34136406/ef0c9648-91f6-11e6-99f9-f19b2a4ba718.jar?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Credential=AKIAISTNZFOVBIJMK3TQ%2F20161122%2Fus-east-1%2Fs3%2Faws4_request&amp;X-Amz-Date=20161122T183515Z&amp;X-Amz-Expires=300&amp;X-Amz-Signature=c7642fafd9c4e2b092218857b556313e59e1baf75b73169f6a101532af8d87c9&amp;X-Amz-SignedHeaders=host&amp;actor_id=0&amp;response-content-disposition=attachment%3B%20filename%3Dcromwell-0.22.jar&amp;response-content-type=application%2Foctet-stream]
-##   Date: 2016-11-22 18:35
+<pre><code>## Response [https://github-cloud.s3.amazonaws.com/releases/34136406/ef0c9648-91f6-11e6-99f9-f19b2a4ba718.jar?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Credential=AKIAISTNZFOVBIJMK3TQ%2F20161122%2Fus-east-1%2Fs3%2Faws4_request&amp;X-Amz-Date=20161122T184913Z&amp;X-Amz-Expires=300&amp;X-Amz-Signature=869e01b6b1531e89afb3d27a1f591187137e3b06cd60f77f7684ff03637e43d5&amp;X-Amz-SignedHeaders=host&amp;actor_id=0&amp;response-content-disposition=attachment%3B%20filename%3Dcromwell-0.22.jar&amp;response-content-type=application%2Foctet-stream]
+##   Date: 2016-11-22 18:49
 ##   Status: 200
 ##   Content-Type: application/octet-stream
 ##   Size: 66.4 MB
@@ -100,7 +100,7 @@ httr::<span class="kw">GET</span>(<span class="st">'https://github.com/broadinst
 randomStrings =<span class="st"> </span><span class="kw">sapply</span>(<span class="dv">1</span>:<span class="dv">10</span>,function(r) {<span class="kw">paste</span>(<span class="kw">sample</span>(LETTERS,<span class="dv">10</span>),<span class="dt">collapse=</span><span class="st">""</span>)})
 wdlInputs =<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">test.hello.name=</span>randomStrings)</code></pre></div>
 <p>We can submit a batch of jobs to cromwell by simply posting to the correct API endpoint and the function <code><a href="../reference/cromwellBatch.html">cromwellBatch()</a></code> wraps this process in R.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">res =<span class="st"> </span><span class="kw"><a href="../reference/cromwellBatch.html">cromwellBatch</a></span>(<span class="dt">wdlSource =</span> hello_wdl,<span class="dt">workflowInputs=</span><span class="kw">toJSON</span>(wdlInputs))
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">res =<span class="st"> </span><span class="kw"><a href="../reference/cromwellBatch.html">cromwellBatch</a></span>(<span class="dt">wdlSource =</span> hello_wdl,<span class="dt">workflowInputs=</span>wdlInputs)
 <span class="co"># and we do this to allow the jobs to get running</span>
 <span class="kw">Sys.sleep</span>(<span class="dv">20</span>)</code></pre></div>
 </div>
@@ -108,29 +108,28 @@ wdlInputs =<span class="st"> </span><span class="kw">data.frame</span>(<span cla
 <h2 class="hasAnchor"><html><body><a href="#monitoring-jobs" class="anchor"> </a></body></html>Monitoring jobs</h2>
 <p>Once jobs are submitted, they will enter the Cromwell workflow monitoring system. We can query this system at any time. Look at the <a href="">API documentation</a> and <code>help('cromwellQuery')</code> in R for some more details.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/cromwellQuery.html">cromwellQuery</a></span>()</code></pre></div>
-<pre><code>## [1] "http://localhost:8000/api/workflows/v1/query"</code></pre>
 <pre><code>##    name                                   id    status                 end
-## 1  test e7a83986-14d7-4192-96a0-0ca5bfa8c777 Succeeded 2016-11-22 18:35:47
-## 2  test 9557ae7a-e66f-4e0b-9fcc-bdffd76fa2c1 Succeeded 2016-11-22 18:35:47
-## 3  test 05c807ec-5b52-404c-99b4-d311b2458fc1 Succeeded 2016-11-22 18:35:47
-## 4  test 026de059-2e00-401d-b14c-2cb818d1d86f Succeeded 2016-11-22 18:35:47
-## 5  test 298b65ba-87a6-4790-9f2e-2a7b2abec74b Succeeded 2016-11-22 18:35:47
-## 6  test dfca8d5e-c4f6-4028-aa96-806844ea2426 Succeeded 2016-11-22 18:35:47
-## 7  test 48fd592b-3bc5-4c97-ab08-db9a9eaef16a Succeeded 2016-11-22 18:35:47
-## 8  test 92d16eaf-49e9-4776-b594-82de115a2223 Succeeded 2016-11-22 18:35:47
-## 9  test f7d2928e-9006-4c22-8f4e-920e7098d822 Succeeded 2016-11-22 18:35:47
-## 10 test 22cad98e-97cc-4d20-b2b0-921a3fee9531 Succeeded 2016-11-22 18:35:48
+## 1  test 605ecd40-2e86-4186-b8b1-116e5d081ce6 Succeeded 2016-11-22 18:53:05
+## 2  test 654190a8-aaad-490a-9527-6e403f460cb4 Succeeded 2016-11-22 18:53:05
+## 3  test 289cd3c0-ef9f-4b13-a49d-a03eb2c9926c Succeeded 2016-11-22 18:53:05
+## 4  test 251ddf7c-9f62-4c55-8fae-314356fff1b7 Succeeded 2016-11-22 18:53:05
+## 5  test 3cf1e2c7-3b62-4a65-b4c4-ba37d8928b1a Succeeded 2016-11-22 18:53:05
+## 6  test ec6f9b5f-a3cf-4ec2-8ff9-999a382ff261 Succeeded 2016-11-22 18:53:05
+## 7  test b255e64e-1bf1-4ce1-ac04-0bd162be9d92 Succeeded 2016-11-22 18:53:05
+## 8  test be45840d-9be6-4809-8df5-e144577c7da5 Succeeded 2016-11-22 18:53:05
+## 9  test 407fcd77-c5d3-4053-a83c-5573d5c9f00c Succeeded 2016-11-22 18:53:05
+## 10 test 7fdfdc63-4ed8-4eb8-b535-4f7c2e6a86ff Succeeded 2016-11-22 18:53:05
 ##                  start duration
-## 1  2016-11-22 18:35:45   2 secs
-## 2  2016-11-22 18:35:45   2 secs
-## 3  2016-11-22 18:35:45   2 secs
-## 4  2016-11-22 18:35:45   2 secs
-## 5  2016-11-22 18:35:45   2 secs
-## 6  2016-11-22 18:35:45   2 secs
-## 7  2016-11-22 18:35:45   2 secs
-## 8  2016-11-22 18:35:45   2 secs
-## 9  2016-11-22 18:35:45   2 secs
-## 10 2016-11-22 18:35:45   3 secs</code></pre>
+## 1  2016-11-22 18:53:03   2 secs
+## 2  2016-11-22 18:53:03   2 secs
+## 3  2016-11-22 18:53:03   2 secs
+## 4  2016-11-22 18:53:03   2 secs
+## 5  2016-11-22 18:53:03   2 secs
+## 6  2016-11-22 18:53:03   2 secs
+## 7  2016-11-22 18:53:03   2 secs
+## 8  2016-11-22 18:53:03   2 secs
+## 9  2016-11-22 18:53:03   2 secs
+## 10 2016-11-22 18:53:03   2 secs</code></pre>
 <p>We can use any R functionality to manage our WDL and inputs. For example, we can get a WDL workflow from a <a href="https://github.com/DockstoreTestUser/dockstore-whalesay/blob/master/Dockstore.wdl">github-hosted</a> WDL workflow. Here is an example of using the same &ldquo;Hello, WDL&rdquo; workflow.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#read from github or other URL</span>
 hello_remote_wdl =<span class="st"> </span><span class="kw">content</span>(<span class="kw">GET</span>(<span class="st">"https://raw.githubusercontent.com/DockstoreTestUser/dockstore-whalesay/master/Dockstore.wdl"</span>),<span class="st">'text'</span>)</code></pre></div>
@@ -140,52 +139,51 @@ hello_remote_wdl =<span class="st"> </span><span class="kw">content</span>(<span
 <pre><code>## Loading required package: babynames</code></pre>
 <pre><code>## Warning in library(package, lib.loc = lib.loc, character.only = TRUE,
 ## logical.return = TRUE, : there is no package called 'babynames'</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">z =<span class="st"> </span><span class="kw"><a href="../reference/cromwellBatch.html">cromwellBatch</a></span>(<span class="dt">wdlSource =</span> hello_remote_wdl,<span class="dt">workflowInputs=</span><span class="kw">toJSON</span>(wdlInputs))
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">z =<span class="st"> </span><span class="kw"><a href="../reference/cromwellBatch.html">cromwellBatch</a></span>(<span class="dt">wdlSource =</span> hello_remote_wdl,<span class="dt">workflowInputs=</span>wdlInputs)
 <span class="kw">Sys.sleep</span>(<span class="dv">20</span>)
 <span class="kw"><a href="../reference/cromwellQuery.html">cromwellQuery</a></span>()</code></pre></div>
-<pre><code>## [1] "http://localhost:8000/api/workflows/v1/query"</code></pre>
 <pre><code>##    name                                   id    status                 end
-## 1  test e7a83986-14d7-4192-96a0-0ca5bfa8c777 Succeeded 2016-11-22 18:35:47
-## 2  test 9557ae7a-e66f-4e0b-9fcc-bdffd76fa2c1 Succeeded 2016-11-22 18:35:47
-## 3  test 05c807ec-5b52-404c-99b4-d311b2458fc1 Succeeded 2016-11-22 18:35:47
-## 4  test 026de059-2e00-401d-b14c-2cb818d1d86f Succeeded 2016-11-22 18:35:47
-## 5  test 298b65ba-87a6-4790-9f2e-2a7b2abec74b Succeeded 2016-11-22 18:35:47
-## 6  test dfca8d5e-c4f6-4028-aa96-806844ea2426 Succeeded 2016-11-22 18:35:47
-## 7  test 48fd592b-3bc5-4c97-ab08-db9a9eaef16a Succeeded 2016-11-22 18:35:47
-## 8  test 92d16eaf-49e9-4776-b594-82de115a2223 Succeeded 2016-11-22 18:35:47
-## 9  test f7d2928e-9006-4c22-8f4e-920e7098d822 Succeeded 2016-11-22 18:35:47
-## 10 test 22cad98e-97cc-4d20-b2b0-921a3fee9531 Succeeded 2016-11-22 18:35:48
-## 11 test 5d564fa2-7ab0-466e-97db-67af8fa3939d Succeeded 2016-11-22 18:36:07
-## 12 test 28901112-bfa6-4549-8c91-2fe9337a9897 Succeeded 2016-11-22 18:36:06
-## 13 test 0805d31c-c540-479c-9e61-c91b7dab1520 Succeeded 2016-11-22 18:36:06
-## 14 test 0ae47c6c-071b-473d-88b2-44ecbde2acb5 Succeeded 2016-11-22 18:36:06
-## 15 test 409cdd88-89ae-44a6-aeb5-7709029a53b5 Succeeded 2016-11-22 18:36:07
-## 16 test 251d7149-0b4a-4939-a5e7-c62ebba4a5af Succeeded 2016-11-22 18:36:07
-## 17 test 68c74bbe-82be-4817-b197-9c2bf887dd42 Succeeded 2016-11-22 18:36:06
-## 18 test bc7a559b-2e29-41cd-9d6c-6e45b66de6c3 Succeeded 2016-11-22 18:36:06
-## 19 test 59ba29f6-b217-4fa6-b4bc-f2c1902cc914 Succeeded 2016-11-22 18:36:06
-## 20 test 38ce61cc-a2d6-4c72-b68c-ec75c95c842a Succeeded 2016-11-22 18:36:07
+## 1  test 605ecd40-2e86-4186-b8b1-116e5d081ce6 Succeeded 2016-11-22 18:53:05
+## 2  test 654190a8-aaad-490a-9527-6e403f460cb4 Succeeded 2016-11-22 18:53:05
+## 3  test 289cd3c0-ef9f-4b13-a49d-a03eb2c9926c Succeeded 2016-11-22 18:53:05
+## 4  test 251ddf7c-9f62-4c55-8fae-314356fff1b7 Succeeded 2016-11-22 18:53:05
+## 5  test 3cf1e2c7-3b62-4a65-b4c4-ba37d8928b1a Succeeded 2016-11-22 18:53:05
+## 6  test ec6f9b5f-a3cf-4ec2-8ff9-999a382ff261 Succeeded 2016-11-22 18:53:05
+## 7  test b255e64e-1bf1-4ce1-ac04-0bd162be9d92 Succeeded 2016-11-22 18:53:05
+## 8  test be45840d-9be6-4809-8df5-e144577c7da5 Succeeded 2016-11-22 18:53:05
+## 9  test 407fcd77-c5d3-4053-a83c-5573d5c9f00c Succeeded 2016-11-22 18:53:05
+## 10 test 7fdfdc63-4ed8-4eb8-b535-4f7c2e6a86ff Succeeded 2016-11-22 18:53:05
+## 11 test 1beb622d-6b2c-483b-929b-47bb593c82a7   Running 2016-11-22 18:53:24
+## 12 test 5ddb37c2-b9ed-46c5-89ad-08553b24ecad Succeeded 2016-11-22 18:53:24
+## 13 test ab5fe3db-f528-4cd9-96c4-f45196ed7cb3 Succeeded 2016-11-22 18:53:23
+## 14 test abac024e-7b5b-4436-afd7-515d42e9d76d Succeeded 2016-11-22 18:53:24
+## 15 test 6c5ac697-4215-4388-b9f2-ffc357b4827a Succeeded 2016-11-22 18:53:24
+## 16 test 0d4b7da2-e4c2-47ab-8718-a5a43d5875e9 Succeeded 2016-11-22 18:53:25
+## 17 test b17af104-035d-4f22-b0cc-8415d661810a Succeeded 2016-11-22 18:53:24
+## 18 test 4f1bec3d-09a5-491c-9554-06534372b315 Succeeded 2016-11-22 18:53:25
+## 19 test afa6ebe3-14db-403d-95b9-251322ef474d Succeeded 2016-11-22 18:53:24
+## 20 test 28c2c96f-0bbd-4add-b3ca-cfc1b4571301 Succeeded 2016-11-22 18:53:25
 ##                  start duration
-## 1  2016-11-22 18:35:45   2 secs
-## 2  2016-11-22 18:35:45   2 secs
-## 3  2016-11-22 18:35:45   2 secs
-## 4  2016-11-22 18:35:45   2 secs
-## 5  2016-11-22 18:35:45   2 secs
-## 6  2016-11-22 18:35:45   2 secs
-## 7  2016-11-22 18:35:45   2 secs
-## 8  2016-11-22 18:35:45   2 secs
-## 9  2016-11-22 18:35:45   2 secs
-## 10 2016-11-22 18:35:45   3 secs
-## 11 2016-11-22 18:36:05   2 secs
-## 12 2016-11-22 18:36:05   1 secs
-## 13 2016-11-22 18:36:05   1 secs
-## 14 2016-11-22 18:36:05   1 secs
-## 15 2016-11-22 18:36:05   2 secs
-## 16 2016-11-22 18:36:05   2 secs
-## 17 2016-11-22 18:36:05   1 secs
-## 18 2016-11-22 18:36:05   1 secs
-## 19 2016-11-22 18:36:05   1 secs
-## 20 2016-11-22 18:36:05   2 secs</code></pre>
+## 1  2016-11-22 18:53:03   2 secs
+## 2  2016-11-22 18:53:03   2 secs
+## 3  2016-11-22 18:53:03   2 secs
+## 4  2016-11-22 18:53:03   2 secs
+## 5  2016-11-22 18:53:03   2 secs
+## 6  2016-11-22 18:53:03   2 secs
+## 7  2016-11-22 18:53:03   2 secs
+## 8  2016-11-22 18:53:03   2 secs
+## 9  2016-11-22 18:53:03   2 secs
+## 10 2016-11-22 18:53:03   2 secs
+## 11 2016-11-22 18:53:23   1 secs
+## 12 2016-11-22 18:53:23   1 secs
+## 13 2016-11-22 18:53:23   0 secs
+## 14 2016-11-22 18:53:23   1 secs
+## 15 2016-11-22 18:53:23   1 secs
+## 16 2016-11-22 18:53:23   2 secs
+## 17 2016-11-22 18:53:23   1 secs
+## 18 2016-11-22 18:53:23   2 secs
+## 19 2016-11-22 18:53:23   1 secs
+## 20 2016-11-22 18:53:23   2 secs</code></pre>
 <p>To make things a bit more interesting, we can simulate long-running jobs using a &ldquo;sleeping&rdquo; variation of &ldquo;Hello, WDL.&rdquo;</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">hello_wdl_sleep =<span class="st"> "task hello {</span>
 <span class="st">  String name</span>
@@ -203,24 +201,21 @@ hello_remote_wdl =<span class="st"> </span><span class="kw">content</span>(<span
 <span class="st">}"</span></code></pre></div>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">randomStrings =<span class="st"> </span><span class="kw">sapply</span>(<span class="dv">1</span>:<span class="dv">10</span>,function(r) {<span class="kw">paste</span>(<span class="kw">sample</span>(LETTERS,<span class="dv">10</span>),<span class="dt">collapse=</span><span class="st">""</span>)})
 wdlInputs =<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">test.hello.name=</span>randomStrings)
-z =<span class="st"> </span><span class="kw"><a href="../reference/cromwellBatch.html">cromwellBatch</a></span>(<span class="dt">wdlSource =</span> hello_wdl_sleep,<span class="dt">workflowInputs=</span><span class="kw">toJSON</span>(wdlInputs))
+z =<span class="st"> </span><span class="kw"><a href="../reference/cromwellBatch.html">cromwellBatch</a></span>(<span class="dt">wdlSource =</span> hello_wdl_sleep,<span class="dt">workflowInputs=</span>wdlInputs)
 <span class="co"># to let Cromwell get started with the jobs.</span>
 <span class="kw">sleep</span>(<span class="dv">10</span>)</code></pre></div>
 <p>At this point, checking <code><a href="../reference/cromwellQuery.html">cromwellQuery()</a></code> will show running jobs (if done within 60 seconds, of course). Limiting to &ldquo;Running&rdquo; jobs is also easy.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/cromwellQuery.html">cromwellQuery</a></span>(<span class="dt">status=</span><span class="st">'Running'</span>)</code></pre></div>
 <p>And we can check for outputs as well.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">results =<span class="st"> </span><span class="kw"><a href="../reference/cromwellQuery.html">cromwellQuery</a></span>(<span class="dt">status=</span><span class="st">'Succeeded'</span>)</code></pre></div>
-<pre><code>## [1] "http://localhost:8000/api/workflows/v1/query"</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">outputs =<span class="st"> </span><span class="kw"><a href="../reference/cromwellOutputs.html">cromwellOutputs</a></span>(results$id[<span class="dv">1</span>])$outputs</code></pre></div>
-<pre><code>## [1] "http://localhost:8000/api/workflows/v1/e7a83986-14d7-4192-96a0-0ca5bfa8c777/outputs"</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">outputs</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">results =<span class="st"> </span><span class="kw"><a href="../reference/cromwellQuery.html">cromwellQuery</a></span>(<span class="dt">status=</span><span class="st">'Succeeded'</span>)
+outputs =<span class="st"> </span><span class="kw"><a href="../reference/cromwellOutputs.html">cromwellOutputs</a></span>(results$id[<span class="dv">1</span>])$outputs
+outputs</code></pre></div>
 <pre><code>## $test.hello.response
-## [1] "/home/rstudio/cRomwell/docs/articles/cromwell-executions/test/e7a83986-14d7-4192-96a0-0ca5bfa8c777/call-hello/execution/stdout"</code></pre>
+## [1] "/home/rstudio/cRomwell/docs/articles/cromwell-executions/test/605ecd40-2e86-4186-b8b1-116e5d081ce6/call-hello/execution/stdout"</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">readLines</span>(outputs$test.hello.response)</code></pre></div>
 <pre><code>## [1] "Hello ZDMTPFKVAH!"</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">logs =<span class="st"> </span><span class="kw"><a href="../reference/cromwellLogs.html">cromwellLogs</a></span>(results$id[<span class="dv">1</span>])</code></pre></div>
-<pre><code>## [1] "http://localhost:8000/api/workflows/v1/e7a83986-14d7-4192-96a0-0ca5bfa8c777/logs"</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># stderr</span>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">logs =<span class="st"> </span><span class="kw"><a href="../reference/cromwellLogs.html">cromwellLogs</a></span>(results$id[<span class="dv">1</span>])
+<span class="co"># stderr</span>
 <span class="kw">readLines</span>(logs$test.hello[[<span class="dv">1</span>]]$stderr)</code></pre></div>
 <pre><code>## character(0)</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># stdout</span>
@@ -252,7 +247,7 @@ z =<span class="st"> </span><span class="kw"><a href="../reference/cromwellBatch
 ## [1] stats     graphics  grDevices utils     datasets  methods   base     
 ## 
 ## other attached packages:
-## [1] cRomwell_0.1.0       shiny_0.14.2         knitr_1.15.1        
+## [1] cRomwell_0.1.1       shiny_0.14.2         knitr_1.15.1        
 ## [4] jsonlite_1.1         shinydashboard_0.5.3 httr_1.2.1          
 ## [7] DT_0.2              
 ## 
