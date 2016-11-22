@@ -1,21 +1,40 @@
-.cromwell_base <- function() {
+#' Fetch the base URL and port for cromwell server
+#'
+#' The Cromwell server presents a RESTFul API. The base URL is of the form:
+#' `http://EXAMPLE.COM:PORT`. The current approach to changing that
+#' url is to set an option, `cromwell_base` to a valid URL (without trailing slash).
+#' This URL will then be used throughout the `cRomwell` package.  If no option is set,
+#' the server is assumed to be running at `http://localhost:8000`.
+#'
+#' @export
+#' @examples
+#' cromwell_base()
+#'
+#' # set a bogus host
+#' options('cromwell_base' = 'http://example.com:8111')
+#' cromwell_base()
+#' 
+#' # and set back to NULL to get the default behavior
+#' options('cromwell_base' = NULL)
+#' cromwell_base()
+cromwell_base <- function() {
     base_url = getOption('cromwell_base', default="http://localhost:8000")
     return(base_url)
 }
 
 #' Perform a GET request to cromwell server
 #'
-#' See the docmentation at \href{https://github.com/broadinstitute/cromwell#rest-api}{the cromwell github site} for details. Generally, this is not meant to be called by the end user. Rather, use the endpoint-specific functions.
-#'
+#' See the docmentation at \href{https://github.com/broadinstitute/cromwell#rest-api}{the cromwell github site} for details. Generally, this is not meant to be called by the end user. Rather, use the endpoint-specific functions. See \code{\link{cromwell_base}} for details of setting the base URL and port.
+#' 
 #' @param path The path part of the URL
 #' @param query Any query terms as a named character vector
 #' @param ... passed directly to httr `POST` (for including `timeouts`, `handles`, etc.)
 #'
 #' @importFrom httr modify_url
+#' @importFrom httr GET
 #'
 cromwell_GET <- function(path,query=NULL,...) {
     url <- modify_url(.cromwell_base(), path = path, query = query)
-    print(url)
     resp <- GET(url,...)
     return(.cromwell_process_response(resp))
 }
@@ -29,7 +48,10 @@ cromwell_GET <- function(path,query=NULL,...) {
 #' @param ... passed directly to httr `POST` (for including `timeouts`, `handles`, etc.)
 #'
 #' @importFrom httr modify_url
+#' @importFrom httr POST
 #'
+#' @seealso \code{\link{cromwellBatch}}
+#' 
 cromwell_POST = function(path,body,...) {
     url = modify_url(.cromwell_base(), path = path)
     resp = POST(url, body = body, ...)
@@ -202,9 +224,9 @@ cromwellLogs = function(id, ...) {
 #' than submitting a single job at a time.  See
 #' \href{https://github.com/broadinstitute/cromwell#post-apiworkflowsversionbatch}{the cromwell \code{batch} API documentation} for details.
 #'
-#' @param wdlSource A \code{list}, a JSON string (as a \code{character} vector of length 1,
+#' @param wdlSource Represents the \href{}{WDL}A string (character vector of length 1) 
 #'   or an \code{\link[httr]{upload_file}} object. See details below.
-#' @param workflowInputs A \code{list}, a JSON string (as a \code{character} vector of length 1,
+#' @param workflowInputs A \code{data.frame} that will be coerced to a json array or a JSON string (as a \code{character} vector of length 1),
 #'   or an \code{\link[httr]{upload_file}} object. See details below.
 #' @param workflowOptions A \code{list}, a JSON string (as a \code{character} vector of length 1,
 #'   or an \code{\link[httr]{upload_file}} object. See details below.
@@ -213,9 +235,11 @@ cromwellLogs = function(id, ...) {
 #'   to a large value to allow for a completed response.
 #' @param ... passed directly to httr `POST` (for including `timeouts`, `handles`, etc.)
 #'
-#' @details abc details
+#' @return If a timeout does not occur (this is pretty common....), then a list that contains the submission status.
+#' 
+#' @details TODO details
 #'
-#' @importFrom httr POST
+#' @importFrom jsonlite toJSON
 #'
 #' @export
 cromwellBatch = function(wdlSource,
@@ -223,9 +247,21 @@ cromwellBatch = function(wdlSource,
                          workflowOptions=NULL,
                          timeout = 120,
                          ...) {
+    if(!(is.data.frame(workflowInputs) | (is.character(workflowInputs) & length(workflowInputs)==1)))
+        stop('workflowInputs should be a data.frame or a character vector of length 1')
+    if(is.data.frame(workflowInputs)) 
+        inputs = toJSON(workflowInputs)
+    else
+        inputs = workflowInputs
+    if(!(is.list(workflowOptions) | (is.character(workflowOptions) & length(workflowOptions)==1)))
+        stop('workflowOptions should be a data.frame or a character vector of length 1')
+    if(is.list(workflowOptions)) 
+        opts = toJSON(workflowOptions)
+    else
+        opts = workflowOptions
     body = list(wdlSource       = wdlSource,
-                workflowInputs  = workflowInputs,
-                workflowOptions = workflowOptions)
+                workflowInputs  = inputs,
+                workflowOptions = opts)
 
     return(cromwell_POST('/api/workflows/v1/batch',body = body, encode = 'multipart',
                 timeout(timeout), ...))
@@ -236,7 +272,7 @@ cromwellBatch = function(wdlSource,
 #'
 #' @param ... passed directly to httr `GET` (for including `timeouts`, `handles`, etc.)
 #'
-#' @return a
+#' @return a list that includes backend details
 #'
 #' @importFrom httr GET
 #'
@@ -257,7 +293,7 @@ cromwellBackends = function(...) {
 #'
 #' @param ... passed directly to httr `GET` (for including `timeouts`, `handles`, etc.)
 #'
-#' @return a list
+#' @return a list containing engine stats
 #'
 #' @importFrom httr GET
 #'
