@@ -7,10 +7,11 @@ Depends:
     R (>= 3.3.1),
     shiny,
     DT,
-    httr
+    shinydashboard
 Imports:
     httr,
-    plyr
+    plyr,
+    jsonlite
 License: MIT
 Encoding: UTF-8
 LazyData: true

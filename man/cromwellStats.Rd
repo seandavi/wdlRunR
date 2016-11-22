@@ -10,7 +10,7 @@ cromwellStats(...)
 \item{...}{passed directly to httr `GET` (for including `timeouts`, `handles`, etc.)}
 }
 \value{
-a list
+a list containing engine stats
 }
 \description{
 Get current statistics for cromwell endpoint

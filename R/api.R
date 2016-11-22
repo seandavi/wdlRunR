@@ -34,7 +34,7 @@ cromwell_base <- function() {
 #' @importFrom httr GET
 #'
 cromwell_GET <- function(path,query=NULL,...) {
-    url <- modify_url(.cromwell_base(), path = path, query = query)
+    url <- modify_url(cromwell_base(), path = path, query = query)
     resp <- GET(url,...)
     return(.cromwell_process_response(resp))
 }
@@ -53,12 +53,19 @@ cromwell_GET <- function(path,query=NULL,...) {
 #' @seealso \code{\link{cromwellBatch}}
 #' 
 cromwell_POST = function(path,body,...) {
-    url = modify_url(.cromwell_base(), path = path)
+    url = modify_url(cromwell_base(), path = path)
     resp = POST(url, body = body, ...)
     return(.cromwell_process_response(resp))
 }
 
-
+#' Check cromwell response
+#'
+#' @param resp a \code{\link{response}} object
+#'
+#' @return a simple list that includes the actual `content` and the complete `response` object.
+#'
+#' @import httr 
+#'
 .cromwell_process_response = function(resp) {
     if (http_type(resp) != "application/json") {
         stop("API did not return json", call. = FALSE)
@@ -224,7 +231,7 @@ cromwellLogs = function(id, ...) {
 #' than submitting a single job at a time.  See
 #' \href{https://github.com/broadinstitute/cromwell#post-apiworkflowsversionbatch}{the cromwell \code{batch} API documentation} for details.
 #'
-#' @param wdlSource Represents the \href{}{WDL}A string (character vector of length 1) 
+#' @param wdlSource Represents the \href{https://software.broadinstitute.org/wdl/}{WDL}A string (character vector of length 1) 
 #'   or an \code{\link[httr]{upload_file}} object. See details below.
 #' @param workflowInputs A \code{data.frame} that will be coerced to a json array or a JSON string (as a \code{character} vector of length 1),
 #'   or an \code{\link[httr]{upload_file}} object. See details below.

@@ -10,7 +10,7 @@ cromwellBackends(...)
 \item{...}{passed directly to httr `GET` (for including `timeouts`, `handles`, etc.)}
 }
 \value{
-a
+a list that includes backend details
 }
 \description{
 List available backends for a cromwell endpoint
