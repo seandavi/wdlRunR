@@ -32,28 +32,53 @@
       <h1>Introduction to the cRomwell package</h1>
                         <h4 class="author">Sean Davis</h4>
             
-            <h4 class="date">2016-11-20</h4>
+            <h4 class="date">2016-11-22</h4>
           </div>
 
     
     
 <div class="contents">
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">cwd =<span class="st"> </span><span class="kw">getwd</span>()
+<div id="background" class="section level1">
+<h1 class="hasAnchor"><html><body><a href="#background" class="anchor"> </a></body></html>Background</h1>
+<p><a href="https://en.wikipedia.org/wiki/Big_data">Big Data</a> in biology is a reality. Operating on large-scale biological data, particularly when the data flows require interdependencies and multiple steps, requires smart workflow management tools. Such workflow managers should, ideally:</p>
+<ul><li>Allow scaling of tasks across available compute infrastructure.</li>
+<li>Encourage reproducible research by enabling and encouraging workflows to be described using text files.</li>
+<li>Maintain provenance over tools, workflows, inputs, and outputs.</li>
+<li>Be robust to failure.</li>
+<li>Support restarts and, potentially, work caching to reduce redundant recompute and cost.</li>
+<li>Support multiple compute resources, enabling workflow portability and reuse.</li>
+</ul><p>The <a href="https://github.com/broadinstitute/cromwell">Cromwell</a> is such a workflow system. The <code>[cRomwell](https://github.com/seandavi/cRomwell)</code> R package allows users of the R statistical programming environment to interact with the Cromwell workflow system. The cRomwell R package can act as the &ldquo;orchestrator&rdquo; for job submission to the Cromwell workflow system. The R ecosystem provides functionality for documentation, literate programming, publication-quality graphics, statistical analysis, and powerful data and metadata manipulation capabilities. Workflows of nearly arbitrary size to be described and then run using the Cromwell to run large-scale data processing steps, but with the entire workflow, including data munging, workflow metadata management, cloud orchestration and data management, and analysis of processed data described as R code or literate programming documents.</p>
+<p>Cromwell is available as a <code>java</code> jarfile and runs as a server or as a command-line executor of single workflows. This package is focused on interacting with Cromwell as a server and accessing it via its <a href="https://github.com/broadinstitute/cromwell#rest-api">documented REST API</a>.</p>
+<p>Cromwell jobs are described using Workflow Description Language (WDL). WDL resources are available:</p>
+<ul><li><a href="https://github.com/broadinstitute/wdl">WDL github site</a></li>
+<li><a href="https://software.broadinstitute.org/wdl/">WDL software and tutorial site at the Broad</a></li>
+</ul></div>
+<div id="getting-started" class="section level1">
+<h1 class="hasAnchor"><html><body><a href="#getting-started" class="anchor"> </a></body></html>Getting started</h1>
+<p>As a first step, we download the current released version of Cromwell. We then run the server and put the log file into a <code>tempdir()</code> using R code and a call to <code>system()</code>.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(cRomwell)
 tmpdir =<span class="st"> </span><span class="kw">tempdir</span>()
-<span class="kw">setwd</span>(tmpdir)
+cromwell_jar =<span class="st"> </span><span class="kw">file.path</span>(tmpdir,<span class="st">'cromwell-0.22.jar'</span>)
+cromwell_log =<span class="st"> </span><span class="kw">file.path</span>(tmpdir,<span class="st">'cromwell.log'</span>)
+<span class="kw">unlink</span>(cromwell_jar)
+<span class="kw">unlink</span>(cromwell_log)
 httr::<span class="kw">GET</span>(<span class="st">'https://github.com/broadinstitute/cromwell/releases/download/0.22/cromwell-0.22.jar'</span>,
-          httr::<span class="kw">write_disk</span>(<span class="st">'cromwell.jar'</span>))</code></pre></div>
-<pre><code>## Response [https://github-cloud.s3.amazonaws.com/releases/34136406/ef0c9648-91f6-11e6-99f9-f19b2a4ba718.jar?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Credential=AKIAISTNZFOVBIJMK3TQ%2F20161120%2Fus-east-1%2Fs3%2Faws4_request&amp;X-Amz-Date=20161120T201302Z&amp;X-Amz-Expires=300&amp;X-Amz-Signature=cef3b30435de1637c63b1582ee39306b3b75d0257f9075e5bd90c542c77322ea&amp;X-Amz-SignedHeaders=host&amp;actor_id=0&amp;response-content-disposition=attachment%3B%20filename%3Dcromwell-0.22.jar&amp;response-content-type=application%2Foctet-stream]
-##   Date: 2016-11-20 20:13
+          httr::<span class="kw">write_disk</span>(cromwell_jar))</code></pre></div>
+<pre><code>## Response [https://github-cloud.s3.amazonaws.com/releases/34136406/ef0c9648-91f6-11e6-99f9-f19b2a4ba718.jar?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Credential=AKIAISTNZFOVBIJMK3TQ%2F20161122%2Fus-east-1%2Fs3%2Faws4_request&amp;X-Amz-Date=20161122T183515Z&amp;X-Amz-Expires=300&amp;X-Amz-Signature=c7642fafd9c4e2b092218857b556313e59e1baf75b73169f6a101532af8d87c9&amp;X-Amz-SignedHeaders=host&amp;actor_id=0&amp;response-content-disposition=attachment%3B%20filename%3Dcromwell-0.22.jar&amp;response-content-type=application%2Foctet-stream]
+##   Date: 2016-11-22 18:35
 ##   Status: 200
 ##   Content-Type: application/octet-stream
 ##   Size: 66.4 MB
-## &lt;ON DISK&gt;  cromwell.jar</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">system</span>(<span class="st">'java -jar cromwell.jar server &gt; cromwell.log 2&gt;&amp;1 &amp;'</span>)
+## &lt;ON DISK&gt;  /tmp/RtmpT2Wgjx/cromwell-0.22.jar</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">system</span>(<span class="kw">sprintf</span>(<span class="st">'java -jar %s server &gt; %s 2&gt;&amp;1 &amp;'</span>, cromwell_jar, cromwell_log))
 <span class="co"># let server start up</span>
-<span class="kw">Sys.sleep</span>(<span class="dv">20</span>)
-<span class="kw">system</span>(<span class="st">'ps aux | grep cromwell'</span>)
-<span class="kw">setwd</span>(cwd)</code></pre></div>
+<span class="kw">Sys.sleep</span>(<span class="dv">20</span>)</code></pre></div>
+<p>Cromwell should now be running in the background and we can verify by checking for processes with &ldquo;cromwell&rdquo; in the name.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">system</span>(<span class="st">'ps aux | grep cromwell'</span>)</code></pre></div>
+</div>
+<div id="workflows" class="section level1">
+<h1 class="hasAnchor"><html><body><a href="#workflows" class="anchor"> </a></body></html>Workflows</h1>
+<p>The simplest example (and one that runs in the time needed for a demo!) is a &ldquo;Hello, WDL&rdquo; workflow. Right now, we simply describe a WDL workflow as text or as a text file (see below).</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">hello_wdl =<span class="st"> "task hello {</span>
 <span class="st">  String name</span>
 
@@ -68,42 +93,198 @@ httr::<span class="kw">GET</span>(<span class="st">'https://github.com/broadinst
 <span class="st">workflow test {</span>
 <span class="st">  call hello</span>
 <span class="st">}"</span></code></pre></div>
+<div id="submit-a-batch-job" class="section level2">
+<h2 class="hasAnchor"><html><body><a href="#submit-a-batch-job" class="anchor"> </a></body></html>Submit a batch job</h2>
+<p>We are going to submit a batch of jobs (10 of them) with randomly-generated names. The input to the <code><a href="../reference/cromwellBatch.html">cromwellBatch()</a></code> function is a <code>data.frame</code> with columns named for the WDL inputs. Each row of the <code>data.frame</code> will become a workflow that will be run (locally in this case) by Cromwell.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">options</span>(<span class="dt">cromwell_base =</span> <span class="st">'http://localhost:8000'</span>)
 randomStrings =<span class="st"> </span><span class="kw">sapply</span>(<span class="dv">1</span>:<span class="dv">10</span>,function(r) {<span class="kw">paste</span>(<span class="kw">sample</span>(LETTERS,<span class="dv">10</span>),<span class="dt">collapse=</span><span class="st">""</span>)})
-wdlInputs =<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">test.hello.name=</span>randomStrings)
-z =<span class="st"> </span><span class="kw"><a href="../reference/cromwellBatch.html">cromwellBatch</a></span>(<span class="dt">wdlSource =</span> hello_wdl,<span class="dt">workflowInputs=</span><span class="kw">toJSON</span>(wdlInputs))
+wdlInputs =<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">test.hello.name=</span>randomStrings)</code></pre></div>
+<p>We can submit a batch of jobs to cromwell by simply posting to the correct API endpoint and the function <code><a href="../reference/cromwellBatch.html">cromwellBatch()</a></code> wraps this process in R.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">res =<span class="st"> </span><span class="kw"><a href="../reference/cromwellBatch.html">cromwellBatch</a></span>(<span class="dt">wdlSource =</span> hello_wdl,<span class="dt">workflowInputs=</span><span class="kw">toJSON</span>(wdlInputs))
+<span class="co"># and we do this to allow the jobs to get running</span>
+<span class="kw">Sys.sleep</span>(<span class="dv">20</span>)</code></pre></div>
+</div>
+<div id="monitoring-jobs" class="section level2">
+<h2 class="hasAnchor"><html><body><a href="#monitoring-jobs" class="anchor"> </a></body></html>Monitoring jobs</h2>
+<p>Once jobs are submitted, they will enter the Cromwell workflow monitoring system. We can query this system at any time. Look at the <a href="">API documentation</a> and <code>help('cromwellQuery')</code> in R for some more details.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/cromwellQuery.html">cromwellQuery</a></span>()</code></pre></div>
+<pre><code>## [1] "http://localhost:8000/api/workflows/v1/query"</code></pre>
+<pre><code>##    name                                   id    status                 end
+## 1  test e7a83986-14d7-4192-96a0-0ca5bfa8c777 Succeeded 2016-11-22 18:35:47
+## 2  test 9557ae7a-e66f-4e0b-9fcc-bdffd76fa2c1 Succeeded 2016-11-22 18:35:47
+## 3  test 05c807ec-5b52-404c-99b4-d311b2458fc1 Succeeded 2016-11-22 18:35:47
+## 4  test 026de059-2e00-401d-b14c-2cb818d1d86f Succeeded 2016-11-22 18:35:47
+## 5  test 298b65ba-87a6-4790-9f2e-2a7b2abec74b Succeeded 2016-11-22 18:35:47
+## 6  test dfca8d5e-c4f6-4028-aa96-806844ea2426 Succeeded 2016-11-22 18:35:47
+## 7  test 48fd592b-3bc5-4c97-ab08-db9a9eaef16a Succeeded 2016-11-22 18:35:47
+## 8  test 92d16eaf-49e9-4776-b594-82de115a2223 Succeeded 2016-11-22 18:35:47
+## 9  test f7d2928e-9006-4c22-8f4e-920e7098d822 Succeeded 2016-11-22 18:35:47
+## 10 test 22cad98e-97cc-4d20-b2b0-921a3fee9531 Succeeded 2016-11-22 18:35:48
+##                  start duration
+## 1  2016-11-22 18:35:45   2 secs
+## 2  2016-11-22 18:35:45   2 secs
+## 3  2016-11-22 18:35:45   2 secs
+## 4  2016-11-22 18:35:45   2 secs
+## 5  2016-11-22 18:35:45   2 secs
+## 6  2016-11-22 18:35:45   2 secs
+## 7  2016-11-22 18:35:45   2 secs
+## 8  2016-11-22 18:35:45   2 secs
+## 9  2016-11-22 18:35:45   2 secs
+## 10 2016-11-22 18:35:45   3 secs</code></pre>
+<p>We can use any R functionality to manage our WDL and inputs. For example, we can get a WDL workflow from a <a href="https://github.com/DockstoreTestUser/dockstore-whalesay/blob/master/Dockstore.wdl">github-hosted</a> WDL workflow. Here is an example of using the same &ldquo;Hello, WDL&rdquo; workflow.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#read from github or other URL</span>
+hello_remote_wdl =<span class="st"> </span><span class="kw">content</span>(<span class="kw">GET</span>(<span class="st">"https://raw.githubusercontent.com/DockstoreTestUser/dockstore-whalesay/master/Dockstore.wdl"</span>),<span class="st">'text'</span>)</code></pre></div>
+<p>And we can use R for creating inputs in any way we like. Here, we use the <a href="https://cran.r-project.org/package=babynames">babynames R package</a> to set the names.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">if(<span class="kw">require</span>(babynames))
+    wdlInputs =<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">test.hello.name=</span><span class="kw">sample</span>(babynames$name,<span class="dv">10</span>))</code></pre></div>
+<pre><code>## Loading required package: babynames</code></pre>
+<pre><code>## Warning in library(package, lib.loc = lib.loc, character.only = TRUE,
+## logical.return = TRUE, : there is no package called 'babynames'</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">z =<span class="st"> </span><span class="kw"><a href="../reference/cromwellBatch.html">cromwellBatch</a></span>(<span class="dt">wdlSource =</span> hello_remote_wdl,<span class="dt">workflowInputs=</span><span class="kw">toJSON</span>(wdlInputs))
 <span class="kw">Sys.sleep</span>(<span class="dv">20</span>)
 <span class="kw"><a href="../reference/cromwellQuery.html">cromwellQuery</a></span>()</code></pre></div>
 <pre><code>## [1] "http://localhost:8000/api/workflows/v1/query"</code></pre>
 <pre><code>##    name                                   id    status                 end
-## 1  test e2f98a19-f2ef-4e17-885c-efbf0748a3c7 Succeeded 2016-11-20 20:13:42
-## 2  test 043dd31a-40e9-4a14-af81-15f222ea4969 Succeeded 2016-11-20 20:13:42
-## 3  test 8fce1e28-fae6-4205-8bb1-33e73dd96b08 Succeeded 2016-11-20 20:13:42
-## 4  test b94d8dba-16a2-4466-b337-e5634a34caee Succeeded 2016-11-20 20:13:42
-## 5  test 968cb968-c893-46e3-b0ce-6a0ddda4a032 Succeeded 2016-11-20 20:13:42
-## 6  test 3278ad92-92b1-48ba-ad0d-6f1f8f34d253 Succeeded 2016-11-20 20:13:42
-## 7  test ec93eeeb-1917-427d-a80b-24e06c60efea Succeeded 2016-11-20 20:13:42
-## 8  test 4fe00405-d346-4619-82da-a4bc6cf75086 Succeeded 2016-11-20 20:13:42
-## 9  test d9498248-3bc3-4691-9632-04ba11d19e25 Succeeded 2016-11-20 20:13:42
-## 10 test 9d149578-6dac-4552-9ac5-2bb00707a496 Succeeded 2016-11-20 20:13:42
+## 1  test e7a83986-14d7-4192-96a0-0ca5bfa8c777 Succeeded 2016-11-22 18:35:47
+## 2  test 9557ae7a-e66f-4e0b-9fcc-bdffd76fa2c1 Succeeded 2016-11-22 18:35:47
+## 3  test 05c807ec-5b52-404c-99b4-d311b2458fc1 Succeeded 2016-11-22 18:35:47
+## 4  test 026de059-2e00-401d-b14c-2cb818d1d86f Succeeded 2016-11-22 18:35:47
+## 5  test 298b65ba-87a6-4790-9f2e-2a7b2abec74b Succeeded 2016-11-22 18:35:47
+## 6  test dfca8d5e-c4f6-4028-aa96-806844ea2426 Succeeded 2016-11-22 18:35:47
+## 7  test 48fd592b-3bc5-4c97-ab08-db9a9eaef16a Succeeded 2016-11-22 18:35:47
+## 8  test 92d16eaf-49e9-4776-b594-82de115a2223 Succeeded 2016-11-22 18:35:47
+## 9  test f7d2928e-9006-4c22-8f4e-920e7098d822 Succeeded 2016-11-22 18:35:47
+## 10 test 22cad98e-97cc-4d20-b2b0-921a3fee9531 Succeeded 2016-11-22 18:35:48
+## 11 test 5d564fa2-7ab0-466e-97db-67af8fa3939d Succeeded 2016-11-22 18:36:07
+## 12 test 28901112-bfa6-4549-8c91-2fe9337a9897 Succeeded 2016-11-22 18:36:06
+## 13 test 0805d31c-c540-479c-9e61-c91b7dab1520 Succeeded 2016-11-22 18:36:06
+## 14 test 0ae47c6c-071b-473d-88b2-44ecbde2acb5 Succeeded 2016-11-22 18:36:06
+## 15 test 409cdd88-89ae-44a6-aeb5-7709029a53b5 Succeeded 2016-11-22 18:36:07
+## 16 test 251d7149-0b4a-4939-a5e7-c62ebba4a5af Succeeded 2016-11-22 18:36:07
+## 17 test 68c74bbe-82be-4817-b197-9c2bf887dd42 Succeeded 2016-11-22 18:36:06
+## 18 test bc7a559b-2e29-41cd-9d6c-6e45b66de6c3 Succeeded 2016-11-22 18:36:06
+## 19 test 59ba29f6-b217-4fa6-b4bc-f2c1902cc914 Succeeded 2016-11-22 18:36:06
+## 20 test 38ce61cc-a2d6-4c72-b68c-ec75c95c842a Succeeded 2016-11-22 18:36:07
 ##                  start duration
-## 1  2016-11-20 20:13:40   2 secs
-## 2  2016-11-20 20:13:40   2 secs
-## 3  2016-11-20 20:13:40   2 secs
-## 4  2016-11-20 20:13:40   2 secs
-## 5  2016-11-20 20:13:41   1 secs
-## 6  2016-11-20 20:13:40   2 secs
-## 7  2016-11-20 20:13:40   2 secs
-## 8  2016-11-20 20:13:40   2 secs
-## 9  2016-11-20 20:13:40   2 secs
-## 10 2016-11-20 20:13:40   2 secs</code></pre>
+## 1  2016-11-22 18:35:45   2 secs
+## 2  2016-11-22 18:35:45   2 secs
+## 3  2016-11-22 18:35:45   2 secs
+## 4  2016-11-22 18:35:45   2 secs
+## 5  2016-11-22 18:35:45   2 secs
+## 6  2016-11-22 18:35:45   2 secs
+## 7  2016-11-22 18:35:45   2 secs
+## 8  2016-11-22 18:35:45   2 secs
+## 9  2016-11-22 18:35:45   2 secs
+## 10 2016-11-22 18:35:45   3 secs
+## 11 2016-11-22 18:36:05   2 secs
+## 12 2016-11-22 18:36:05   1 secs
+## 13 2016-11-22 18:36:05   1 secs
+## 14 2016-11-22 18:36:05   1 secs
+## 15 2016-11-22 18:36:05   2 secs
+## 16 2016-11-22 18:36:05   2 secs
+## 17 2016-11-22 18:36:05   1 secs
+## 18 2016-11-22 18:36:05   1 secs
+## 19 2016-11-22 18:36:05   1 secs
+## 20 2016-11-22 18:36:05   2 secs</code></pre>
+<p>To make things a bit more interesting, we can simulate long-running jobs using a &ldquo;sleeping&rdquo; variation of &ldquo;Hello, WDL.&rdquo;</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">hello_wdl_sleep =<span class="st"> "task hello {</span>
+<span class="st">  String name</span>
+
+<span class="st">  command {</span>
+<span class="st">    echo 'Hello ${name}!' &amp;&amp; sleep 60</span>
+<span class="st">  }</span>
+<span class="st">  output {</span>
+<span class="st">    File response = stdout()</span>
+<span class="st">  }</span>
+<span class="st">}</span>
+
+<span class="st">workflow test {</span>
+<span class="st">  call hello</span>
+<span class="st">}"</span></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">randomStrings =<span class="st"> </span><span class="kw">sapply</span>(<span class="dv">1</span>:<span class="dv">10</span>,function(r) {<span class="kw">paste</span>(<span class="kw">sample</span>(LETTERS,<span class="dv">10</span>),<span class="dt">collapse=</span><span class="st">""</span>)})
+wdlInputs =<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">test.hello.name=</span>randomStrings)
+z =<span class="st"> </span><span class="kw"><a href="../reference/cromwellBatch.html">cromwellBatch</a></span>(<span class="dt">wdlSource =</span> hello_wdl_sleep,<span class="dt">workflowInputs=</span><span class="kw">toJSON</span>(wdlInputs))
+<span class="co"># to let Cromwell get started with the jobs.</span>
+<span class="kw">sleep</span>(<span class="dv">10</span>)</code></pre></div>
+<p>At this point, checking <code><a href="../reference/cromwellQuery.html">cromwellQuery()</a></code> will show running jobs (if done within 60 seconds, of course). Limiting to &ldquo;Running&rdquo; jobs is also easy.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/cromwellQuery.html">cromwellQuery</a></span>(<span class="dt">status=</span><span class="st">'Running'</span>)</code></pre></div>
+<p>And we can check for outputs as well.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">results =<span class="st"> </span><span class="kw"><a href="../reference/cromwellQuery.html">cromwellQuery</a></span>(<span class="dt">status=</span><span class="st">'Succeeded'</span>)</code></pre></div>
+<pre><code>## [1] "http://localhost:8000/api/workflows/v1/query"</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">outputs =<span class="st"> </span><span class="kw"><a href="../reference/cromwellOutputs.html">cromwellOutputs</a></span>(results$id[<span class="dv">1</span>])$outputs</code></pre></div>
+<pre><code>## [1] "http://localhost:8000/api/workflows/v1/e7a83986-14d7-4192-96a0-0ca5bfa8c777/outputs"</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">outputs</code></pre></div>
+<pre><code>## $test.hello.response
+## [1] "/home/rstudio/cRomwell/docs/articles/cromwell-executions/test/e7a83986-14d7-4192-96a0-0ca5bfa8c777/call-hello/execution/stdout"</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">readLines</span>(outputs$test.hello.response)</code></pre></div>
+<pre><code>## [1] "Hello ZDMTPFKVAH!"</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">logs =<span class="st"> </span><span class="kw"><a href="../reference/cromwellLogs.html">cromwellLogs</a></span>(results$id[<span class="dv">1</span>])</code></pre></div>
+<pre><code>## [1] "http://localhost:8000/api/workflows/v1/e7a83986-14d7-4192-96a0-0ca5bfa8c777/logs"</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># stderr</span>
+<span class="kw">readLines</span>(logs$test.hello[[<span class="dv">1</span>]]$stderr)</code></pre></div>
+<pre><code>## character(0)</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># stdout</span>
+<span class="kw">readLines</span>(logs$test.hello[[<span class="dv">1</span>]]$stdout)</code></pre></div>
+<pre><code>## [1] "Hello ZDMTPFKVAH!"</code></pre>
+</div>
+</div>
+<div id="cleanup" class="section level1">
+<h1 class="hasAnchor"><html><body><a href="#cleanup" class="anchor"> </a></body></html>cleanup</h1>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># messy!</span>
-<span class="kw">system</span>(<span class="st">'pgrep java | xargs -I {} kill -9 {}'</span>)
-<span class="kw">unlink</span>(<span class="kw">file.path</span>(tmpdir,<span class="st">'cromwell*'</span>),<span class="dt">recursive=</span><span class="ot">TRUE</span>)</code></pre></div>
+<span class="kw">system</span>(<span class="st">'pgrep java | xargs -I {} kill -9 {}'</span>)</code></pre></div>
+</div>
+<div id="sessioninfo" class="section level1">
+<h1 class="hasAnchor"><html><body><a href="#sessioninfo" class="anchor"> </a></body></html>sessionInfo</h1>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sessionInfo</span>()</code></pre></div>
+<pre><code>## R version 3.3.0 (2016-05-03)
+## Platform: x86_64-pc-linux-gnu (64-bit)
+## Running under: Debian GNU/Linux stretch/sid
+## 
+## locale:
+##  [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
+##  [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    
+##  [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=en_US.UTF-8   
+##  [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 
+##  [9] LC_ADDRESS=C               LC_TELEPHONE=C            
+## [11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
+## 
+## attached base packages:
+## [1] stats     graphics  grDevices utils     datasets  methods   base     
+## 
+## other attached packages:
+## [1] cRomwell_0.1.0       shiny_0.14.2         knitr_1.15.1        
+## [4] jsonlite_1.1         shinydashboard_0.5.3 httr_1.2.1          
+## [7] DT_0.2              
+## 
+## loaded via a namespace (and not attached):
+##  [1] Rcpp_0.12.8          git2r_0.16.0         plyr_1.8.4          
+##  [4] tools_3.3.0          highlight_0.4.7      digest_0.6.10       
+##  [7] pkgbuild_0.0.0.9000  pkgload_0.0.0.9000   evaluate_0.10       
+## [10] memoise_1.0.0        tibble_1.2           curl_2.2            
+## [13] yaml_2.1.14          pkgdown_0.1.0.9000   withr_1.0.2         
+## [16] stringr_1.1.0        roxygen2_5.0.1       xml2_1.0.0.9001     
+## [19] desc_1.0.1           htmlwidgets_0.6      devtools_1.12.0.9000
+## [22] rprojroot_1.1        R6_2.2.0             rmarkdown_1.2.9000  
+## [25] purrr_0.2.2          callr_1.0.0.9000     magrittr_1.5        
+## [28] whisker_0.3-2        backports_1.0.4      codetools_0.2-14    
+## [31] htmltools_0.3.5      assertthat_0.1       mime_0.5            
+## [34] xtable_1.8-2         httpuv_1.3.3         stringi_1.1.2       
+## [37] lazyeval_0.2.0       crayon_1.3.2</code></pre>
+</div>
 </div>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
+        <div id="tocnav">
+      <h2>Contents</h2>
+      <ul class="nav nav-pills nav-stacked"><li><a href="#background">Background</a></li>
+      <li><a href="#getting-started">Getting started</a></li>
+      <li><a href="#workflows">Workflows</a><ul class="nav nav-pills nav-stacked"><li><a href="#submit-a-batch-job">Submit a batch job</a></li>
+      <li><a href="#monitoring-jobs">Monitoring jobs</a></li>
+      </ul></li>
+      <li><a href="#cleanup">cleanup</a></li>
+      <li><a href="#sessioninfo">sessionInfo</a></li>
+      </ul></div>
       </div>
 
 </div>

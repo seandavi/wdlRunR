@@ -7,6 +7,7 @@ output: html_document
 
 ```{r init,echo=FALSE,results='hide'}
 library(knitr)
+library(jsonlite)
 opts_chunk$set(cache=TRUE)
 ```
 
@@ -35,6 +36,7 @@ Cromwell jobs are described using Workflow Description Language (WDL). WDL resou
 As a first step, we download the current released version of Cromwell. We then run the server and put the log file into a `tempdir()` using R code and a call to `system()`.
 
 ```{r}
+library(cRomwell)
 tmpdir = tempdir()
 cromwell_jar = file.path(tmpdir,'cromwell-0.22.jar')
 cromwell_log = file.path(tmpdir,'cromwell.log')
@@ -87,7 +89,7 @@ We can submit a batch of jobs to cromwell by simply posting to the correct API e
 ```{r}
 res = cromwellBatch(wdlSource = hello_wdl,workflowInputs=toJSON(wdlInputs))
 # and we do this to allow the jobs to get running
-Sys.sleep(10)
+Sys.sleep(20)
 ```
 
 ## Monitoring jobs
