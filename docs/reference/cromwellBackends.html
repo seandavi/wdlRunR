@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Get metadata associated with one or more workflow ids — cromwellMetadata • cRomwell</title>
+<title>List available backends for a cromwell endpoint — cromwellBackends • cRomwell</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -69,30 +69,28 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Get metadata associated with one or more workflow ids</h1>
+    <h1>List available backends for a cromwell endpoint</h1>
     </div>
 
     
-    <p>Get metadata associated with one or more workflow ids</p>
+    <p>List available backends for a cromwell endpoint</p>
     
 
-    <pre><span class='fu'>cromwellMetadata</span>(<span class='no'>id</span>, <span class='no'>...</span>)</pre>
+    <pre><span class='fu'>cromwellBackends</span>(<span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <dl class="dl-horizontal">
-      <dt>id</dt>
-      <dd>A cromwell id as a string</dd>
       <dt>...</dt>
       <dd>passed directly to httr `GET` (for including `timeouts`, `handles`, etc.)</dd>
     </dl>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>a list of metadata lists</p>
+    <p>a</p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'>#cromwellMetadata(ids='INSERT_HASH_HERE')</span></div></pre>
+    <pre class="examples"><div class='input'><span class='co'>#cromwellBackends()</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
