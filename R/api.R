@@ -275,3 +275,26 @@ cromwellStats = function(...) {
 }
 
 
+
+#' Get the cromwell JAR file from github
+#'
+#' This function simply downloads the cromwell JAR file
+#' and puts it in the destfile location
+#'
+#' @param cromwell_version string representing the version number
+#' @param destfile string The full path to the cromwell jar file location on the local system
+#'
+#' @return destfile location [invisibly]
+#'
+#' @importFrom httr GET
+#' 
+#' @examples
+#' getCromwellJar(destfile='/tmp/cromwell.jar')
+#' unlink('/tmp/cromwell.jar')
+#'
+#' @export
+getCromwellJar = function(cromwell_version="23",destfile = 'cromwell.jar') {
+    fname = destfile
+    httr::GET(sprintf('https://github.com/broadinstitute/cromwell/releases/download/%s/cromwell-%s.jar',cromwell_version,cromwell_version),write_disk(fname,overwrite = TRUE))
+    invisible(fname)
+}
