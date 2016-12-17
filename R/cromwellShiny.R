@@ -1,7 +1,7 @@
 library(shiny)
 library(shinydashboard)
 library(jsonlite)
-library(htmlOutput)
+
 
 
 pct = function(x) {sprintf('%4.2f %%',x*100)}

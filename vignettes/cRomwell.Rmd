@@ -104,6 +104,7 @@ We can use any R functionality to manage our WDL and inputs. For example, we can
 
 ```{r}
 #read from github or other URL
+library(httr)
 hello_remote_wdl = content(GET("https://raw.githubusercontent.com/DockstoreTestUser/dockstore-whalesay/master/Dockstore.wdl"),'text')
 ```
 And we can use R for creating inputs in any way we like. Here, we use the [babynames R package](https://cran.r-project.org/package=babynames) to set the names.
