@@ -44,7 +44,7 @@ cromwell_POST = function(path,body,...) {
 
     parsed <- httr::content(resp,'parsed')
 
-    if (status_code(resp) != 200) {
+    if (!(status_code(resp) %in% c(200,201))) {
         stop(
             sprintf(
                 "Cromwell API request failed [%s]\n%s\n<%s>",
@@ -138,15 +138,15 @@ cromwellMetadata = function(id, ...) {
 #' Abort a cromwell job
 #'
 #' @param id A cromwell id as a string
-#' @param ... passed directly to httr `GET` (for including `timeouts`, `handles`, etc.)
+#' @param ... passed directly to httr `POST` (for including `timeouts`, `handles`, etc.)
 #'
-#' @importFrom httr GET
+#' @importFrom httr POST
 #'
 #' @examples
-#' #cromwellQuery(ids=c('1','2','abc'))
+#' #cromwellAbord('ID')
 #' @export
 cromwellAbort = function(id, ...) {
-    return(cromwell_GET(path=sprintf('api/workflows/v1/%s/abort')))
+    return(cromwell_POST(path=sprintf('api/workflows/v1/%s/abort',id),body=NULL,...))
 }
 
 #' Get output paths associated with one or more workflow ids
@@ -228,6 +228,41 @@ cromwellBatch = function(wdlSource,
                 workflowOptions = workflowOptions)
 
     return(cromwell_POST('/api/workflows/v1/batch',body = body, encode = 'multipart',
+                timeout(timeout), ...))
+}
+
+#' Submit a single cromwell job
+#'
+#' This function submits a set of one or more inputs to cromwell. It is much more efficient
+#' than submitting a single job at a time.  See
+#' \href{https://github.com/broadinstitute/cromwell#post-apiworkflowsversionbatch}{the cromwell \code{batch} API documentation} for details.
+#'
+#' @param wdlSource A \code{list}, a JSON string (as a \code{character} vector of length 1,
+#'   or an \code{\link[httr]{upload_file}} object. See details below.
+#' @param workflowInputs A \code{list}, a JSON string (as a \code{character} vector of length 1,
+#'   or an \code{\link[httr]{upload_file}} object. See details below.
+#' @param workflowOptions A \code{list}, a JSON string (as a \code{character} vector of length 1,
+#'   or an \code{\link[httr]{upload_file}} object. See details below.
+#' @param timeout The number of seconds to wait for a response. Batch jobs can take
+#'   quite some time for cromwell to process, so this will typically need to be set
+#'   to a large value to allow for a completed response.
+#' @param ... passed directly to httr `POST` (for including `timeouts`, `handles`, etc.)
+#'
+#' @details abc details
+#'
+#' @importFrom httr POST
+#'
+#' @export
+cromwellSingle = function(wdlSource,
+                         workflowInputs,
+                         workflowOptions=NULL,
+                         timeout = 120,
+                         ...) {
+    body = list(wdlSource       = wdlSource,
+                workflowInputs  = workflowInputs,
+                workflowOptions = workflowOptions)
+
+    return(cromwell_POST('/api/workflows/v1',body = body,
                 timeout(timeout), ...))
 }
 
