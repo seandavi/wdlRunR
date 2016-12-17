@@ -84,10 +84,10 @@ than submitting a single job at a time.  See
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <dl class="dl-horizontal">
       <dt>wdlSource</dt>
-      <dd>A <code>list</code>, a JSON string (as a <code>character</code> vector of length 1,
+      <dd>Represents the <a href = 'WDL'>https://software.broadinstitute.org/wdl/</a>A string (character vector of length 1) 
 or an <code><a href='http://www.rdocumentation.org/packages/httr/topics/upload_file'>upload_file</a></code> object. See details below.</dd>
       <dt>workflowInputs</dt>
-      <dd>A <code>list</code>, a JSON string (as a <code>character</code> vector of length 1,
+      <dd>A <code>data.frame</code> that will be coerced to a json array or a JSON string (as a <code>character</code> vector of length 1),
 or an <code><a href='http://www.rdocumentation.org/packages/httr/topics/upload_file'>upload_file</a></code> object. See details below.</dd>
       <dt>workflowOptions</dt>
       <dd>A <code>list</code>, a JSON string (as a <code>character</code> vector of length 1,
@@ -100,9 +100,13 @@ to a large value to allow for a completed response.</dd>
       <dd>passed directly to httr `POST` (for including `timeouts`, `handles`, etc.)</dd>
     </dl>
     
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>If a timeout does not occur (this is pretty common....), then a list that contains the submission status.</p>
+    
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>abc details</p>
+    <p>TODO details</p>
     
 
   </div>
@@ -111,6 +115,8 @@ to a large value to allow for a completed response.</dd>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
       
+      <li><a href="#value">Value</a></li>
+
       <li><a href="#details">Details</a></li>
           </ul>
 

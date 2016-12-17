@@ -13,6 +13,4 @@ require(devtools)
 devtools::install_github('seandavi/cRomwell', ref = "develop")
 ```
 
-## Introductory workflow
-
-See [vignettes](vignettes)
+Navigate to https://seandavi.github.io/cRomwell for details.
