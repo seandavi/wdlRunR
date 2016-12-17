@@ -1,6 +1,8 @@
 library(shiny)
 library(shinydashboard)
 library(jsonlite)
+library(htmlOutput)
+
 
 pct = function(x) {sprintf('%4.2f %%',x*100)}
 
@@ -38,7 +40,7 @@ ui <- dashboardPage(
                     DT::dataTableOutput("table1")
                 ),
                 fluidRow(
-                    textOutput('rows_out')
+                    verbatimTextOutput('rows_out')
                 )
             )
         )
@@ -69,7 +71,7 @@ server <- function(input, output, session) {
         if(length(input$table1_cell_clicked)<3) {
             return("click a row to display details")
         }
-        toJSON(cromwellMetadata(as.character(stats1[input$table1_cell_clicked[[1]],'id'])),pretty=TRUE)
+        toJSON(unclass(cromwellMetadata(as.character(stats1[input$table1_cell_clicked[[1]],'id']))),pretty=TRUE)
   })
     output$completed <- renderInfoBox({
         infoBox(
