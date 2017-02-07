@@ -175,6 +175,7 @@ cromwellQuery = function(terms=NULL, ...) {
 #' @return a list of metadata lists
 #'
 #' @importFrom httr GET
+#' @importFrom stats setNames
 #'
 #' @examples
 #' \dontrun{
@@ -195,7 +196,7 @@ cromwellMetadata = function(ids, ...) {
         class(ret) = c('cromwell_output','cromwell_api',class(ret))
         ret
     })
-    setNames(retlist,ids)
+    retlist = setNames(retlist,ids)
     attr(retlist,'when') = Sys.time()
     class(retlist) = c('cromwell_output_list','cromwell_api',class(retlist))
     return(retlist)
@@ -227,7 +228,8 @@ cromwellAbort = function(id, ...) {
 #' @references \url{https://github.com/broadinstitute/cromwell#get-apiworkflowsversionidoutputs}
 #'
 #' @importFrom httr GET
-#' 
+#' @importFrom stats setNames
+
 #' @examples
 #' \dontrun{
 #' res = cromwellQuery(terms=c(status='Succeeded',name='taskName'))
@@ -247,7 +249,7 @@ cromwellOutputs = function(ids, ...) {
         class(ret) = c('cromwell_output','cromwell_api',class(ret))
         ret
     })
-    retlist=setNames(retlist,ids)
+    retlist = setNames(retlist,ids)
     attr(retlist,'when') = Sys.time()
     class(retlist) = c('cromwell_output_list','cromwell_api',class(retlist))
     return(retlist)
@@ -273,7 +275,7 @@ cromwellOutputs = function(ids, ...) {
 #' these list items will contain another list with log outputs from each workflow step
 #' in the submitted workflow.
 #'
-#' 
+#' @importFrom stats setNames
 #' @importFrom httr GET
 #'
 #' @references \url{https://github.com/broadinstitute/cromwell#get-apiworkflowsversionidlogs}
@@ -297,7 +299,7 @@ cromwellLogs = function(ids, ...) {
         class(ret) = c('cromwell_log','cromwell_api',class(ret))
         ret
     })
-    setNames(retlist,ids)
+    retlist = setNames(retlist,ids)
     attr(retlist,'when') = Sys.time()
     class(retlist) = c('cromwell_log_list','cromwell_api',class(retlist))
     return(retlist)

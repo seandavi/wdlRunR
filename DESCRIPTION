@@ -1,15 +1,12 @@
 Package: cRomwell
 Title: Interact with the Broad Institute Cromwell workflow manager
-Version: 0.2.0
+Version: 0.2.1
 Date: 2017-02-07
 Authors@R: person("Sean", "Davis", email = "seandavi@gmail.com", role = c("aut", "cre"))
 Description: Implements an R client for the cromwell workflow manager
   from the Broad Institute
 Depends:
-    R (>= 3.3.0),
-    shiny,
-    DT,
-    shinydashboard
+    R (>= 3.3.0)
 Imports:
     httr,
     plyr,
@@ -17,7 +14,8 @@ Imports:
 Suggests:
     BiocStyle,
     knitr,
-    rmarkdown
+    rmarkdown,
+    babynames
 VignetteBuilder: knitr
 License: MIT
 Encoding: UTF-8
