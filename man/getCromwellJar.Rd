@@ -16,11 +16,15 @@ destfile location [invisibly]
 }
 \description{
 This function simply downloads the cromwell JAR file
-and puts it in the destfile location
+and puts it in the destfile location. The JAR file is picked up from
+\url{https://github.com/broadinstitute/cromwell/releases}.
 }
 \examples{
-getCromwellJar(destfile='/tmp/cromwell.jar')
-unlink('/tmp/cromwell.jar')
+version = '24'
+tmpfile = file.path(tempdir(),'cromwell.jar')
+fp = getCromwellJar(cromwell_version = version, destfile = tmpfile)
+fp
+unlink(fp)
 
 }
 
