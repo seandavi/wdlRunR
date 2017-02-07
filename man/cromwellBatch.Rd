@@ -8,10 +8,10 @@ cromwellBatch(wdlSource, workflowInputs, workflowOptions = NULL,
   timeout = 120, ...)
 }
 \arguments{
-\item{wdlSource}{A \code{list}, a JSON string (as a \code{character} vector of length 1,
+\item{wdlSource}{Represents the \href{https://software.broadinstitute.org/wdl/}{WDL}A string (character vector of length 1) 
 or an \code{\link[httr]{upload_file}} object. See details below.}
 
-\item{workflowInputs}{A \code{list}, a JSON string (as a \code{character} vector of length 1,
+\item{workflowInputs}{A \code{data.frame} that will be coerced to a json array or a JSON string (as a \code{character} vector of length 1),
 or an \code{\link[httr]{upload_file}} object. See details below.}
 
 \item{workflowOptions}{A \code{list}, a JSON string (as a \code{character} vector of length 1,
@@ -23,12 +23,15 @@ to a large value to allow for a completed response.}
 
 \item{...}{passed directly to httr `POST` (for including `timeouts`, `handles`, etc.)}
 }
+\value{
+If a timeout does not occur (this is pretty common....), then a list that contains the submission status.
+}
 \description{
 This function submits a set of one or more inputs to cromwell. It is much more efficient
 than submitting a single job at a time.  See
 \href{https://github.com/broadinstitute/cromwell#post-apiworkflowsversionbatch}{the cromwell \code{batch} API documentation} for details.
 }
 \details{
-abc details
+TODO details
 }
 
