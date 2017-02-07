@@ -2,9 +2,9 @@
 % Please edit documentation in R/api.R
 \name{getCromwellJar}
 \alias{getCromwellJar}
-\title{Get the cromwell JAR file from github}
+\title{Utility to fetch the cromwell JAR file}
 \usage{
-getCromwellJar(cromwell_version = "23", destfile = "cromwell.jar")
+getCromwellJar(cromwell_version, destfile = "cromwell.jar")
 }
 \arguments{
 \item{cromwell_version}{string representing the version number}
@@ -15,7 +15,10 @@ getCromwellJar(cromwell_version = "23", destfile = "cromwell.jar")
 destfile location [invisibly]
 }
 \description{
-This function simply downloads the cromwell JAR file
+The purpose of this R package is to interact with the
+Broad Cromwell execution engine.
+The Cromwell server is contained in a JAVA JAR file. This
+function simply downloads the cromwell JAR file
 and puts it in the destfile location. The JAR file is picked up from
 \url{https://github.com/broadinstitute/cromwell/releases}.
 }
@@ -26,5 +29,8 @@ fp = getCromwellJar(cromwell_version = version, destfile = tmpfile)
 fp
 unlink(fp)
 
+}
+\seealso{
+See lots of details at \url{https://github.com/broadinstitute/cromwell}.
 }
 

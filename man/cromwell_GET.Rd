@@ -11,9 +11,14 @@ cromwell_GET(path, query = NULL, ...)
 
 \item{query}{Any query terms as a named character vector}
 
-\item{...}{passed directly to httr `POST` (for including `timeouts`, `handles`, etc.)}
+\item{...}{passed directly to httr `GET` (for including `timeouts`, `handles`, etc.)}
 }
 \description{
-See the docmentation at \href{https://github.com/broadinstitute/cromwell#rest-api}{the cromwell github site} for details. Generally, this is not meant to be called by the end user. Rather, use the endpoint-specific functions. See \code{\link{cromwell_base}} for details of setting the base URL and port.
+See the docmentation at
+\href{https://github.com/broadinstitute/cromwell#rest-api}{the
+cromwell github site} for details. Generally, this is not meant to
+be called by the end user. Rather, use the endpoint-specific
+functions. See \code{\link{cromwellBase}} for details of setting
+the base URL and port.
 }
 

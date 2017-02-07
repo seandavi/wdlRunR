@@ -13,9 +13,12 @@ cromwellBackends(...)
 a list that includes backend details
 }
 \description{
-List available backends for a cromwell endpoint
+This endpoint returns a list of the backends supported by the server as well as the default backend.
 }
 \examples{
 #cromwellBackends()
+}
+\references{
+\url{https://github.com/broadinstitute/cromwell#get-apiworkflowsversionbackends}
 }
 

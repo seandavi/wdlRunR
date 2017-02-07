@@ -2,22 +2,39 @@
 % Please edit documentation in R/api.R
 \name{cromwellLogs}
 \alias{cromwellLogs}
-\title{Get output paths associated with one or more workflow ids}
+\title{Get log paths associated with one or more workflow ids}
 \usage{
-cromwellLogs(id, ...)
+cromwellLogs(ids, ...)
 }
 \arguments{
-\item{id}{a cromwell job id}
+\item{ids}{a character vector of Cromwell ids. See \code{\link{cromwellQuery}} for
+details of how to query Cromwell for available ids.}
 
 \item{...}{passed directly to httr `POST` (for including `timeouts`, `handles`, etc.)}
 }
 \value{
-a list of logfile lists
+a list of logfile lists. There will be one list item for each id. Each of
+these list items will contain another list with log outputs from each workflow step
+in the submitted workflow.
 }
 \description{
-Get output paths associated with one or more workflow ids
+This will return paths to the standard out and standard error files
+that were generated during the execution of all calls in a
+workflow.  A call has one or more standard out and standard error
+logs, depending on if the call was scattered or not. In the latter
+case, one log is provided for each instance of the call that has
+been run.
 }
 \examples{
-#cromwellLogs(id)
+\dontrun{
+res = cromwellQuery(terms=c(status='Succeeded',name='taskName'))
+head(res)
+loglist = cromwellLogs(res$id)
+str(loglist,list.len=5)
+}
+
+}
+\references{
+\url{https://github.com/broadinstitute/cromwell#get-apiworkflowsversionidlogs}
 }
 

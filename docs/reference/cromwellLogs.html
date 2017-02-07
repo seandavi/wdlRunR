@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Get output paths associated with one or more workflow ids — cromwellLogs • cRomwell</title>
+<title>Get log paths associated with one or more workflow ids — cromwellLogs • cRomwell</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -69,26 +69,33 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Get output paths associated with one or more workflow ids</h1>
+    <h1>Get log paths associated with one or more workflow ids</h1>
     </div>
 
     
-    <p>Get output paths associated with one or more workflow ids</p>
+    <p>Get log paths associated with one or more workflow ids</p>
     
 
-    <pre><span class='fu'>cromwellLogs</span>(<span class='no'>id</span>, <span class='no'>...</span>)</pre>
+    <pre><span class='fu'>cromwellLogs</span>(<span class='no'>ids</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <dl class="dl-horizontal">
-      <dt>id</dt>
-      <dd>a cromwell job id</dd>
+      <dt>ids</dt>
+      <dd>a character vector of Cromwell ids. See <code><a href='cromwellQuery.html'>cromwellQuery</a></code> for
+details of how to query Cromwell for available ids.</dd>
       <dt>...</dt>
       <dd>passed directly to httr `POST` (for including `timeouts`, `handles`, etc.)</dd>
     </dl>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>a list of logfile lists</p>
+    <p>a list of logfile lists. There will be one list item for each id. Each of
+these list items will contain another list with log outputs from each workflow step
+in the submitted workflow.</p>
+    
+    <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
+
+    <p><a href = 'https://github.com/broadinstitute/cromwell#get-apiworkflowsversionidoutputs'>https://github.com/broadinstitute/cromwell#get-apiworkflowsversionidoutputs</a></p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
@@ -100,6 +107,8 @@
       <li><a href="#arguments">Arguments</a></li>
       
       <li><a href="#value">Value</a></li>
+
+      <li><a href="#references">References</a></li>
       
       <li><a href="#examples">Examples</a></li>
     </ul>

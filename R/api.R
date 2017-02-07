@@ -2,46 +2,56 @@
 #'
 #' The Cromwell server presents a RESTFul API. The base URL is of the form:
 #' `http://EXAMPLE.COM:PORT`. The current approach to changing that
-#' url is to set an option, `cromwell_base` to a valid URL (without trailing slash).
+#' url is to set an option, `cromwellBase` to a valid URL (without trailing slash).
 #' This URL will then be used throughout the `cRomwell` package.  If no option is set,
 #' the server is assumed to be running at `http://localhost:8000`.
 #'
-#' @export
 #' @examples
-#' cromwell_base()
+#' cromwellBase()
 #'
 #' # set a bogus host
-#' options('cromwell_base' = 'http://example.com:8111')
-#' cromwell_base()
+#' options('cromwellBase' = 'http://example.com:8111')
+#' cromwellBase()
 #'
 #' # and set back to NULL to get the default behavior
-#' options('cromwell_base' = NULL)
-#' cromwell_base()
-cromwell_base <- function() {
-    base_url = getOption('cromwell_base', default="http://localhost:8000")
+#' options('cromwellBase' = NULL)
+#' cromwellBase()
+#'
+#' @export
+cromwellBase <- function() {
+    base_url = getOption('cromwellBase', default="http://localhost:8000")
     return(base_url)
 }
 
 #' Perform a GET request to cromwell server
 #'
-#' See the docmentation at \href{https://github.com/broadinstitute/cromwell#rest-api}{the cromwell github site} for details. Generally, this is not meant to be called by the end user. Rather, use the endpoint-specific functions. See \code{\link{cromwell_base}} for details of setting the base URL and port.
+#' See the docmentation at
+#' \href{https://github.com/broadinstitute/cromwell#rest-api}{the
+#' cromwell github site} for details. Generally, this is not meant to
+#' be called by the end user. Rather, use the endpoint-specific
+#' functions. See \code{\link{cromwellBase}} for details of setting
+#' the base URL and port.
 #'
 #' @param path The path part of the URL
 #' @param query Any query terms as a named character vector
-#' @param ... passed directly to httr `POST` (for including `timeouts`, `handles`, etc.)
+#' @param ... passed directly to httr `GET` (for including `timeouts`, `handles`, etc.)
 #'
 #' @importFrom httr modify_url
 #' @importFrom httr GET
 #'
 cromwell_GET <- function(path,query=NULL,...) {
-    url <- modify_url(cromwell_base(), path = path, query = query)
+    url <- modify_url(cromwellBase(), path = path, query = query)
     resp <- GET(url,...)
     return(.cromwell_process_response(resp))
 }
 
 #' Perform a POST request to cromwell server
 #'
-#' See the docmentation at \href{https://github.com/broadinstitute/cromwell#rest-api}{the cromwell github site} for details. Generally, this is not meant to be called by the end user. Rather, use the endpoint-specific functions.
+#' See the docmentation at
+#' \href{https://github.com/broadinstitute/cromwell#rest-api}{the
+#' cromwell github site} for details. Generally, this is not meant to
+#' be called by the end user. Rather, use the endpoint-specific
+#' functions.
 #'
 #' @param path The path part of the URL
 #' @param body A list that will become the multipart form that is passed as the request body
@@ -53,7 +63,7 @@ cromwell_GET <- function(path,query=NULL,...) {
 #' @seealso \code{\link{cromwellBatch}}
 #'
 cromwell_POST = function(path,body,...) {
-    url = modify_url(cromwell_base(), path = path)
+    url = modify_url(cromwellBase(), path = path)
     resp = POST(url, body = body, ...)
     return(.cromwell_process_response(resp))
 }
@@ -96,10 +106,6 @@ cromwell_POST = function(path,body,...) {
 
 #' Get the info about cromwell workflows
 #'
-#' @param terms terms about the workflow
-#' @param ... passed directly to httr `GET` (for including `timeouts`, `handles`, etc.)
-#'
-#' @details
 #' Each of the following terms can be specified one or more times. Simply create a named list
 #' or named character vector.
 #' \describe{
@@ -112,13 +118,20 @@ cromwell_POST = function(path,body,...) {
 #'   \item{pagesize}{if paging is used, how many records per page}
 #' }
 #'
+#' @param terms terms about the workflow
+#' @param ... passed directly to httr `GET` (for including `timeouts`, `handles`, etc.)
+#'
 #' @return a data.frame of query results
 #'
 #' @importFrom httr GET
 #' @importFrom plyr rbind.fill
 #'
 #' @examples
-#' #cromwellQuery(terms=c(status='Succeeded',name='taskName'))
+#' \dontrun{
+#' res = cromwellQuery(terms=c(status='Succeeded',name='taskName'))
+#' head(res)
+#' }
+#' 
 #' @export
 cromwellQuery = function(terms=NULL, ...) {
     path = 'api/workflows/v1/query'
@@ -143,25 +156,49 @@ cromwellQuery = function(terms=NULL, ...) {
 
 #' Get metadata associated with one or more workflow ids
 #'
-#' @param id A cromwell id as a string
+#' This endpoint returns a superset of the data from
+#' #get-workflowsversionidlogs in essentially the same format
+#' (i.e. shards are accounted for by an array of maps, in the same
+#' order as the shards). In addition to shards, every attempt that was
+#' made for this call will have its own object as well, in the same
+#' order as the attempts. Workflow metadata includes submission,
+#' start, and end datetimes, as well as status, inputs and
+#' outputs. Call-level metadata includes inputs, outputs, start and
+#' end datetime, backend-specific job id, return code, stdout and
+#' stderr. Date formats are ISO with milliseconds.
+#' 
+#' @param ids A cromwell id as a string
 #' @param ... passed directly to httr `GET` (for including `timeouts`, `handles`, etc.)
 #'
+#' @references \url{https://github.com/broadinstitute/cromwell#get-apiworkflowsversionidmetadata}
+#' 
 #' @return a list of metadata lists
 #'
 #' @importFrom httr GET
 #'
 #' @examples
-#' #cromwellMetadata(ids='INSERT_HASH_HERE')
+#' \dontrun{
+#' res = cromwellQuery(terms=c(status='Succeeded',name='taskName'))
+#' head(res)
+#' metalist = cromwellMetadata(res$id)
+#' str(metalist,list.len=5)
+#' }
+#' 
 #' @export
-cromwellMetadata = function(id, ...) {
-    path=sprintf('api/workflows/v1/%s/metadata',id)
-    resp = cromwell_GET(path = path, ...)
-
-    x = resp$content
-    attr(x,'when') = Sys.time()
-    attr(x,'path') = path
-    class(x) = c('cromwell_metadata','cromwell_api')
-    x
+cromwellMetadata = function(ids, ...) {
+    retlist = lapply(ids,function(id) {
+        path=sprintf('api/workflows/v1/%s/metadata',id)
+        resp = cromwell_GET(path = path)
+        ret = resp$content
+        attr(ret,'path') = path
+        attr(ret,'when') = Sys.time()
+        class(ret) = c('cromwell_output','cromwell_api',class(ret))
+        ret
+    })
+    setNames(retlist,ids)
+    attr(retlist,'when') = Sys.time()
+    class(retlist) = c('cromwell_output_list','cromwell_api',class(retlist))
+    return(retlist)
 }
 
 #' Abort a cromwell job
@@ -180,48 +217,90 @@ cromwellAbort = function(id, ...) {
 
 #' Get output paths associated with one or more workflow ids
 #'
-#' @param id a cromwell job id
+#' 
+#' @param ids a character vector of Cromwell ids. See \code{\link{cromwellQuery}} for
+#'      details of how to query Cromwell for available ids.
 #' @param ... passed directly to httr `POST` (for including `timeouts`, `handles`, etc.)
 #'
-#' @return a list of output lists
+#' @return a list of output lists.
+#'
+#' @references \url{https://github.com/broadinstitute/cromwell#get-apiworkflowsversionidoutputs}
 #'
 #' @importFrom httr GET
-#'
+#' 
 #' @examples
-#' #cromwellOutputs(ids)
+#' \dontrun{
+#' res = cromwellQuery(terms=c(status='Succeeded',name='taskName'))
+#' head(res)
+#' outfilelist = cromwellOutputs(res$id)
+#' str(outfilelist,list.len=5)
+#' }
+#' 
 #' @export
-cromwellOutputs = function(id, ...) {
-    path = sprintf('api/workflows/v1/%s/outputs', id)
-    resp = cromwell_GET(path = path)
-    ret = resp$content
-    attr(ret,'path') = path
-    attr(ret,'when') = Sys.time()
-    class(ret) = c('cromwell_logs','cromwell_api',class(ret))
-    return(ret)
+cromwellOutputs = function(ids, ...) {
+    retlist = lapply(ids,function(id) {
+        path = sprintf('api/workflows/v1/%s/outputs', id)
+        resp = cromwell_GET(path = path)
+        ret = resp$content
+        attr(ret,'path') = path
+        attr(ret,'when') = Sys.time()
+        class(ret) = c('cromwell_output','cromwell_api',class(ret))
+        ret
+    })
+    retlist=setNames(retlist,ids)
+    attr(retlist,'when') = Sys.time()
+    class(retlist) = c('cromwell_output_list','cromwell_api',class(retlist))
+    return(retlist)
 }
 
 
 
-#' Get output paths associated with one or more workflow ids
+#' Get log paths associated with one or more workflow ids
 #'
-#' @param id a cromwell job id
+#' This will return paths to the standard out and standard error files
+#' that were generated during the execution of all calls in a
+#' workflow.  A call has one or more standard out and standard error
+#' logs, depending on if the call was scattered or not. In the latter
+#' case, one log is provided for each instance of the call that has
+#' been run.
+#'
+#' 
+#' @param ids a character vector of Cromwell ids. See \code{\link{cromwellQuery}} for
+#'      details of how to query Cromwell for available ids.
 #' @param ... passed directly to httr `POST` (for including `timeouts`, `handles`, etc.)
 #'
-#' @return a list of logfile lists
+#' @return a list of logfile lists. There will be one list item for each id. Each of
+#' these list items will contain another list with log outputs from each workflow step
+#' in the submitted workflow.
 #'
+#' 
 #' @importFrom httr GET
 #'
+#' @references \url{https://github.com/broadinstitute/cromwell#get-apiworkflowsversionidlogs}
+#' 
 #' @examples
-#' #cromwellLogs(id)
+#' \dontrun{
+#' res = cromwellQuery(terms=c(status='Succeeded',name='taskName'))
+#' head(res)
+#' loglist = cromwellLogs(res$id)
+#' str(loglist,list.len=5)
+#' }
+#' 
 #' @export
-cromwellLogs = function(id, ...) {
-    path = sprintf('api/workflows/v1/%s/logs', id)
-    resp = cromwell_GET(path = path)
-    ret = resp$content$calls
-    attr(ret,'path') = path
-    attr(ret,'when') = Sys.time()
-    class(ret) = c('cromwell_api',class(ret))
-    return(ret)
+cromwellLogs = function(ids, ...) {
+    retlist = lapply(ids,function(id) {
+        path = sprintf('api/workflows/v1/%s/logs', id)
+        resp = cromwell_GET(path = path)
+        ret = resp$content$calls
+        attr(ret,'path') = path
+        attr(ret,'when') = Sys.time()
+        class(ret) = c('cromwell_log','cromwell_api',class(ret))
+        ret
+    })
+    setNames(retlist,ids)
+    attr(retlist,'when') = Sys.time()
+    class(retlist) = c('cromwell_log_list','cromwell_api',class(retlist))
+    return(retlist)
 }
 
 
@@ -315,11 +394,15 @@ cromwellSingle = function(wdlSource,
 
 #' List available backends for a cromwell endpoint
 #'
+#' This endpoint returns a list of the backends supported by the server as well as the default backend.
+#'
 #' @param ... passed directly to httr `GET` (for including `timeouts`, `handles`, etc.)
 #'
 #' @return a list that includes backend details
 #'
 #' @importFrom httr GET
+#'
+#' @references \url{https://github.com/broadinstitute/cromwell#get-apiworkflowsversionbackends}
 #'
 #' @examples
 #' #cromwellBackends()
@@ -336,12 +419,16 @@ cromwellBackends = function(...) {
 
 #' Get current statistics for cromwell endpoint
 #'
+#' This endpoint returns some basic statistics on the current state of the engine. At the moment that includes the number of running workflows and the number of active jobs.
+#'
 #' @param ... passed directly to httr `GET` (for including `timeouts`, `handles`, etc.)
 #'
 #' @return a list containing engine stats
 #'
 #' @importFrom httr GET
 #'
+#' @references \url{https://github.com/broadinstitute/cromwell#get-apiengineversionstats}
+#' 
 #' @examples
 #' #cromwellStats()
 #' @export
@@ -357,11 +444,16 @@ cromwellStats = function(...) {
 
 
 
-#' Get the cromwell JAR file from github
+#' Utility to fetch the cromwell JAR file 
 #'
-#' This function simply downloads the cromwell JAR file
+#' The purpose of this R package is to interact with the
+#' Broad Cromwell execution engine.
+#' The Cromwell server is contained in a JAVA JAR file. This
+#' function simply downloads the cromwell JAR file
 #' and puts it in the destfile location. The JAR file is picked up from
 #' \url{https://github.com/broadinstitute/cromwell/releases}.
+#'
+#' 
 #'
 #' @param cromwell_version string representing the version number
 #' @param destfile string The full path to the cromwell jar file location on the local system
@@ -369,6 +461,8 @@ cromwellStats = function(...) {
 #' @return destfile location [invisibly]
 #'
 #' @importFrom httr GET
+#'
+#' @seealso See lots of details at \url{https://github.com/broadinstitute/cromwell}.
 #' 
 #' @examples
 #' version = '24'
@@ -378,7 +472,7 @@ cromwellStats = function(...) {
 #' unlink(fp)
 #'
 #' @export
-getCromwellJar = function(cromwell_version="23",destfile = 'cromwell.jar') {
+getCromwellJar = function(cromwell_version,destfile = 'cromwell.jar') {
     fname = destfile
     httr::GET(sprintf('https://github.com/broadinstitute/cromwell/releases/download/%s/cromwell-%s.jar',
                       cromwell_version,cromwell_version),write_disk(fname,overwrite = TRUE))

@@ -4,10 +4,10 @@
 \alias{cromwellMetadata}
 \title{Get metadata associated with one or more workflow ids}
 \usage{
-cromwellMetadata(id, ...)
+cromwellMetadata(ids, ...)
 }
 \arguments{
-\item{id}{A cromwell id as a string}
+\item{ids}{A cromwell id as a string}
 
 \item{...}{passed directly to httr `GET` (for including `timeouts`, `handles`, etc.)}
 }
@@ -15,9 +15,27 @@ cromwellMetadata(id, ...)
 a list of metadata lists
 }
 \description{
-Get metadata associated with one or more workflow ids
+This endpoint returns a superset of the data from
+#get-workflowsversionidlogs in essentially the same format
+(i.e. shards are accounted for by an array of maps, in the same
+order as the shards). In addition to shards, every attempt that was
+made for this call will have its own object as well, in the same
+order as the attempts. Workflow metadata includes submission,
+start, and end datetimes, as well as status, inputs and
+outputs. Call-level metadata includes inputs, outputs, start and
+end datetime, backend-specific job id, return code, stdout and
+stderr. Date formats are ISO with milliseconds.
 }
 \examples{
-#cromwellMetadata(ids='INSERT_HASH_HERE')
+\dontrun{
+res = cromwellQuery(terms=c(status='Succeeded',name='taskName'))
+head(res)
+metalist = cromwellMetadata(res$id)
+str(metalist,list.len=5)
+}
+
+}
+\references{
+\url{https://github.com/broadinstitute/cromwell#get-apiworkflowsversionidmetadata}
 }
 

@@ -13,9 +13,12 @@ cromwellStats(...)
 a list containing engine stats
 }
 \description{
-Get current statistics for cromwell endpoint
+This endpoint returns some basic statistics on the current state of the engine. At the moment that includes the number of running workflows and the number of active jobs.
 }
 \examples{
 #cromwellStats()
+}
+\references{
+\url{https://github.com/broadinstitute/cromwell#get-apiengineversionstats}
 }
 

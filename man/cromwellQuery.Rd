@@ -15,9 +15,6 @@ cromwellQuery(terms = NULL, ...)
 a data.frame of query results
 }
 \description{
-Get the info about cromwell workflows
-}
-\details{
 Each of the following terms can be specified one or more times. Simply create a named list
 or named character vector.
 \describe{
@@ -31,6 +28,10 @@ or named character vector.
 }
 }
 \examples{
-#cromwellQuery(terms=c(status='Succeeded',name='taskName'))
+\dontrun{
+res = cromwellQuery(terms=c(status='Succeeded',name='taskName'))
+head(res)
+}
+
 }
 

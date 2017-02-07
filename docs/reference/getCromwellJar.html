@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Get the cromwell JAR file from github — getCromwellJar • cRomwell</title>
+<title>Utility to fetch the cromwell JAR file — getCromwellJar • cRomwell</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -69,15 +69,19 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Get the cromwell JAR file from github</h1>
+    <h1>Utility to fetch the cromwell JAR file</h1>
     </div>
 
     
-    <p>This function simply downloads the cromwell JAR file
-and puts it in the destfile location</p>
+    <p>The purpose of this R package is to interact with the
+Broad Cromwell execution engine.
+The Cromwell server is contained in a JAVA JAR file. This
+function simply downloads the cromwell JAR file
+and puts it in the destfile location. The JAR file is picked up from
+<a href = 'https://github.com/broadinstitute/cromwell/releases'>https://github.com/broadinstitute/cromwell/releases</a>.</p>
     
 
-    <pre><span class='fu'>getCromwellJar</span>(<span class='kw'>cromwell_version</span> <span class='kw'>=</span> <span class='st'>"23"</span>, <span class='kw'>destfile</span> <span class='kw'>=</span> <span class='st'>"cromwell.jar"</span>)</pre>
+    <pre><span class='fu'>getCromwellJar</span>(<span class='no'>cromwell_version</span>, <span class='kw'>destfile</span> <span class='kw'>=</span> <span class='st'>"cromwell.jar"</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <dl class="dl-horizontal">
@@ -91,10 +95,16 @@ and puts it in the destfile location</p>
 
     <p>destfile location [invisibly]</p>
     
+    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
+
+    <p>See lots of details at <a href = 'https://github.com/broadinstitute/cromwell'>https://github.com/broadinstitute/cromwell</a>.</p>
+    
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'>getCromwellJar</span>(<span class='kw'>destfile</span><span class='kw'>=</span><span class='st'>'/tmp/cromwell.jar'</span>)
-<span class='fu'>unlink</span>(<span class='st'>'/tmp/cromwell.jar'</span>)</div></pre>
+    <pre class="examples"><div class='input'><span class='no'>version</span> <span class='kw'>=</span> <span class='st'>'24'</span>
+<span class='no'>tmpfile</span> <span class='kw'>=</span> <span class='fu'>file.path</span>(<span class='fu'>tempdir</span>(),<span class='st'>'cromwell.jar'</span>)
+<span class='no'>fp</span> <span class='kw'>=</span> <span class='fu'>getCromwellJar</span>(<span class='kw'>cromwell_version</span> <span class='kw'>=</span> <span class='no'>version</span>, <span class='kw'>destfile</span> <span class='kw'>=</span> <span class='no'>tmpfile</span>)
+<span class='no'>fp</span></div><div class='output co'>#&gt; [1] &quot;/var/folders/21/b_rp6qyj1_b1j5cp8qby0tnr0000gn/T//RtmpAOIao1/cromwell.jar&quot;</div><div class='input'><span class='fu'>unlink</span>(<span class='no'>fp</span>)</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
@@ -102,6 +112,8 @@ and puts it in the destfile location</p>
       <li><a href="#arguments">Arguments</a></li>
       
       <li><a href="#value">Value</a></li>
+
+      <li><a href="#see-also">See also</a></li>
       
       <li><a href="#examples">Examples</a></li>
     </ul>

@@ -4,20 +4,30 @@
 \alias{cromwellOutputs}
 \title{Get output paths associated with one or more workflow ids}
 \usage{
-cromwellOutputs(id, ...)
+cromwellOutputs(ids, ...)
 }
 \arguments{
-\item{id}{a cromwell job id}
+\item{ids}{a character vector of Cromwell ids. See \code{\link{cromwellQuery}} for
+details of how to query Cromwell for available ids.}
 
 \item{...}{passed directly to httr `POST` (for including `timeouts`, `handles`, etc.)}
 }
 \value{
-a list of output lists
+a list of output lists.
 }
 \description{
 Get output paths associated with one or more workflow ids
 }
 \examples{
-#cromwellOutputs(ids)
+\dontrun{
+res = cromwellQuery(terms=c(status='Succeeded',name='taskName'))
+head(res)
+outfilelist = cromwellOutputs(res$id)
+str(outfilelist,list.len=5)
+}
+
+}
+\references{
+\url{https://github.com/broadinstitute/cromwell#get-apiworkflowsversionidoutputs}
 }
 

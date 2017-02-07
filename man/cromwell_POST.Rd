@@ -14,7 +14,11 @@ cromwell_POST(path, body, ...)
 \item{...}{passed directly to httr `POST` (for including `timeouts`, `handles`, etc.)}
 }
 \description{
-See the docmentation at \href{https://github.com/broadinstitute/cromwell#rest-api}{the cromwell github site} for details. Generally, this is not meant to be called by the end user. Rather, use the endpoint-specific functions.
+See the docmentation at
+\href{https://github.com/broadinstitute/cromwell#rest-api}{the
+cromwell github site} for details. Generally, this is not meant to
+be called by the end user. Rather, use the endpoint-specific
+functions.
 }
 \seealso{
 \code{\link{cromwellBatch}}
