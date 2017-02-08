@@ -54,17 +54,17 @@ wdlInputs = data.frame(test.hello.name=randomStrings)
 test_that('cromwellBatch',{
     res = cromwellBatch(wdlSource = hello_wdl,workflowInputs=wdlInputs)
     # and we do this to allow the jobs to get running
-    Sys.sleep(5)
     expect_is(res,'cromwell_api')
     expect_named(res,c('content','response'))
     expect_length(res$content,10)
 })
 
+Sys.sleep(20)
+
 test_that('cromwellQuery',{
     res = cromwellQuery()
     expect_equal(ncol(res),6)
     expect_gte(nrow(res),10)
-    expect_equal(unique(as.character(res$name)),'test')
 })
 
 
