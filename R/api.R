@@ -469,12 +469,12 @@ cromwellStats = function(...) {
 #' @examples
 #' version = '24'
 #' tmpfile = file.path(tempdir(),'cromwell.jar')
-#' fp = getCromwellJar(cromwell_version = version, destfile = tmpfile)
+#' fp = getCromwellJar(cromwell_version = version)
 #' fp
 #' unlink(fp)
 #'
 #' @export
-getCromwellJar = function(cromwell_version,destfile = 'cromwell.jar') {
+getCromwellJar = function(cromwell_version,destfile = file.path(tempdir(),'cromwell.jar')) {
     fname = destfile
     httr::GET(sprintf('https://github.com/broadinstitute/cromwell/releases/download/%s/cromwell-%s.jar',
                       cromwell_version,cromwell_version),write_disk(fname,overwrite = TRUE))
