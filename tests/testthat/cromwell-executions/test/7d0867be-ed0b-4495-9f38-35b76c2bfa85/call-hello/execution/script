@@ -1,0 +1,11 @@
+#!/bin/sh
+(
+cd /Users/sdavis2/Documents/git/cRomwell/tests/testthat/cromwell-executions/test/7d0867be-ed0b-4495-9f38-35b76c2bfa85/call-hello/execution
+echo 'Hello HAPBZMTLJI!'
+)
+echo $? > /Users/sdavis2/Documents/git/cRomwell/tests/testthat/cromwell-executions/test/7d0867be-ed0b-4495-9f38-35b76c2bfa85/call-hello/execution/rc.tmp
+(
+cd /Users/sdavis2/Documents/git/cRomwell/tests/testthat/cromwell-executions/test/7d0867be-ed0b-4495-9f38-35b76c2bfa85/call-hello/execution
+
+)
+mv /Users/sdavis2/Documents/git/cRomwell/tests/testthat/cromwell-executions/test/7d0867be-ed0b-4495-9f38-35b76c2bfa85/call-hello/execution/rc.tmp /Users/sdavis2/Documents/git/cRomwell/tests/testthat/cromwell-executions/test/7d0867be-ed0b-4495-9f38-35b76c2bfa85/call-hello/execution/rc

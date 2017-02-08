@@ -1,0 +1,11 @@
+#!/bin/sh
+(
+cd /Users/sdavis2/Documents/git/cRomwell/tests/testthat/cromwell-executions/test/42aea94a-65d9-46a1-a7dd-c3f9aef5f550/call-hello/execution
+echo 'Hello WXRVADEQTI!'
+)
+echo $? > /Users/sdavis2/Documents/git/cRomwell/tests/testthat/cromwell-executions/test/42aea94a-65d9-46a1-a7dd-c3f9aef5f550/call-hello/execution/rc.tmp
+(
+cd /Users/sdavis2/Documents/git/cRomwell/tests/testthat/cromwell-executions/test/42aea94a-65d9-46a1-a7dd-c3f9aef5f550/call-hello/execution
+
+)
+mv /Users/sdavis2/Documents/git/cRomwell/tests/testthat/cromwell-executions/test/42aea94a-65d9-46a1-a7dd-c3f9aef5f550/call-hello/execution/rc.tmp /Users/sdavis2/Documents/git/cRomwell/tests/testthat/cromwell-executions/test/42aea94a-65d9-46a1-a7dd-c3f9aef5f550/call-hello/execution/rc

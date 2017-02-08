@@ -32,6 +32,41 @@ test_that("cromwellBase",{
     expect_equal(cromwellBase(),'http://localhost:8000')
 })
 
+hello_wdl = "task hello {
+  String name
+
+  command {
+    echo 'Hello ${name}!'
+  }
+  output {
+    File response = stdout()
+  }
+}
+
+workflow test {
+  call hello
+}"
+
+options(cromwellBase = 'http://localhost:8000')
+randomStrings = sapply(1:10,function(r) {paste(sample(LETTERS,10),collapse="")})
+wdlInputs = data.frame(test.hello.name=randomStrings)
+
+test_that('cromwellBatch',{
+    res = cromwellBatch(wdlSource = hello_wdl,workflowInputs=wdlInputs)
+    # and we do this to allow the jobs to get running
+    Sys.sleep(5)
+    expect_is(res,'cromwell_api')
+    expect_named(res,c('content','response'))
+    expect_length(res$content,10)
+})
+
+test_that('cromwellQuery',{
+    res = cromwellQuery()
+    expect_equal(ncol(res),6)
+    expect_gte(nrow(res),10)
+    expect_equal(unique(as.character(res$name)),'test')
+})
+
 
 # cleanup
 system('pgrep -f cromwell | xargs -I {} kill -9 {}')
