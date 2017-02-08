@@ -16,7 +16,8 @@ Suggests:
     BiocStyle,
     knitr,
     rmarkdown,
-    babynames
+    babynames,
+    testthat
 VignetteBuilder: knitr
 License: MIT
 BiocViews:
