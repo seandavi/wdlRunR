@@ -4,7 +4,8 @@
 \alias{getCromwellJar}
 \title{Utility to fetch the cromwell JAR file}
 \usage{
-getCromwellJar(cromwell_version, destfile = "cromwell.jar")
+getCromwellJar(cromwell_version, destfile = file.path(tempdir(),
+  "cromwell.jar"))
 }
 \arguments{
 \item{cromwell_version}{string representing the version number}
@@ -25,7 +26,7 @@ and puts it in the destfile location. The JAR file is picked up from
 \examples{
 version = '24'
 tmpfile = file.path(tempdir(),'cromwell.jar')
-fp = getCromwellJar(cromwell_version = version, destfile = tmpfile)
+fp = getCromwellJar(cromwell_version = version)
 fp
 unlink(fp)
 
