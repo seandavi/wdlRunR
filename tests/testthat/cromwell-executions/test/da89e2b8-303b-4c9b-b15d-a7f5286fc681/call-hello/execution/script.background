@@ -1,9 +1,0 @@
-#!/bin/bash
-'/bin/bash' '/Users/sdavis2/Documents/git/cRomwell/tests/testthat/cromwell-executions/test/da89e2b8-303b-4c9b-b15d-a7f5286fc681/call-hello/execution/script.submit' \
-  > /Users/sdavis2/Documents/git/cRomwell/tests/testthat/cromwell-executions/test/da89e2b8-303b-4c9b-b15d-a7f5286fc681/call-hello/execution/stdout \
-  2> /Users/sdavis2/Documents/git/cRomwell/tests/testthat/cromwell-executions/test/da89e2b8-303b-4c9b-b15d-a7f5286fc681/call-hello/execution/stderr \
-  < /dev/null \
-  || echo -1 \
-  > /Users/sdavis2/Documents/git/cRomwell/tests/testthat/cromwell-executions/test/da89e2b8-303b-4c9b-b15d-a7f5286fc681/call-hello/execution/rc \
-  &
-echo $!
