@@ -6,11 +6,12 @@ Authors@R: person("Sean", "Davis", email = "seandavi@gmail.com", role = c("aut",
 Description: Implements an R client for the cromwell workflow manager
   from the Broad Institute
 Depends:
-    R (>= 3.3.0)
+    R (>= 3.4.0)
 Imports:
     httr,
     plyr,
-    jsonlite
+    jsonlite,
+    stats
 Suggests:
     BiocStyle,
     knitr,
@@ -18,6 +19,10 @@ Suggests:
     babynames
 VignetteBuilder: knitr
 License: MIT
+BiocViews:
+    ThirdPartyClient,
+    Sequencing,
+    BiomedicalInformatics
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 5.0.1
