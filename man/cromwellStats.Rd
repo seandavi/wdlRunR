@@ -21,4 +21,3 @@ This endpoint returns some basic statistics on the current state of the engine. 
 \references{
 \url{https://github.com/broadinstitute/cromwell#get-apiengineversionstats}
 }
-

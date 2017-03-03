@@ -23,4 +23,3 @@ functions.
 \seealso{
 \code{\link{cromwellBatch}}
 }
-

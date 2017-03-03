@@ -21,4 +21,3 @@ This endpoint returns a list of the backends supported by the server as well as 
 \references{
 \url{https://github.com/broadinstitute/cromwell#get-apiworkflowsversionbackends}
 }
-

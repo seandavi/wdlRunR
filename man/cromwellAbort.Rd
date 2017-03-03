@@ -17,4 +17,3 @@ Abort a cromwell job
 \examples{
 #cromwellAbord('ID')
 }
-

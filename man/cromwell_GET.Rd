@@ -21,4 +21,3 @@ be called by the end user. Rather, use the endpoint-specific
 functions. See \code{\link{cromwellBase}} for details of setting
 the base URL and port.
 }
-

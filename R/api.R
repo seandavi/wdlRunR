@@ -445,6 +445,30 @@ cromwellStats = function(...) {
 }
 
 
+#' Get version of the cromwell server
+#'
+#' @param ... passed directly to httr `GET` (for including `timeouts`, `handles`, etc.)
+#'
+#' @return character(1) with the cromwell server version
+#'
+#' @importFrom httr GET
+#'
+#' @references \url{https://github.com/broadinstitute/cromwell#get-version}
+#' 
+#' @examples
+#' #cromwellVersion()
+#' @export
+cromwellVersion = function(...) {
+    path = 'api/engine/v1/version'
+    resp = cromwell_GET(path = path)
+    ret = resp$content$cromwell
+    attr(ret,'path') = path
+    attr(ret,'when') = Sys.time()
+    class(ret) = c('cromwell_version','cromwell_api',class(ret))
+    return(ret)
+}
+
+
 
 #' Utility to fetch the cromwell JAR file 
 #'
@@ -480,3 +504,43 @@ getCromwellJar = function(cromwell_version,destfile = file.path(tempdir(),'cromw
                       cromwell_version,cromwell_version),write_disk(fname,overwrite = TRUE))
     invisible(fname)
 }
+
+
+#' Utility to fetch the wdltool JAR file 
+#'
+#' This function simply downloads the wdltool JAR file and puts it in
+#' the destfile location. The JAR file is picked up from
+#' \url{https://github.com/broadinstitute/wdltool/releases}.
+#'
+#' @param wdltool_version string representing the version number
+#' @param destfile string The full path to the wdltool jar file
+#'     location on the local system
+#'
+#' @return destfile location [invisibly]
+#'
+#' @importFrom httr GET
+#'
+#' @seealso See lots of details at \url{https://github.com/broadinstitute/wdltool}.
+#' 
+#' @examples
+#' version = '0.8'
+#' tmpfile = file.path(tempdir(),'wdltool.jar')
+#' fp = getWdltoolJar(wdltool_version = version)
+#' fp
+#' unlink(fp)
+#'
+#' @export
+getWdltoolJar = function(wdltool_version,
+                         destfile = 'wdltool.jar') {
+    fname = destfile
+    httr::GET(sprintf('https://github.com/broadinstitute/wdltool/releases/download/%s/wdltool-%s.jar',
+                      wdltool_version,
+                      wdltool_version),
+              write_disk(fname,overwrite = TRUE))
+    invisible(fname)
+}
+
+#' Run the wdltool from R
+#'
+#' @
+

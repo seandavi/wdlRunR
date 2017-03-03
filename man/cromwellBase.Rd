@@ -25,4 +25,3 @@ options('cromwellBase' = NULL)
 cromwellBase()
 
 }
-
