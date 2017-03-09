@@ -76,23 +76,33 @@
     <p>Get output paths associated with one or more workflow ids</p>
     
 
-    <pre><span class='fu'>cromwellOutputs</span>(<span class='no'>id</span>, <span class='no'>...</span>)</pre>
+    <pre><span class='fu'>cromwellOutputs</span>(<span class='no'>ids</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <dl class="dl-horizontal">
-      <dt>id</dt>
-      <dd>a cromwell job id</dd>
+      <dt>ids</dt>
+      <dd>a character vector of Cromwell ids. See <code><a href='cromwellQuery.html'>cromwellQuery</a></code> for
+details of how to query Cromwell for available ids.</dd>
       <dt>...</dt>
       <dd>passed directly to httr `POST` (for including `timeouts`, `handles`, etc.)</dd>
     </dl>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>a list of output lists</p>
+    <p>a list of output lists.</p>
+    
+    <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
+
+    <p><a href = 'https://github.com/broadinstitute/cromwell#get-apiworkflowsversionidoutputs'>https://github.com/broadinstitute/cromwell#get-apiworkflowsversionidoutputs</a></p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'>#cromwellOutputs(ids)</span></div></pre>
+    <pre class="examples"><div class='input'><span class='co'>## Not run: ------------------------------------</span>
+<span class='co'># res = cromwellQuery(terms=c(status='Succeeded',name='taskName'))</span>
+<span class='co'># head(res)</span>
+<span class='co'># outfilelist = cromwellOutputs(res$id)</span>
+<span class='co'># str(outfilelist,list.len=5)</span>
+<span class='co'>## ---------------------------------------------</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
@@ -100,6 +110,8 @@
       <li><a href="#arguments">Arguments</a></li>
       
       <li><a href="#value">Value</a></li>
+
+      <li><a href="#references">References</a></li>
       
       <li><a href="#examples">Examples</a></li>
     </ul>

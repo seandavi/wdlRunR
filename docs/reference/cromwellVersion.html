@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Get log paths associated with one or more workflow ids — cromwellLogs • cRomwell</title>
+<title>Get version of the cromwell server — cromwellVersion • cRomwell</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -69,47 +69,32 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Get log paths associated with one or more workflow ids</h1>
+    <h1>Get version of the cromwell server</h1>
     </div>
 
     
-    <p>This will return paths to the standard out and standard error files
-that were generated during the execution of all calls in a
-workflow.  A call has one or more standard out and standard error
-logs, depending on if the call was scattered or not. In the latter
-case, one log is provided for each instance of the call that has
-been run.</p>
+    <p>Get version of the cromwell server</p>
     
 
-    <pre><span class='fu'>cromwellLogs</span>(<span class='no'>ids</span>, <span class='no'>...</span>)</pre>
+    <pre><span class='fu'>cromwellVersion</span>(<span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <dl class="dl-horizontal">
-      <dt>ids</dt>
-      <dd>a character vector of Cromwell ids. See <code><a href='cromwellQuery.html'>cromwellQuery</a></code> for
-details of how to query Cromwell for available ids.</dd>
       <dt>...</dt>
-      <dd>passed directly to httr `POST` (for including `timeouts`, `handles`, etc.)</dd>
+      <dd>passed directly to httr `GET` (for including `timeouts`, `handles`, etc.)</dd>
     </dl>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>a list of logfile lists. There will be one list item for each id. Each of
-these list items will contain another list with log outputs from each workflow step
-in the submitted workflow.</p>
+    <p>character(1) with the cromwell server version</p>
     
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
-    <p><a href = 'https://github.com/broadinstitute/cromwell#get-apiworkflowsversionidlogs'>https://github.com/broadinstitute/cromwell#get-apiworkflowsversionidlogs</a></p>
+    <p><a href = 'https://github.com/broadinstitute/cromwell#get-version'>https://github.com/broadinstitute/cromwell#get-version</a></p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'>## Not run: ------------------------------------</span>
-<span class='co'># res = cromwellQuery(terms=c(status='Succeeded',name='taskName'))</span>
-<span class='co'># head(res)</span>
-<span class='co'># loglist = cromwellLogs(res$id)</span>
-<span class='co'># str(loglist,list.len=5)</span>
-<span class='co'>## ---------------------------------------------</span></div></pre>
+    <pre class="examples"><div class='input'><span class='co'>#cromwellVersion()</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

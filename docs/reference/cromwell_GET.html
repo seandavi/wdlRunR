@@ -73,7 +73,12 @@
     </div>
 
     
-    <p>See the docmentation at <a href = 'the cromwell github site'>https://github.com/broadinstitute/cromwell#rest-api</a> for details. Generally, this is not meant to be called by the end user. Rather, use the endpoint-specific functions. See <code><a href='cromwell_base.html'>cromwell_base</a></code> for details of setting the base URL and port.</p>
+    <p>See the docmentation at
+<a href = 'the
+cromwell github site'>https://github.com/broadinstitute/cromwell#rest-api</a> for details. Generally, this is not meant to
+be called by the end user. Rather, use the endpoint-specific
+functions. See <code><a href='cromwellBase.html'>cromwellBase</a></code> for details of setting
+the base URL and port.</p>
     
 
     <pre><span class='fu'>cromwell_GET</span>(<span class='no'>path</span>, <span class='kw'>query</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)</pre>
@@ -85,7 +90,7 @@
       <dt>query</dt>
       <dd>Any query terms as a named character vector</dd>
       <dt>...</dt>
-      <dd>passed directly to httr `POST` (for including `timeouts`, `handles`, etc.)</dd>
+      <dd>passed directly to httr `GET` (for including `timeouts`, `handles`, etc.)</dd>
     </dl>
     
 

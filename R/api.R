@@ -34,7 +34,8 @@ cromwellBase <- function() {
 #'
 #' @param path The path part of the URL
 #' @param query Any query terms as a named character vector
-#' @param ... passed directly to httr `GET` (for including `timeouts`, `handles`, etc.)
+#' @param ... passed directly to httr `GET` (for including `timeouts`,
+#'     `handles`, etc.)
 #'
 #' @importFrom httr modify_url
 #' @importFrom httr GET
@@ -119,7 +120,8 @@ cromwell_POST = function(path,body,...) {
 #' }
 #'
 #' @param terms terms about the workflow
-#' @param ... passed directly to httr `GET` (for including `timeouts`, `handles`, etc.)
+#' @param ... passed directly to httr `GET` (for including `timeouts`,
+#'     `handles`, etc.)
 #'
 #' @return a data.frame of query results
 #'
@@ -168,7 +170,8 @@ cromwellQuery = function(terms=NULL, ...) {
 #' stderr. Date formats are ISO with milliseconds.
 #' 
 #' @param ids A cromwell id as a string
-#' @param ... passed directly to httr `GET` (for including `timeouts`, `handles`, etc.)
+#' @param ... passed directly to httr `GET` (for including `timeouts`,
+#'     `handles`, etc.)
 #'
 #' @references \url{https://github.com/broadinstitute/cromwell#get-apiworkflowsversionidmetadata}
 #' 
@@ -205,7 +208,8 @@ cromwellMetadata = function(ids, ...) {
 #' Abort a cromwell job
 #'
 #' @param id A cromwell id as a string
-#' @param ... passed directly to httr `POST` (for including `timeouts`, `handles`, etc.)
+#' @param ... passed directly to httr `POST` (for including
+#'     `timeouts`, `handles`, etc.)
 #'
 #' @importFrom httr POST
 #'
@@ -219,10 +223,11 @@ cromwellAbort = function(id, ...) {
 #' Get output paths associated with one or more workflow ids
 #'
 #' 
-#' @param ids a character vector of Cromwell ids. See \code{\link{cromwellQuery}} for
-#'      details of how to query Cromwell for available ids.
-#' @param ... passed directly to httr `POST` (for including `timeouts`, `handles`, etc.)
-#'
+#' @param ids a character vector of Cromwell ids. See
+#'     \code{\link{cromwellQuery}} for details of how to query
+#'     Cromwell for available ids.
+#' @param ... passed directly to httr `POST` (for including
+#'     `timeouts`, `handles`, etc.)
 #' @return a list of output lists.
 #'
 #' @references \url{https://github.com/broadinstitute/cromwell#get-apiworkflowsversionidoutputs}
@@ -267,13 +272,15 @@ cromwellOutputs = function(ids, ...) {
 #' been run.
 #'
 #' 
-#' @param ids a character vector of Cromwell ids. See \code{\link{cromwellQuery}} for
-#'      details of how to query Cromwell for available ids.
-#' @param ... passed directly to httr `POST` (for including `timeouts`, `handles`, etc.)
-#'
-#' @return a list of logfile lists. There will be one list item for each id. Each of
-#' these list items will contain another list with log outputs from each workflow step
-#' in the submitted workflow.
+#' @param ids a character vector of Cromwell ids. See
+#'     \code{\link{cromwellQuery}} for details of how to query
+#'     Cromwell for available ids.
+#' @param ... passed directly to httr `POST` (for including
+#'     `timeouts`, `handles`, etc.)
+#' @return a list of logfile lists. There will be one list item for
+#'     each id. Each of these list items will contain another list
+#'     with log outputs from each workflow step in the submitted
+#'     workflow.
 #'
 #' @importFrom stats setNames
 #' @importFrom httr GET
@@ -308,22 +315,31 @@ cromwellLogs = function(ids, ...) {
 
 #' Submit a cromwell batch job
 #'
-#' This function submits a set of one or more inputs to cromwell. It is much more efficient
-#' than submitting a single job at a time.  See
-#' \href{https://github.com/broadinstitute/cromwell#post-apiworkflowsversionbatch}{the cromwell \code{batch} API documentation} for details.
+#' This function submits a set of one or more inputs to cromwell. It
+#' is much more efficient than submitting a single job at a time.  See
+#' \href{https://github.com/broadinstitute/cromwell#post-apiworkflowsversionbatch}{the
+#' cromwell \code{batch} API documentation} for details.
 #'
-#' @param wdlSource Represents the \href{https://software.broadinstitute.org/wdl/}{WDL}A string (character vector of length 1)
-#'   or an \code{\link[httr]{upload_file}} object. See details below.
-#' @param workflowInputs A \code{data.frame} that will be coerced to a json array or a JSON string (as a \code{character} vector of length 1),
-#'   or an \code{\link[httr]{upload_file}} object. See details below.
-#' @param workflowOptions A \code{list}, a JSON string (as a \code{character} vector of length 1,
-#'   or an \code{\link[httr]{upload_file}} object. See details below.
-#' @param timeout The number of seconds to wait for a response. Batch jobs can take
-#'   quite some time for cromwell to process, so this will typically need to be set
-#'   to a large value to allow for a completed response.
-#' @param ... passed directly to httr `POST` (for including `timeouts`, `handles`, etc.)
+#' @param wdlSource Represents the
+#'     \href{https://software.broadinstitute.org/wdl/}{WDL} A string
+#'     (character vector of length 1) or an
+#'     \code{\link[httr]{upload_file}} object. See details below.
+#' @param workflowInputs A \code{data.frame} that will be coerced to a
+#'     json array or a JSON string (as a \code{character} vector of
+#'     length 1), or an \code{\link[httr]{upload_file}} object. See
+#'     details below.
+#' @param workflowOptions A \code{list}, a JSON string (as a
+#'     \code{character} vector of length 1, or an
+#'     \code{\link[httr]{upload_file}} object. See details below.
+#' @param timeout The number of seconds to wait for a response. Batch
+#'     jobs can take quite some time for cromwell to process, so this
+#'     will typically need to be set to a large value to allow for a
+#'     completed response.
+#' @param ... passed directly to httr `POST` (for including
+#'     `timeouts`, `handles`, etc.)
 #'
-#' @return If a timeout does not occur (this is pretty common....), then a list that contains the submission status.
+#' @return If a timeout does not occur (this is pretty common....),
+#'     then a list that contains the submission status.
 #'
 #' @details TODO details
 #'
