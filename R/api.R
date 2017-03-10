@@ -119,7 +119,7 @@ cromwell_POST = function(path,body,...) {
 #'   \item{pagesize}{if paging is used, how many records per page}
 #' }
 #'
-#' @param terms terms about the workflow
+#' @param query terms about the workflow
 #' @param ... passed directly to httr `GET` (for including `timeouts`,
 #'     `handles`, etc.)
 #'
@@ -135,9 +135,9 @@ cromwell_POST = function(path,body,...) {
 #' }
 #' 
 #' @export
-cromwellQuery = function(terms=NULL, ...) {
+cromwellQuery = function(query=NULL, ...) {
     path = 'api/workflows/v1/query'
-    resp = cromwell_GET(path=path,query=terms)
+    resp = cromwell_GET(path=path,query=query,...)
 
     x = do.call(rbind.fill,lapply(resp$content$results,as.data.frame))
     if('start' %in% colnames(x))
@@ -148,7 +148,16 @@ cromwellQuery = function(terms=NULL, ...) {
         x$end = strptime(substr(as.character(x$end),1,19),format="%Y-%m-%dT%H:%M:%S",tz="UTC")
     else
         x$end = NA
-    x$duration = x$end-x$start
+    x$end = as.POSIXct(x$end,tz=Sys.timezone())
+    x$start = as.POSIXct(x$start,tz=Sys.timezone())
+    # deal with situation when no ends exist
+    # subtraction ends up "failing", so need
+    # to catch error
+    x$duration = tryCatch({x$end-x$start},
+                          error=function(e) "")
+    # Coerce to difftime so that column is always
+    # difftime, even when only NA
+    x$duration = as.difftime(x$duration)
     attr(x,'when') = Sys.time()
     attr(x,'path') = path
     class(x) = c('cromwell_query','cromwell_api','data.frame')
@@ -189,10 +198,10 @@ cromwellQuery = function(terms=NULL, ...) {
 #' }
 #' 
 #' @export
-cromwellMetadata = function(ids, ...) {
+cromwellMetadata = function(ids,query=NULL,...) {
     retlist = lapply(ids,function(id) {
         path=sprintf('api/workflows/v1/%s/metadata',id)
-        resp = cromwell_GET(path = path)
+        resp = cromwell_GET(path = path,query=query,...)
         ret = resp$content
         attr(ret,'path') = path
         attr(ret,'when') = Sys.time()
@@ -522,41 +531,4 @@ getCromwellJar = function(cromwell_version,destfile = file.path(tempdir(),'cromw
 }
 
 
-#' Utility to fetch the wdltool JAR file 
-#'
-#' This function simply downloads the wdltool JAR file and puts it in
-#' the destfile location. The JAR file is picked up from
-#' \url{https://github.com/broadinstitute/wdltool/releases}.
-#'
-#' @param wdltool_version string representing the version number
-#' @param destfile string The full path to the wdltool jar file
-#'     location on the local system
-#'
-#' @return destfile location [invisibly]
-#'
-#' @importFrom httr GET
-#'
-#' @seealso See lots of details at \url{https://github.com/broadinstitute/wdltool}.
-#' 
-#' @examples
-#' version = '0.8'
-#' tmpfile = file.path(tempdir(),'wdltool.jar')
-#' fp = getWdltoolJar(wdltool_version = version)
-#' fp
-#' unlink(fp)
-#'
-#' @export
-getWdltoolJar = function(wdltool_version,
-                         destfile = 'wdltool.jar') {
-    fname = destfile
-    httr::GET(sprintf('https://github.com/broadinstitute/wdltool/releases/download/%s/wdltool-%s.jar',
-                      wdltool_version,
-                      wdltool_version),
-              write_disk(fname,overwrite = TRUE))
-    invisible(fname)
-}
-
-#' Run the wdltool from R
-#'
-#' @
 
