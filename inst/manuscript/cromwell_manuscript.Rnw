@@ -1,0 +1,65 @@
+\documentclass{article}
+\usepackage{color}
+\definecolor{BiocBlue}{RGB}{24,129,194}
+\usepackage[
+  colorlinks, linkcolor=BiocBlue, citecolor=BiocBlue,
+  anchorcolor=BiocBlue, urlcolor=BiocBlue
+]{hyperref}
+\usepackage{todonotes}
+\usepackage[margin=1in]{geometry}
+\usepackage[
+  maxbibnames=99,backend=biber,citestyle=authoryear,sorting=ydnt
+]{biblatex}
+\addbibresource{citations.bib}
+\title{\cRomwell: a Bioconductor Interface to the NCI Genomic Data Commons}
+\author{Sean R. Davis\thanks{seandavi@gmail.com, to whom correspondence should be addressed}  \\
+        Center for Cancer Research\\
+        National Cancer Institute\\
+        National Institutes of Health\\
+        }
+
+\date{\today}
+
+\def\code#1{\texttt{#1}}
+
+\newcommand{\Bioconductor}{\emph{Bioconductor}}
+\newcommand{\R}{\emph{R}}
+\newcommand\Biocpkg[1]{
+  {\href{http://bioconductor.org/packages/#1}%
+  {\textit{#1}}}}
+\newcommand\Rpkg[1]{
+  {\href{https://cran.r-project.org/package=#1}%
+  {\textit{#1}}}}
+\newcommand\github[2]{
+  {\href{http://github.org/#1/#2}%
+  {\textit{#2}}}}
+\newcommand{\cRomwell}{\github{seandavi}{cRomwell}}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+  Biomedical research and precision medicine are now data-intensive
+  endeavors. Complex computational pipelines composed of multiple
+  dependent and interrelated tasks are now intrinsic to the
+  interpretation of multiple -omics assays, medical imaging, and
+  numerous sources of textual and unstructured data. Numerous toolsets
+  and workflow frameworks facilitate the design and execution of these
+  computational pipelines. One such workflow solution is
+  \github{broadinstitute}{cromwell} package that executes workflows
+  written using a data specific language (DSL) called the Workflow
+  Description Language (WDL).  Many of these workflow approaches
+  divorce the pipeline and workflow descriptions and their execution
+  from commonly-used data science tools such as \R that facilitate
+  contextual documentation, literate programming, and interactive
+  analysis and visualization. The \cRomwell package enables running
+  complex workflows described using the Workflow Description Language
+  (WDL) with the interactive data science \R environment.
+  \textbf{Availability}: \url{https://github.com/seandavi/cRomwell}
+\end{abstract}
+
+
+  
+
+
+\end{document}
