@@ -12,9 +12,10 @@
 
 \documentclass[9pt,a4paper]{extarticle}
 \usepackage{f1000_styles}
+\usepackage{hyperref}
 
 %% Default: numerical citations
-\usepackage[numbers]{natbib}
+%\usepackage[numbers]{natbib}
 
 %% Uncomment this lines for superscript citations instead
 % \usepackage[super]{natbib}
@@ -26,12 +27,15 @@
 \begin{document}
 \pagestyle{front}
 
-\title{\cRomwell: a R Interface to the NCI Genomic Data Commons}
+\title{cRomwell: a R Interface to an advanced workflow management system.}
 \author[1]{Sean R. Davis}
-\author[2]{Author Name2}
-\affil[1]{seandavi@gmail.com, to whom correspondence should be addressed
-Center for Cancer Research, National Cancer Institute, National Institutes of Health, 37 Convent Drive, Bethesda, MD, 20892, USA}
-\affil[2]{Address of author2}
+\affil[1]{
+  \href{mailto:seandavi@gmail.com}{seandavi@gmail.com}, 
+  \href{http://orcid.org/0000-0002-8991-6458}{ORCID}, 
+  to whom correspondence should be addressed\\
+  Center for Cancer Research, National Cancer Institute, 
+  National Institutes of Health, 
+  37 Convent Drive, Bethesda, MD, 20892, USA}
 
 \maketitle
 \thispagestyle{front}
@@ -45,28 +49,30 @@ Please list all authors that played a significant role in developing the softwar
   interpretation of multiple -omics assays, medical imaging, and
   numerous sources of textual and unstructured data. Numerous toolsets
   and workflow frameworks facilitate the design and execution of these
-  computational pipelines. One such workflow solution is
-  \github{broadinstitute}{cromwell} package that executes workflows
-  written using a data specific language (DSL) called the Workflow
-  Description Language (WDL).  Many of these workflow approaches
-  divorce the pipeline and workflow descriptions and their execution
-  from commonly-used data science tools such as \R that facilitate
+  computational pipelines. Many of these workflow approaches divorce
+  the pipeline and workflow descriptions and their execution from
+  commonly-used data science tools such as R that facilitate
   contextual documentation, literate programming, and interactive
-  analysis and visualization. The \cRomwell package enables running
-  complex workflows described using the Workflow Description Language
-  (WDL) with the interactive data science \R environment.
+  analysis and visualization. The cRomwell package described here
+  provides the interface between the R interactive data science
+  environment and arbitrary-scale orchestration of complex complex
+  workflows described using the Workflow Description Language (WDL).
 \end{abstract}
 
 \section*{Keywords}
 
-Bioinformatics, Genomics, Cloud Computing
+bioinformatics, genomics, cloud computing, reproducible research
 
+\cite{Smith:2012qr}
 
 \clearpage
 \pagestyle{main}
 \section*{Introduction}
 
-The introduction provides context as to why the software tool was developed and what need it addresses.  It is good scholarly practice to mention previously developed tools that address similar needs, and why the current tool is needed. 
+Biomedical research has rapidly become a data-intensive science. Many scientific questions, such as those involving large-scale sequencing, involve orchestrating computationally complex and demanding data processing pipelines that transform the raw data into more compact and information-rich processed data. A large ecosystem of workflow systems exists (see, \href{https://github.com/pditommaso/awesome-pipeline}{here} for a large list). The particular implementation details, strengths and weaknesses, and suitability applications varies quite significantly. However, a robust and reliable workflow management system will address three key challenges: flexibility, portability, and reproducibility \cite{Smith:2012qr}.
+
+
+Additional 
 
 \section*{Methods}
 \subsection*{Implementation}
@@ -133,15 +139,13 @@ mentioned in the Acknowledgments section.
 
 Please do not list grant funding in this section.
 
-\cite{*}
-
-{\small\bibliographystyle{unsrtnat}
-\bibliography{citations}}
+\bibliographystyle{unsrtnat}
+\bibliography{sample}
 
 \bigskip
 References can be listed in any standard referencing style and should be consistent between references within a given article.
 
-Reference management systems such as Zotero provide options for exporting bibliographies as Bib\TeX{} files. Bib\TeX{} is a bibliographic tool that is used with \LaTeX{} to help organize the user's references and create a bibliography. This template contains an example of such a file, \texttt{sample.bib}, which can be replaced with your own. Use the \verb|\cite| command  to create in-text citations, like this \cite{Smith:2012qr} and this \cite{Smith:2013jd}.
+Reference management systems such as Zotero provide options for exporting bibliographies as Bib\TeX{} files. Bib\TeX{} is a bibliographic tool that is used with \LaTeX{} to help organize the user's references and create a bibliography. This template contains an example of such a file, \texttt{sample.bib}, which can be replaced with your own. Use the \verb|\cite| command  to create in-text citations, like this and this .
 
 
 \section*{USING LATEX}
