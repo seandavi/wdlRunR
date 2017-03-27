@@ -20,6 +20,8 @@ Suggests:
     testthat
 VignetteBuilder: knitr
 License: MIT
+URL: https://github.com/seandavi/cRomwell
+BugReports: https://github.com/seandavi/cRomwell
 BiocViews:
     ThirdPartyClient,
     Sequencing,
