@@ -11,7 +11,7 @@
   maxbibnames=99,backend=biber,citestyle=authoryear,sorting=ydnt
 ]{biblatex}
 \addbibresource{citations.bib}
-\title{\cRomwell: a Bioconductor Interface to the NCI Genomic Data Commons}
+\title{\cRomwell: Run Workflow Description Language (WDL) workflows from R}
 \author{Sean R. Davis\thanks{seandavi@gmail.com, to whom correspondence should be addressed}  \\
         Center for Cancer Research\\
         National Cancer Institute\\
@@ -41,23 +41,43 @@
 \begin{abstract}
   Biomedical research and precision medicine are now data-intensive
   endeavors. Complex computational pipelines composed of multiple
-  dependent and interrelated tasks are now intrinsic to the
+  dependent and interrelated tasks are often intrinsic to the
   interpretation of multiple -omics assays, medical imaging, and
   numerous sources of textual and unstructured data. Numerous toolsets
   and workflow frameworks facilitate the design and execution of these
-  computational pipelines. One such workflow solution is
-  \github{broadinstitute}{cromwell} package that executes workflows
-  written using a data specific language (DSL) called the Workflow
-  Description Language (WDL).  Many of these workflow approaches
-  divorce the pipeline and workflow descriptions and their execution
-  from commonly-used data science tools such as \R that facilitate
+  computational pipelines. Many of these workflow approaches isolate
+  the pipeline and workflow descriptions and their execution from
+  commonly-used data science tools such as \R that facilitate
   contextual documentation, literate programming, and interactive
-  analysis and visualization. The \cRomwell package enables running
-  complex workflows described using the Workflow Description Language
-  (WDL) with the interactive data science \R environment.
-  \textbf{Availability}: \url{https://github.com/seandavi/cRomwell}
+  analysis and visualization. The \cRomwell package provides the
+  interface between the \R interactive data science environment and
+  arbitrary-scale orchestration of complex complex workflows described
+  using the Workflow Description Language (WDL). \\
+  \textbf{Availability}: \url{https://github.com/seandavi/cRomwell}\\
+  \textbf{Keywords}: bioinformatics, genomics, cloud computing,
+  reproducible research
 \end{abstract}
 
+\section*{Introduction}
+
+Biomedical research has rapidly become a data-intensive science. Many
+scientific questions, such as those involving large-scale sequencing,
+involve orchestrating computationally complex and demanding data
+processing pipelines that transform the raw data into more compact and
+information-rich processed data. A large ecosystem of workflow systems
+exists (see,
+\href{https://github.com/pditommaso/awesome-pipeline}{here} for a
+large list). The particular implementation details, strengths and
+weaknesses, and suitability applications varies quite
+significantly. 
+
+A robust and reliable workflow management
+system will address three key challenges (\cite{rabix}): flexibility, portability,
+and reproducibility. The flexibility of a workflow management system will support workflow descriptions that ``gracefully handle large volumes of data with multiple formats'' (\cite{rabix}) and provide generalizations that promote workflow descriptions that can be applied to different datasets without requiring different versions of the workflow. Portability, or the ability to run workflows in multiple compute environments, enabling researchers to move or expand computational workloads with minimal re-engineering or workflow development (\cite{rabix}). Portable workflows also significantly reduce barriers to collaboration and workflow component re-use. Finally, a workflow management system should support reproducible computational research approaches (\cite{Sandve2013}).
+
+The Workflow Description Language (WDL, \cite{WDLsite})
+
+\printbibliography
 
   
 
