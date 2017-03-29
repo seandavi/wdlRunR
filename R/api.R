@@ -125,8 +125,7 @@ cromwell_POST = function(path,body,...) {
 #'
 #' @return a data.frame of query results
 #'
-#' @importFrom httr GET
-#' @importFrom plyr rbind.fill
+#' @importFrom jsonlite fromJSON
 #'
 #' @examples
 #' \dontrun{
@@ -136,10 +135,16 @@ cromwell_POST = function(path,body,...) {
 #'
 #' @export
 cromwellQuery = function(query=NULL, ...) {
+    cnames = c('name', 'id', 'start', 'end', 'status')
     path = 'api/workflows/v1/query'
     resp = cromwell_GET(path=path,query=query,...)
+    x = lapply(cnames,function(cname) {
+      as.character(sapply(resp$content$results, '[[', cname))
+    })
+    x = setNames(x,cnames)
+    x = data.frame(x, stringsAsFactors = FALSE)
 
-    x = do.call(rbind.fill,lapply(resp$content$results,as.data.frame))
+    #x = do.call(rbind.fill,lapply(resp$content$results,as.data.frame))
     if('start' %in% colnames(x))
         x$start = strptime(substr(as.character(x$start),1,19),format="%Y-%m-%dT%H:%M:%S",tz="UTC")
     else
