@@ -1,6 +1,6 @@
 Package: cRomwell
 Title: Interact with the Broad Institute Cromwell workflow manager
-Version: 0.2.6
+Version: 0.2.7
 Date: 2017-03-29
 Authors@R: person("Sean", "Davis", email = "seandavi@gmail.com", role = c("aut", "cre"))
 Description: Implements an R client for the cromwell workflow manager

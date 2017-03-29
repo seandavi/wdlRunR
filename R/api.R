@@ -262,7 +262,7 @@ cromwellOutputs = function(ids, ...) {
     retlist = lapply(ids,function(id) {
         path = sprintf('api/workflows/v1/%s/outputs', id)
         resp = cromwell_GET(path = path, ...)
-        ret = resp$content
+        ret = resp$content$outputs
         attr(ret,'path') = path
         attr(ret,'when') = Sys.time()
         class(ret) = c('cromwell_output','cromwell_api',class(ret))
