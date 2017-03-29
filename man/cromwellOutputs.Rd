@@ -7,10 +7,12 @@
 cromwellOutputs(ids, ...)
 }
 \arguments{
-\item{ids}{a character vector of Cromwell ids. See \code{\link{cromwellQuery}} for
-details of how to query Cromwell for available ids.}
+\item{ids}{a character vector of Cromwell ids. See
+\code{\link{cromwellQuery}} for details of how to query
+Cromwell for available ids.}
 
-\item{...}{passed directly to httr `POST` (for including `timeouts`, `handles`, etc.)}
+\item{...}{passed directly to httr `POST` (for including
+`timeouts`, `handles`, etc.)}
 }
 \value{
 a list of output lists.

@@ -9,7 +9,8 @@ cromwellAbort(id, ...)
 \arguments{
 \item{id}{A cromwell id as a string}
 
-\item{...}{passed directly to httr `POST` (for including `timeouts`, `handles`, etc.)}
+\item{...}{passed directly to httr `POST` (for including
+`timeouts`, `handles`, etc.)}
 }
 \description{
 Abort a cromwell job

@@ -7,15 +7,18 @@
 cromwellLogs(ids, ...)
 }
 \arguments{
-\item{ids}{a character vector of Cromwell ids. See \code{\link{cromwellQuery}} for
-details of how to query Cromwell for available ids.}
+\item{ids}{a character vector of Cromwell ids. See
+\code{\link{cromwellQuery}} for details of how to query
+Cromwell for available ids.}
 
-\item{...}{passed directly to httr `POST` (for including `timeouts`, `handles`, etc.)}
+\item{...}{passed directly to httr `POST` (for including
+`timeouts`, `handles`, etc.)}
 }
 \value{
-a list of logfile lists. There will be one list item for each id. Each of
-these list items will contain another list with log outputs from each workflow step
-in the submitted workflow.
+a list of logfile lists. There will be one list item for
+    each id. Each of these list items will contain another list
+    with log outputs from each workflow step in the submitted
+    workflow.
 }
 \description{
 This will return paths to the standard out and standard error files

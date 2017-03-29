@@ -4,12 +4,13 @@
 \alias{cromwellQuery}
 \title{Get the info about cromwell workflows}
 \usage{
-cromwellQuery(terms = NULL, ...)
+cromwellQuery(query = NULL, ...)
 }
 \arguments{
-\item{terms}{terms about the workflow}
+\item{query}{terms about the workflow}
 
-\item{...}{passed directly to httr `GET` (for including `timeouts`, `handles`, etc.)}
+\item{...}{passed directly to httr `GET` (for including `timeouts`,
+`handles`, etc.)}
 }
 \value{
 a data.frame of query results
