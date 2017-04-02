@@ -4,12 +4,13 @@
 \alias{cromwellMetadata}
 \title{Get metadata associated with one or more workflow ids}
 \usage{
-cromwellMetadata(ids, ...)
+cromwellMetadata(ids, query = NULL, ...)
 }
 \arguments{
 \item{ids}{A cromwell id as a string}
 
-\item{...}{passed directly to httr `GET` (for including `timeouts`, `handles`, etc.)}
+\item{...}{passed directly to httr `GET` (for including `timeouts`,
+`handles`, etc.)}
 }
 \value{
 a list of metadata lists

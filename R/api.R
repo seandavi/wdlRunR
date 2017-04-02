@@ -125,21 +125,26 @@ cromwell_POST = function(path,body,...) {
 #'
 #' @return a data.frame of query results
 #'
-#' @importFrom httr GET
-#' @importFrom plyr rbind.fill
+#' @importFrom jsonlite fromJSON
 #'
 #' @examples
 #' \dontrun{
 #' res = cromwellQuery(terms=c(status='Succeeded',name='taskName'))
 #' head(res)
 #' }
-#' 
+#'
 #' @export
 cromwellQuery = function(query=NULL, ...) {
+    cnames = c('name', 'id', 'start', 'end', 'status')
     path = 'api/workflows/v1/query'
     resp = cromwell_GET(path=path,query=query,...)
+    x = lapply(cnames,function(cname) {
+      as.character(sapply(resp$content$results, '[[', cname))
+    })
+    x = setNames(x,cnames)
+    x = data.frame(x, stringsAsFactors = FALSE)
 
-    x = do.call(rbind.fill,lapply(resp$content$results,as.data.frame))
+    #x = do.call(rbind.fill,lapply(resp$content$results,as.data.frame))
     if('start' %in% colnames(x))
         x$start = strptime(substr(as.character(x$start),1,19),format="%Y-%m-%dT%H:%M:%S",tz="UTC")
     else
@@ -177,13 +182,13 @@ cromwellQuery = function(query=NULL, ...) {
 #' outputs. Call-level metadata includes inputs, outputs, start and
 #' end datetime, backend-specific job id, return code, stdout and
 #' stderr. Date formats are ISO with milliseconds.
-#' 
+#'
 #' @param ids A cromwell id as a string
 #' @param ... passed directly to httr `GET` (for including `timeouts`,
 #'     `handles`, etc.)
 #'
 #' @references \url{https://github.com/broadinstitute/cromwell#get-apiworkflowsversionidmetadata}
-#' 
+#'
 #' @return a list of metadata lists
 #'
 #' @importFrom httr GET
@@ -196,12 +201,12 @@ cromwellQuery = function(query=NULL, ...) {
 #' metalist = cromwellMetadata(res$id)
 #' str(metalist,list.len=5)
 #' }
-#' 
+#'
 #' @export
 cromwellMetadata = function(ids,query=NULL,...) {
     retlist = lapply(ids,function(id) {
         path=sprintf('api/workflows/v1/%s/metadata',id)
-        resp = cromwell_GET(path = path,query=query,...)
+        resp = cromwell_GET(path = path, query=query, ...)
         ret = resp$content
         attr(ret,'path') = path
         attr(ret,'when') = Sys.time()
@@ -231,7 +236,7 @@ cromwellAbort = function(id, ...) {
 
 #' Get output paths associated with one or more workflow ids
 #'
-#' 
+#'
 #' @param ids a character vector of Cromwell ids. See
 #'     \code{\link{cromwellQuery}} for details of how to query
 #'     Cromwell for available ids.
@@ -251,13 +256,13 @@ cromwellAbort = function(id, ...) {
 #' outfilelist = cromwellOutputs(res$id)
 #' str(outfilelist,list.len=5)
 #' }
-#' 
+#'
 #' @export
 cromwellOutputs = function(ids, ...) {
     retlist = lapply(ids,function(id) {
         path = sprintf('api/workflows/v1/%s/outputs', id)
-        resp = cromwell_GET(path = path)
-        ret = resp$content
+        resp = cromwell_GET(path = path, ...)
+        ret = resp$content$outputs
         attr(ret,'path') = path
         attr(ret,'when') = Sys.time()
         class(ret) = c('cromwell_output','cromwell_api',class(ret))
@@ -280,7 +285,7 @@ cromwellOutputs = function(ids, ...) {
 #' case, one log is provided for each instance of the call that has
 #' been run.
 #'
-#' 
+#'
 #' @param ids a character vector of Cromwell ids. See
 #'     \code{\link{cromwellQuery}} for details of how to query
 #'     Cromwell for available ids.
@@ -295,7 +300,7 @@ cromwellOutputs = function(ids, ...) {
 #' @importFrom httr GET
 #'
 #' @references \url{https://github.com/broadinstitute/cromwell#get-apiworkflowsversionidlogs}
-#' 
+#'
 #' @examples
 #' \dontrun{
 #' res = cromwellQuery(terms=c(status='Succeeded',name='taskName'))
@@ -303,12 +308,12 @@ cromwellOutputs = function(ids, ...) {
 #' loglist = cromwellLogs(res$id)
 #' str(loglist,list.len=5)
 #' }
-#' 
+#'
 #' @export
 cromwellLogs = function(ids, ...) {
     retlist = lapply(ids,function(id) {
         path = sprintf('api/workflows/v1/%s/logs', id)
-        resp = cromwell_GET(path = path)
+        resp = cromwell_GET(path = path, ...)
         ret = resp$content$calls
         attr(ret,'path') = path
         attr(ret,'when') = Sys.time()
@@ -436,7 +441,7 @@ cromwellSingle = function(wdlSource,
 #' @export
 cromwellBackends = function(...) {
     path = 'api/workflows/v1/backends'
-    resp = cromwell_GET(path = path)
+    resp = cromwell_GET(path = path, ...)
     ret = resp$content
     attr(ret,'path') = path
     attr(ret,'when') = Sys.time()
@@ -455,13 +460,13 @@ cromwellBackends = function(...) {
 #' @importFrom httr GET
 #'
 #' @references \url{https://github.com/broadinstitute/cromwell#get-apiengineversionstats}
-#' 
+#'
 #' @examples
 #' #cromwellStats()
 #' @export
 cromwellStats = function(...) {
     path = 'api/engine/v1/stats'
-    resp = cromwell_GET(path = path)
+    resp = cromwell_GET(path = path, ...)
     ret = resp$content
     attr(ret,'path') = path
     attr(ret,'when') = Sys.time()
@@ -479,13 +484,13 @@ cromwellStats = function(...) {
 #' @importFrom httr GET
 #'
 #' @references \url{https://github.com/broadinstitute/cromwell#get-version}
-#' 
+#'
 #' @examples
 #' #cromwellVersion()
 #' @export
 cromwellVersion = function(...) {
     path = 'api/engine/v1/version'
-    resp = cromwell_GET(path = path)
+    resp = cromwell_GET(path = path, ...)
     ret = resp$content$cromwell
     attr(ret,'path') = path
     attr(ret,'when') = Sys.time()
@@ -495,7 +500,7 @@ cromwellVersion = function(...) {
 
 
 
-#' Utility to fetch the cromwell JAR file 
+#' Utility to fetch the cromwell JAR file
 #'
 #' The purpose of this R package is to interact with the
 #' Broad Cromwell execution engine.
@@ -504,7 +509,7 @@ cromwellVersion = function(...) {
 #' and puts it in the destfile location. The JAR file is picked up from
 #' \url{https://github.com/broadinstitute/cromwell/releases}.
 #'
-#' 
+#'
 #'
 #' @param cromwell_version string representing the version number
 #' @param destfile string The full path to the cromwell jar file location on the local system
@@ -514,7 +519,7 @@ cromwellVersion = function(...) {
 #' @importFrom httr GET
 #'
 #' @seealso See lots of details at \url{https://github.com/broadinstitute/cromwell}.
-#' 
+#'
 #' @examples
 #' version = '24'
 #' tmpfile = file.path(tempdir(),'cromwell.jar')

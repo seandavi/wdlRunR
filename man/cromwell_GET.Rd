@@ -11,7 +11,8 @@ cromwell_GET(path, query = NULL, ...)
 
 \item{query}{Any query terms as a named character vector}
 
-\item{...}{passed directly to httr `GET` (for including `timeouts`, `handles`, etc.)}
+\item{...}{passed directly to httr `GET` (for including `timeouts`,
+`handles`, etc.)}
 }
 \description{
 See the docmentation at

@@ -1,9 +1,10 @@
 library(cRomwell)
 context("cromwell")
 
-cromwell_jar = getCromwellJar(cromwell_version='24')
+cromwell_jar = getCromwellJar(cromwell_version='25')
 cromwell_log = file.path(tempdir(),'cromwell.log')
 system(sprintf('java -jar %s server > %s 2>&1 &', cromwell_jar, cromwell_log))
+options(cromwellBase = 'http://localhost:8000')
 
 # wait for server to start up
 Sys.sleep(10)
@@ -47,7 +48,6 @@ workflow test {
   call hello
 }"
 
-options(cromwellBase = 'http://localhost:8000')
 randomStrings = sapply(1:10,function(r) {paste(sample(LETTERS,10),collapse="")})
 wdlInputs = data.frame(test.hello.name=randomStrings)
 
