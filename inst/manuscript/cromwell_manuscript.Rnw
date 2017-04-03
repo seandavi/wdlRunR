@@ -108,8 +108,25 @@ end-to-end genomics processing and data science platform.
 \section{Design and Usage}
 
 
+The \wdlRunR software is implemented in \R as standard \R package with
+functions to access the \textit{Cromwell} server RESTful API using S3
+classes and methods. The functionality for submitting, managing, and
+monitoring jobs mirrors that of the Cromwell server API
+\cite{Cromwell} and is outlined in Table \ref{tab:api}. The \wdlRunR
+package is the interactive \R-based component of a larger ecosystem
+for running workflows. The \textit{Cromwell} server can be configured
+to execute on one or more ``execution backends'', all of which require
+configuration prior to running \textit{Cromwell}. The
+\github{broadinstitute}{cromwell} home page has extensive
+documentation on how to configure various execution backends.
 
-The \wdlRunR package is implemented in \R as a RESTful client using S3 classes and methods. The functionality for submitting, managing, and monitoring jobs mirrors that of the Cromwell server API \cite{Cromwell}. 
+Once configured, 
+
+\section{Conclusion}
+
+The \wdlRunR package combines interactive \R statistical programming environment with scalable, robust workflow orchestration offered by WDL workflows and the \textit{Cromwell} execution engine. Managing input parameters and data munging, monitoring workflows, and then operating on resulting processed files, particularly when adapted to literate programming approaches such as R markdown documents makes R a natural framework for . with its tooling for data munging, reproducible computational research tools, and extensive data ana
+
+
 
 <<endpoints,results='asis',echo=FALSE>>=
 x = read.csv('wdlrunr_functions.csv',check.names=FALSE)
@@ -119,7 +136,7 @@ print(xtable(x, caption = "Table of functionality for interacting with the Cromw
 @ 
 
 \begin{figure}
-  \caption{The entire \wdlRunR architecture includes the \textit{Cromwell} server running on the local \R system or on another standalone server machine. The \textit{Cromwell} server accepts requests to run workflows on one of the supported ``execution backends''. Workflow tasks can specify what backend to use or they will be sent to the ``default'' backend. }
+  \caption{The entire \wdlRunR architecture includes the \textit{Cromwell} server, running on the local \R system or on a standalone machine, that accepts requests to run workflows on one of the supported ``execution backends''.  The configured ``default'' execution backend will be used unless another is specified in the WDL file and is available (configured). }
   \label{fig:arch}
   \centering
   \includegraphics{arch}
