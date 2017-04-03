@@ -1,4 +1,4 @@
-Package: cRomwell
+Package: wdlRunR
 Title: Interact with the Broad Institute Cromwell workflow manager
 Version: 0.2.8
 Date: 2017-03-29
@@ -20,8 +20,8 @@ Suggests:
     testthat
 VignetteBuilder: knitr
 License: MIT
-URL: https://github.com/seandavi/cRomwell
-BugReports: https://github.com/seandavi/cRomwell
+URL: https://github.com/seandavi/wdlRunR
+BugReports: https://github.com/seandavi/wdlRunR/issues/new
 BiocViews:
     ThirdPartyClient,
     Sequencing,
