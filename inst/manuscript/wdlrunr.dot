@@ -1,0 +1,42 @@
+digraph G {
+        randir = TB
+        fontname = "Bitstream Vera Sans"
+
+        node [
+                fontname = "Bitstream Vera Sans"
+                shape = "box"
+        ]
+
+        edge [  dir=back,
+                fontname = "Bitstream Vera Sans"
+        ]
+
+        cromwell [
+                label = "Cromwell Server"
+                ]
+        subgraph clusterAnimalImpl {
+        google [
+                label = "Google JES"
+        ]
+        spark [
+                label = "Spark"
+        ]
+        local [
+                label = "local"
+        ]
+        sge [
+                label = "Sun Grid Engine"
+                ]
+        label = "One or more execution backends"
+        }
+
+        wdlrunr [ label = "wdlRunR" ] 
+
+                google -> cromwell
+                spark -> cromwell
+                local -> cromwell
+                sge -> cromwell
+                edge[ label = " Cromwell Server\n REST API", fontsize=12, dir=back]
+                cromwell -> wdlrunr
+
+}

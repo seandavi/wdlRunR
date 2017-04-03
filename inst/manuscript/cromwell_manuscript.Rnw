@@ -11,7 +11,7 @@
   maxbibnames=99,backend=biber,citestyle=authoryear,sorting=ydnt
 ]{biblatex}
 \addbibresource{citations.bib}
-\title{\cRomwell: Run Workflow Description Language (WDL) workflows from R}
+\title{\wdlRunR: Run Workflow Description Language (WDL) workflows from R}
 \author{Sean R. Davis\thanks{seandavi@gmail.com, to whom correspondence should be addressed}  \\
         Center for Cancer Research\\
         National Cancer Institute\\
@@ -33,10 +33,14 @@
 \newcommand\github[2]{
   {\href{http://github.org/#1/#2}%
   {\textit{#2}}}}
-\newcommand{\cRomwell}{\github{seandavi}{cRomwell}}
+\newcommand{\wdlRunR}{\github{seandavi}{wdlRunR}}
 
 \begin{document}
 \maketitle
+
+<<init,include=FALSE>>=
+library(knitr)
+@ 
 
 \begin{abstract}
   Biomedical research and precision medicine are now data-intensive
@@ -49,11 +53,11 @@
   the pipeline and workflow descriptions and their execution from
   commonly-used data science tools such as \R that facilitate
   contextual documentation, literate programming, and interactive
-  analysis and visualization. The \cRomwell package provides the
+  analysis and visualization. The \wdlRunR package provides the
   interface between the \R interactive data science environment and
   arbitrary-scale orchestration of complex complex workflows described
   using the Workflow Description Language (WDL). \\
-  \textbf{Availability}: \url{https://github.com/seandavi/cRomwell}\\
+  \textbf{Availability}: \url{https://github.com/seandavi/wdlRunR}\\
   \textbf{Keywords}: bioinformatics, genomics, cloud computing,
   reproducible research
 \end{abstract}
@@ -71,11 +75,57 @@ large list). The particular implementation details, strengths and
 weaknesses, and suitability applications varies quite
 significantly. 
 
-A robust and reliable workflow management
-system will address three key challenges (\cite{rabix}): flexibility, portability,
-and reproducibility. The flexibility of a workflow management system will support workflow descriptions that ``gracefully handle large volumes of data with multiple formats'' (\cite{rabix}) and provide generalizations that promote workflow descriptions that can be applied to different datasets without requiring different versions of the workflow. Portability, or the ability to run workflows in multiple compute environments, enabling researchers to move or expand computational workloads with minimal re-engineering or workflow development (\cite{rabix}). Portable workflows also significantly reduce barriers to collaboration and workflow component re-use. Finally, a workflow management system should support reproducible computational research approaches (\cite{Sandve2013}).
+A robust and reliable workflow management system will address three
+key challenges (\cite{rabix}): flexibility, portability, and
+reproducibility. The flexibility of a workflow management system will
+support workflow descriptions that ``gracefully handle large volumes
+of data with multiple formats'' (\cite{rabix}) and provide
+generalizations that promote workflow descriptions that can be applied
+to different datasets without requiring different versions of the
+workflow. Portability, or the ability to run workflows in multiple
+compute environments, enabling researchers to move or expand
+computational workloads with minimal re-engineering or workflow
+development (\cite{rabix}). Portable workflows also significantly
+reduce barriers to collaboration and workflow component
+re-use. Finally, a workflow management system should support
+reproducible computational research approaches
+(\cite{Sandve2013}). The Cromwell software from the Broad Institute is
+a software toolkit that executes WDL workflows \cite{Cromwell}. When
+used in ``server'' mode, the Cromwell system can accept workflows as
+``jobs'' via a RESTful application programming interface (API) and
+then orchestrate their execution in a number of compute environments
+(after appropriate setup and configuration; see \cite{Cromwell}).
 
-The Workflow Description Language (WDL, \cite{WDLsite})
+Given the number of genomic data scientists and bioinformaticians who
+perform the majority of their work using the R statistical programming
+environment \cite{RCoreTeam2016} and \Bioconductor \cite{Huber2015}, we have
+developed the \wdlRunR software to provide an \R interface to the
+Cromwell server. We expect that this combination of robust workflow
+management with the reproducible research and data management
+strengths of the \R environment will provide a powerful, scalable,
+end-to-end genomics processing and data science platform.
+
+\section{Design and Usage}
+
+
+
+The \wdlRunR package is implemented in \R as a RESTful client using S3 classes and methods. The functionality for submitting, managing, and monitoring jobs mirrors that of the Cromwell server API \cite{Cromwell}. 
+
+<<endpoints,results='asis',echo=FALSE>>=
+x = read.csv('wdlrunr_functions.csv',check.names=FALSE)
+library(xtable)
+print(xtable(x, caption = "Table of functionality for interacting with the Cromwell workflow manager.",
+             row.names=FALSE,label="tab:api"),include.rownames=FALSE)
+@ 
+
+\begin{figure}
+  \caption{The entire \wdlRunR architecture includes the \textit{Cromwell} server running on the local \R system or on another standalone server machine. The \textit{Cromwell} server accepts requests to run workflows on one of the supported ``execution backends''. Workflow tasks can specify what backend to use or they will be sent to the ``default'' backend. }
+  \label{fig:arch}
+  \centering
+  \includegraphics{arch}
+\end{figure}
+
+
 
 \printbibliography
 

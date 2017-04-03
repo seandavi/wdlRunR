@@ -1,0 +1,11 @@
+wdlRunR Function,Scope,Description
+cromwellSingle,job management,Submit a WDL workflow and input parameters
+cromwellBatch,job management,Submit a WDL workflow multiple times varying the input parameters
+cromwellAbort,job management,Abort a running workflow
+cromwellQuery,metadata,Query overall status of submitted workflows
+cromwellMetadata,metadata,Gather arbitrary metadata for a (set of) submitted workflows
+cromwellLogs,metadata,Return file locations of log files for a workflow
+cromwellOutputs,metadata,Return file locations of all output files for a workflow
+cromwellVersion,environment,Return the version of the Cromwell server
+cromwellBackends,environment,Return the configured execution backends of the Cromwell server
+cromwellStats,environment,Return the number of running jobs and workflows
