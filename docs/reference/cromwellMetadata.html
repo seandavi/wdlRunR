@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Get metadata associated with one or more workflow ids — cromwellMetadata • cRomwell</title>
+<title>Get metadata associated with one or more workflow ids — cromwellMetadata • wdlRunR</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -44,7 +44,7 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="../index.html">cRomwell</a>
+      <a class="navbar-brand" href="../index.html">wdlRunR</a>
     </div>
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
@@ -85,14 +85,16 @@ end datetime, backend-specific job id, return code, stdout and
 stderr. Date formats are ISO with milliseconds.</p>
     
 
-    <pre><span class='fu'>cromwellMetadata</span>(<span class='no'>ids</span>, <span class='no'>...</span>)</pre>
+    <pre><span class='fu'>cromwellMetadata</span>(<span class='no'>ids</span>, <span class='kw'>query</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <dl class="dl-horizontal">
       <dt>ids</dt>
-      <dd>A cromwell id as a string</dd>
+      <dd>A character() vector of cromwell IDs, typically returned
+from a batch submission or from a call to <code><a href='cromwellQuery.html'>cromwellQuery</a></code>.</dd>
       <dt>...</dt>
-      <dd>passed directly to httr `GET` (for including `timeouts`, `handles`, etc.)</dd>
+      <dd>passed directly to httr `GET` (for including `timeouts`,
+`handles`, etc.)</dd>
     </dl>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>

@@ -1,7 +1,7 @@
-Package: cRomwell
+Package: wdlRunR
 Title: Interact with the Broad Institute Cromwell workflow manager
-Version: 0.2.2
-Date: 2017-02-07
+Version: 0.3.0
+Date: 2017-04-05
 Authors@R: person("Sean", "Davis", email = "seandavi@gmail.com", role = c("aut", "cre"))
 Description: Implements an R client for the cromwell workflow manager
   from the Broad Institute

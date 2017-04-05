@@ -1,17 +1,17 @@
 --- 
 author: 'Sean Davis' 
-title: 'Introduction to the cRomwell package'
+title: 'Introduction to the wdlRunR package'
 date: '`r Sys.Date()`' 
 output: BiocStyle::html_document 
 vignette: >
-  %\VignetteIndexEntry{The cRomwell package}
+  %\VignetteIndexEntry{The wdlRunR package}
   %\VignetteEngine{knitr::rmarkdown} 
   %\VignetteEncoding{UTF-8}
 ---
 
-# cRomwell
+# wdlRunR
 
-Follow development at [github](https://github.com/seandavi/cRomwell).
+Follow development at [github](https://github.com/seandavi/wdlRunR).
 
 This package provides a simple api to the [Broad cromwell workflow engine](https://github.com/broadinstitute/cromwell).
 
@@ -21,7 +21,7 @@ For the time being, use the `develop` branch:
 
 ```{r}
 require(devtools)
-devtools::install_github('seandavi/cRomwell', ref = "develop")
+devtools::install_github('seandavi/wdlRunR', ref = "develop")
 ```
 
 # Background
@@ -44,9 +44,9 @@ ideally:
 
 The [Cromwell](https://github.com/broadinstitute/cromwell) is such a
 workflow system. The
-`[cRomwell](https://github.com/seandavi/cRomwell)` R package allows
+`[wdlRunR](https://github.com/seandavi/wdlRunR)` R package allows
 users of the R statistical programming environment to interact with
-the Cromwell workflow system. The cRomwell R package can act as the
+the Cromwell workflow system. The wdlRunR R package can act as the
 "orchestrator" for job submission to the Cromwell workflow system. The
 R ecosystem provides functionality for documentation, literate
 programming, publication-quality graphics, statistical analysis, and
@@ -76,7 +76,7 @@ Cromwell. We then run the server and put the log file into a
 `tempdir()` using R code and a call to `system()`.
 
 ```{r}
-library(cRomwell)
+library(wdlRunR)
 cromwell_jar = getCromwellJar(cromwell_version='24')
 cromwell_log = file.path(tempdir(),'cromwell.log')
 system(sprintf('java -jar %s server > %s 2>&1 &', cromwell_jar, cromwell_log))
