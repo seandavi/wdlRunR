@@ -13,7 +13,9 @@ cromwellStats(...)
 a list containing engine stats
 }
 \description{
-This endpoint returns some basic statistics on the current state of the engine. At the moment that includes the number of running workflows and the number of active jobs.
+This endpoint returns some basic statistics on the current state of
+the engine. At the moment that includes the number of running
+workflows and the number of active jobs.
 }
 \examples{
 #cromwellStats()

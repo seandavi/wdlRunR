@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Submit a cromwell batch job — cromwellBatch • cRomwell</title>
+<title>Submit a cromwell batch job — cromwellBatch • wdlRunR</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -44,7 +44,7 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="../index.html">cRomwell</a>
+      <a class="navbar-brand" href="../index.html">wdlRunR</a>
     </div>
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
@@ -73,9 +73,10 @@
     </div>
 
     
-    <p>This function submits a set of one or more inputs to cromwell. It is much more efficient
-than submitting a single job at a time.  See
-<a href = 'the cromwell <code>batch</code> API documentation'>https://github.com/broadinstitute/cromwell#post-apiworkflowsversionbatch</a> for details.</p>
+    <p>This function submits a set of one or more inputs to cromwell. It
+is much more efficient than submitting a single job at a time.  See
+<a href = 'the
+cromwell <code>batch</code> API documentation'>https://github.com/broadinstitute/cromwell#post-apiworkflowsversionbatch</a> for details.</p>
     
 
     <pre><span class='fu'>cromwellBatch</span>(<span class='no'>wdlSource</span>, <span class='no'>workflowInputs</span>, <span class='kw'>workflowOptions</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
@@ -84,25 +85,33 @@ than submitting a single job at a time.  See
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <dl class="dl-horizontal">
       <dt>wdlSource</dt>
-      <dd>Represents the <a href = 'WDL'>https://software.broadinstitute.org/wdl/</a>A string (character vector of length 1)
-or an <code><a href='http://www.rdocumentation.org/packages/httr/topics/upload_file'>upload_file</a></code> object. See details below.</dd>
+      <dd>Represents the
+<a href = 'WDL'>https://software.broadinstitute.org/wdl/</a> A string
+(character vector of length 1) or an
+<code><a href='http://www.rdocumentation.org/packages/httr/topics/upload_file'>upload_file</a></code> object. See details below.</dd>
       <dt>workflowInputs</dt>
-      <dd>A <code>data.frame</code> that will be coerced to a json array or a JSON string (as a <code>character</code> vector of length 1),
-or an <code><a href='http://www.rdocumentation.org/packages/httr/topics/upload_file'>upload_file</a></code> object. See details below.</dd>
+      <dd>A <code>data.frame</code> that will be coerced to a
+json array or a JSON string (as a <code>character</code> vector of
+length 1), or an <code><a href='http://www.rdocumentation.org/packages/httr/topics/upload_file'>upload_file</a></code> object. See
+details below.</dd>
       <dt>workflowOptions</dt>
-      <dd>A <code>list</code>, a JSON string (as a <code>character</code> vector of length 1,
-or an <code><a href='http://www.rdocumentation.org/packages/httr/topics/upload_file'>upload_file</a></code> object. See details below.</dd>
+      <dd>A <code>list</code>, a JSON string (as a
+<code>character</code> vector of length 1, or an
+<code><a href='http://www.rdocumentation.org/packages/httr/topics/upload_file'>upload_file</a></code> object. See details below.</dd>
       <dt>timeout</dt>
-      <dd>The number of seconds to wait for a response. Batch jobs can take
-quite some time for cromwell to process, so this will typically need to be set
-to a large value to allow for a completed response.</dd>
+      <dd>The number of seconds to wait for a response. Batch
+jobs can take quite some time for cromwell to process, so this
+will typically need to be set to a large value to allow for a
+completed response.</dd>
       <dt>...</dt>
-      <dd>passed directly to httr `POST` (for including `timeouts`, `handles`, etc.)</dd>
+      <dd>passed directly to httr `POST` (for including
+`timeouts`, `handles`, etc.)</dd>
     </dl>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>If a timeout does not occur (this is pretty common....), then a list that contains the submission status.</p>
+    <p>If a timeout does not occur (this is pretty common....),
+    then a list that contains the submission status.</p>
     
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 

@@ -16,5 +16,5 @@ cromwellAbort(id, ...)
 Abort a cromwell job
 }
 \examples{
-#cromwellAbord('ID')
+#cromwellAbort('ID')
 }

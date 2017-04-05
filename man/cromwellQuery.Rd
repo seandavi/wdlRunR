@@ -16,8 +16,10 @@ cromwellQuery(query = NULL, ...)
 a data.frame of query results
 }
 \description{
-Each of the following terms can be specified one or more times. Simply create a named list
-or named character vector.
+Each of the following terms can be specified one or more
+times. Simply create a named list or named character vector.
+}
+\details{
 \describe{
   \item{name}{The name of a job; may be specified more than once}
   \item{status}{one of Succeeded, Failed, Running}

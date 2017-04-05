@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Submit a single cromwell job — cromwellSingle • cRomwell</title>
+<title>Submit a single cromwell job — cromwellSingle • wdlRunR</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -44,7 +44,7 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="../index.html">cRomwell</a>
+      <a class="navbar-brand" href="../index.html">wdlRunR</a>
     </div>
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
@@ -73,9 +73,10 @@
     </div>
 
     
-    <p>This function submits a set of one or more inputs to cromwell. It is much more efficient
-than submitting a single job at a time.  See
-<a href = 'the cromwell <code>batch</code> API documentation'>https://github.com/broadinstitute/cromwell#post-apiworkflowsversionbatch</a> for details.</p>
+    <p>This function submits a set of one or more inputs to cromwell. It
+is much more efficient than submitting a single job at a time.  See
+<a href = 'the
+cromwell <code>batch</code> API documentation'>https://github.com/broadinstitute/cromwell#post-apiworkflowsversionbatch</a> for details.</p>
     
 
     <pre><span class='fu'>cromwellSingle</span>(<span class='no'>wdlSource</span>, <span class='no'>workflowInputs</span>, <span class='kw'>workflowOptions</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,

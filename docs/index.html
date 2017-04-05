@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Interact with the Broad Institute Cromwell workflow manager • cRomwell</title>
+<title>Interact with the Broad Institute Cromwell workflow manager • wdlRunR</title>
 <!-- jquery --><script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script><!-- Font Awesome icons --><link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
 <!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
@@ -24,7 +24,7 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="index.html">cRomwell</a>
+      <a class="navbar-brand" href="index.html">wdlRunR</a>
     </div>
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
@@ -46,41 +46,38 @@
       
       </header><div class="row">
   <div class="contents col-md-9">
-    <div id="cromwell" class="section level1">
+    <div id="the-wdlrunr-package" class="section level1">
 <div class="page-header"><h1 class="hasAnchor">
-<a href="#cromwell" class="anchor"> </a>cRomwell</h1></div>
-<table style="width:21%;">
-<colgroup>
-<col width="6%">
-<col width="6%">
-<col width="6%">
-</colgroup>
-<thead><tr class="header">
-<th align="left">Branch</th>
-<th align="left">Builder</th>
-<th align="left">Status</th>
-</tr></thead>
-<tbody>
-<tr class="odd">
-<td align="left">master</td>
-<td align="left">Travis</td>
-<td align="left"><a href="https://travis-ci.org/seandavi/cRomwell"><img src="https://travis-ci.org/seandavi/cRomwell.svg?branch=master" alt="Build Status"></a></td>
-</tr>
-<tr class="even">
-<td align="left">develop</td>
-<td align="left">Travis</td>
-<td align="left"><a href="https://travis-ci.org/seandavi/cRomwell"><img src="https://travis-ci.org/seandavi/cRomwell.svg?branch=develop" alt="Build Status"></a></td>
-</tr>
-</tbody>
-</table>
-<p>This package provides a simple api to the <a href="https://github.com/broadinstitute/cromwell">Broad cromwell workflow engine</a>.</p>
+<a href="#the-wdlrunr-package" class="anchor"> </a>The wdlRunR package</h1></div>
+
+<p>This package executes Workflow Description Language (WDL) files from within R. Compute platforms currently supported by the <a href="https://github.com/broadinstitute/cromwell">Broad cromwell workflow engine</a> include:</p>
+<ul>
+<li>Local execution (good for testing)</li>
+<li>Sun GridEngine Clusters (and probably other HPC schedulers)</li>
+<li>HTCondor</li>
+<li>Google Compute Engine</li>
+<li>Apache Spark</li>
+</ul>
 <div id="install" class="section level2">
 <h2 class="hasAnchor">
 <a href="#install" class="anchor"> </a>Install</h2>
-<p>For the time being, use the <code>develop</code> branch:</p>
 <pre class="{r}"><code>require(devtools)
-devtools::install_github('seandavi/cRomwell', ref = "develop")</code></pre>
-<p>Navigate to <a href="https://seandavi.github.io/cRomwell" class="uri">https://seandavi.github.io/cRomwell</a> for details.</p>
+devtools::install_github('seandavi/wdlRunR')</code></pre>
+</div>
+<div id="features" class="section level2">
+<h2 class="hasAnchor">
+<a href="#features" class="anchor"> </a>Features</h2>
+<p>This package leverages all the typical data munging and analysis capabilities of R and Bioconductor, but adds the ability to orchestrate nearly arbitrarily large and complex workflows described using WDL (that are portable and written outside of this package).</p>
+<p>Features of this package include:</p>
+<ul>
+<li>With appropriate backend (Google, for example), scale to <em>huge</em> computational capacity</li>
+<li>Submit single or batches of jobs</li>
+<li>Monitor jobs</li>
+<li>Retrieve metadata from submitted, completed, and running jobs</li>
+<li>Review log files from completed and failed jobs</li>
+<li>Track inputs and outputs of jobs</li>
+<li>Optional “caching” of jobs to avoid costly recomputation costs</li>
+</ul>
 </div>
 </div>
   </div>
@@ -95,7 +92,7 @@ devtools::install_github('seandavi/cRomwell', ref = "develop")</code></pre>
 <html><body>
 <h2>Dev status</h2>
 <ul class="list-unstyled">
-<li><a href="https://github.com/seandavi/cRomwell">github</a></li>
+<li><a href="https://github.com/seandavi/wdlRunR">github</a></li>
 </ul>
 </body></html>
 </div>

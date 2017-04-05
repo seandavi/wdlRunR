@@ -7,7 +7,8 @@
 cromwellMetadata(ids, query = NULL, ...)
 }
 \arguments{
-\item{ids}{A cromwell id as a string}
+\item{ids}{A character() vector of cromwell IDs, typically returned
+from a batch submission or from a call to \code{\link{cromwellQuery}}.}
 
 \item{...}{passed directly to httr `GET` (for including `timeouts`,
 `handles`, etc.)}

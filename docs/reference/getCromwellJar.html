@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Utility to fetch the cromwell JAR file — getCromwellJar • cRomwell</title>
+<title>Utility to fetch the cromwell JAR file — getCromwellJar • wdlRunR</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -44,7 +44,7 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="../index.html">cRomwell</a>
+      <a class="navbar-brand" href="../index.html">wdlRunR</a>
     </div>
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
@@ -104,8 +104,8 @@ and puts it in the destfile location. The JAR file is picked up from
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='no'>version</span> <span class='kw'>=</span> <span class='st'>'24'</span>
 <span class='no'>tmpfile</span> <span class='kw'>=</span> <span class='fu'>file.path</span>(<span class='fu'>tempdir</span>(),<span class='st'>'cromwell.jar'</span>)
-<span class='no'>fp</span> <span class='kw'>=</span> <span class='fu'>getCromwellJar</span>(<span class='kw'>cromwell_version</span> <span class='kw'>=</span> <span class='no'>version</span>)</div><div class='output co'>#&gt; <span class='error'>Error in curl::curl_fetch_disk(url, x$path, handle = handle): Couldn&#39;t resolve host name</span></div><div class='input'><span class='no'>fp</span></div><div class='output co'>#&gt; <span class='error'>Error in eval(expr, envir, enclos): object &#39;fp&#39; not found</span></div><div class='input'><span class='fu'>unlink</span>(<span class='no'>fp</span>)</div><div class='output co'>#&gt; <span class='error'>Error in unlink(fp): object &#39;fp&#39; not found</span></div><div class='input'>
-</div></pre>
+<span class='no'>fp</span> <span class='kw'>=</span> <span class='fu'>getCromwellJar</span>(<span class='kw'>cromwell_version</span> <span class='kw'>=</span> <span class='no'>version</span>)
+<span class='no'>fp</span></div><div class='output co'>#&gt; [1] &quot;/var/folders/21/b_rp6qyj1_b1j5cp8qby0tnr0000gn/T//RtmpKPNq6f/cromwell.jar&quot;</div><div class='input'><span class='fu'>unlink</span>(<span class='no'>fp</span>)</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
