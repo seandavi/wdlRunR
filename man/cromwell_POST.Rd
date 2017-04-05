@@ -23,3 +23,4 @@ functions.
 \seealso{
 \code{\link{cromwellBatch}}
 }
+\keyword{internal}

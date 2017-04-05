@@ -1,4 +1,4 @@
-#' Fetch the base URL and port for cromwell server
+#' Set and get base URL and port for cromwell server
 #'
 #' The Cromwell server presents a RESTFul API. The base URL is of the form:
 #' `http://EXAMPLE.COM:PORT`. The current approach to changing that
@@ -6,21 +6,33 @@
 #' This URL will then be used throughout the `cRomwell` package.  If no option is set,
 #' the server is assumed to be running at `http://localhost:8000`.
 #'
+#' @param base_url character(1) specifying the url and port of the
+#'     cromwell server
+#' @return A character(1) base url (default \code{http://localhost:8000})
+#' 
 #' @examples
 #' cromwellBase()
 #'
 #' # set a bogus host
-#' options('cromwellBase' = 'http://example.com:8111')
+#' setCromwellBase('http://example.com:8111')
 #' cromwellBase()
 #'
 #' # and set back to NULL to get the default behavior
-#' options('cromwellBase' = NULL)
+#' setCromwellBase()
 #' cromwellBase()
 #'
 #' @export
 cromwellBase <- function() {
     base_url = getOption('cromwellBase', default="http://localhost:8000")
     return(base_url)
+}
+
+#' @rdname cromwellBase
+#' @export
+setCromwellBase <- function(base_url=NULL) {
+    stopifnot(is.character(base_url),length(base_url)==1)
+    options('cromwellBase' = base_url)
+    invisible(base_url)
 }
 
 #' Perform a GET request to cromwell server
@@ -37,6 +49,8 @@ cromwellBase <- function() {
 #' @param ... passed directly to httr `GET` (for including `timeouts`,
 #'     `handles`, etc.)
 #'
+#' @keywords internal
+#' 
 #' @importFrom httr modify_url
 #' @importFrom httr GET
 #'
@@ -58,6 +72,8 @@ cromwell_GET <- function(path,query=NULL,...) {
 #' @param body A list that will become the multipart form that is passed as the request body
 #' @param ... passed directly to httr `POST` (for including `timeouts`, `handles`, etc.)
 #'
+#' @keywords internal
+#' 
 #' @importFrom httr modify_url
 #' @importFrom httr POST
 #'
@@ -107,8 +123,9 @@ cromwell_POST = function(path,body,...) {
 
 #' Get the info about cromwell workflows
 #'
-#' Each of the following terms can be specified one or more times. Simply create a named list
-#' or named character vector.
+#' Each of the following terms can be specified one or more
+#' times. Simply create a named list or named character vector.
+#' 
 #' \describe{
 #'   \item{name}{The name of a job; may be specified more than once}
 #'   \item{status}{one of Succeeded, Failed, Running}
@@ -178,7 +195,8 @@ cromwellQuery = function(query=NULL, ...) {
 #' end datetime, backend-specific job id, return code, stdout and
 #' stderr. Date formats are ISO with milliseconds.
 #' 
-#' @param ids A cromwell id as a string
+#' @param ids A character() vector of cromwell IDs, typically returned
+#'     from a batch submission or from a call to \code{\link{cromwellQuery}}.
 #' @param ... passed directly to httr `GET` (for including `timeouts`,
 #'     `handles`, etc.)
 #'
@@ -223,7 +241,7 @@ cromwellMetadata = function(ids,query=NULL,...) {
 #' @importFrom httr POST
 #'
 #' @examples
-#' #cromwellAbord('ID')
+#' #cromwellAbort('ID')
 #' @export
 cromwellAbort = function(id, ...) {
     return(cromwell_POST(path=sprintf('api/workflows/v1/%s/abort',id),body=NULL,...))
@@ -385,9 +403,10 @@ cromwellBatch = function(wdlSource,
 
 #' Submit a single cromwell job
 #'
-#' This function submits a set of one or more inputs to cromwell. It is much more efficient
-#' than submitting a single job at a time.  See
-#' \href{https://github.com/broadinstitute/cromwell#post-apiworkflowsversionbatch}{the cromwell \code{batch} API documentation} for details.
+#' This function submits a set of one or more inputs to cromwell. It
+#' is much more efficient than submitting a single job at a time.  See
+#' \href{https://github.com/broadinstitute/cromwell#post-apiworkflowsversionbatch}{the
+#' cromwell \code{batch} API documentation} for details.
 #'
 #' @param wdlSource A \code{list}, a JSON string (as a \code{character} vector of length 1,
 #'   or an \code{\link[httr]{upload_file}} object. See details below.
@@ -421,7 +440,8 @@ cromwellSingle = function(wdlSource,
 
 #' List available backends for a cromwell endpoint
 #'
-#' This endpoint returns a list of the backends supported by the server as well as the default backend.
+#' This endpoint returns a list of the backends supported by the
+#' server as well as the default backend.
 #'
 #' @param ... passed directly to httr `GET` (for including `timeouts`, `handles`, etc.)
 #'
@@ -446,7 +466,9 @@ cromwellBackends = function(...) {
 
 #' Get current statistics for cromwell endpoint
 #'
-#' This endpoint returns some basic statistics on the current state of the engine. At the moment that includes the number of running workflows and the number of active jobs.
+#' This endpoint returns some basic statistics on the current state of
+#' the engine. At the moment that includes the number of running
+#' workflows and the number of active jobs.
 #'
 #' @param ... passed directly to httr `GET` (for including `timeouts`, `handles`, etc.)
 #'

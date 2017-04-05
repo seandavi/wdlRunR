@@ -4,19 +4,22 @@
 \alias{cromwellQuery}
 \title{Get the info about cromwell workflows}
 \usage{
-cromwellQuery(terms = NULL, ...)
+cromwellQuery(query = NULL, ...)
 }
 \arguments{
-\item{terms}{terms about the workflow}
+\item{query}{terms about the workflow}
 
-\item{...}{passed directly to httr `GET` (for including `timeouts`, `handles`, etc.)}
+\item{...}{passed directly to httr `GET` (for including `timeouts`,
+`handles`, etc.)}
 }
 \value{
 a data.frame of query results
 }
 \description{
-Each of the following terms can be specified one or more times. Simply create a named list
-or named character vector.
+Each of the following terms can be specified one or more
+times. Simply create a named list or named character vector.
+}
+\details{
 \describe{
   \item{name}{The name of a job; may be specified more than once}
   \item{status}{one of Succeeded, Failed, Running}

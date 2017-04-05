@@ -24,9 +24,10 @@ to a large value to allow for a completed response.}
 \item{...}{passed directly to httr `POST` (for including `timeouts`, `handles`, etc.)}
 }
 \description{
-This function submits a set of one or more inputs to cromwell. It is much more efficient
-than submitting a single job at a time.  See
-\href{https://github.com/broadinstitute/cromwell#post-apiworkflowsversionbatch}{the cromwell \code{batch} API documentation} for details.
+This function submits a set of one or more inputs to cromwell. It
+is much more efficient than submitting a single job at a time.  See
+\href{https://github.com/broadinstitute/cromwell#post-apiworkflowsversionbatch}{the
+cromwell \code{batch} API documentation} for details.
 }
 \details{
 abc details

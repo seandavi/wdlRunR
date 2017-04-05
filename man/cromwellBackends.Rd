@@ -13,7 +13,8 @@ cromwellBackends(...)
 a list that includes backend details
 }
 \description{
-This endpoint returns a list of the backends supported by the server as well as the default backend.
+This endpoint returns a list of the backends supported by the
+server as well as the default backend.
 }
 \examples{
 #cromwellBackends()

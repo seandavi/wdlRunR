@@ -2,9 +2,19 @@
 % Please edit documentation in R/api.R
 \name{cromwellBase}
 \alias{cromwellBase}
-\title{Fetch the base URL and port for cromwell server}
+\alias{setCromwellBase}
+\title{Set and get base URL and port for cromwell server}
 \usage{
 cromwellBase()
+
+setCromwellBase(base_url = NULL)
+}
+\arguments{
+\item{base_url}{character(1) specifying the url and port of the
+cromwell server}
+}
+\value{
+A character(1) base url (default \code{http://localhost:8000})
 }
 \description{
 The Cromwell server presents a RESTFul API. The base URL is of the form:
@@ -17,11 +27,11 @@ the server is assumed to be running at `http://localhost:8000`.
 cromwellBase()
 
 # set a bogus host
-options('cromwellBase' = 'http://example.com:8111')
+setCromwellBase('http://example.com:8111')
 cromwellBase()
 
 # and set back to NULL to get the default behavior
-options('cromwellBase' = NULL)
+setCromwellBase()
 cromwellBase()
 
 }
