@@ -11,8 +11,8 @@
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
+<link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cyborg/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
 
-<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 
 <!-- Font Awesome icons -->
@@ -31,6 +31,20 @@
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
+
+
+<!-- Google analytics -->
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-93043521-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+
   </head>
 
   <body>
@@ -79,8 +93,8 @@
 
     
     <p>See the docmentation at
-<a href = 'the
-cromwell github site'>https://github.com/broadinstitute/cromwell#rest-api</a> for details. Generally, this is not meant to
+<a href = 'https://github.com/broadinstitute/cromwell#rest-api'>the
+cromwell github site</a> for details. Generally, this is not meant to
 be called by the end user. Rather, use the endpoint-specific
 functions.</p>
     
@@ -88,14 +102,21 @@ functions.</p>
     <pre><span class='fu'>cromwell_POST</span>(<span class='no'>path</span>, <span class='no'>body</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
-    <dl class="dl-horizontal">
-      <dt>path</dt>
-      <dd>The path part of the URL</dd>
-      <dt>body</dt>
-      <dd>A list that will become the multipart form that is passed as the request body</dd>
-      <dt>...</dt>
-      <dd>passed directly to httr `POST` (for including `timeouts`, `handles`, etc.)</dd>
-    </dl>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>path</th>
+      <td><p>The path part of the URL</p></td>
+    </tr>
+    <tr>
+      <th>body</th>
+      <td><p>A list that will become the multipart form that is passed as the request body</p></td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td><p>passed directly to httr `POST` (for including `timeouts`, `handles`, etc.)</p></td>
+    </tr>
+    </table>
     
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
