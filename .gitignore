@@ -3,3 +3,13 @@
 .RData
 .httr-oauth
 cromwell-*
+*.aux
+*.bbl
+*.bcf
+*.blg
+*.log
+*.oug
+*.out
+*.pdf
+*.run.xml
+*.tex
