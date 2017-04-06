@@ -59,9 +59,11 @@ test_that('cromwellBatch',{
     expect_length(res$content,10)
 })
 
-Sys.sleep(20)
+Sys.sleep(10)
 
 test_that('cromwellQuery',{
+    res = cromwellStats()
+    expect_equal(names(res),c('workflows','jobs'))
     res = cromwellQuery()
     expect_equal(ncol(res),6)
     expect_gte(nrow(res),10)
