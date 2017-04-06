@@ -60,7 +60,7 @@ getWdltoolJar = function(wdltool_version,
 #' tmpfile = file.path(tempdir(),'wdltool.jar')
 #' fp = getWdltoolJar(wdltool_version = version,
 #'                    destfile = tmpfile)
-#' wdltoolInputs(system.file(package='cRomwell','wdl/fastqc_task.wdl'))
+#' wdltoolInputs(system.file(package='wdlRunR','wdl/fastqc_task.wdl'))
 #' 
 #' @export
 wdltoolInputs <- function(wdlfile,
