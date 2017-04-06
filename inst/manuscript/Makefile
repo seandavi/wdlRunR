@@ -1,10 +1,7 @@
-all: main.pdf cromwell_manuscript.pdf
+all: main.pdf wdlrunr_manuscript.pdf
 
-cromwell_manuscript.pdf: cromwell_manuscript.tex citations.bib
-	rm cromwell_manuscript.b*; xelatex cromwell_manuscript.tex; biber --bblsafecharsset=full cromwell_manuscript; xelatex cromwell_manuscript.tex; xelatex cromwell_manuscript.tex; xelatex cromwell_manuscript.tex
-
-main.pdf: main.tex citations.bib arch.pdf
-	rm main.b*; xelatex main.tex; bibtex main; xelatex main.tex; xelatex main.tex; xelatex main.tex
+wdlrunr_manuscript.pdf: wdlrunr_manuscript.tex citations.bib
+	rm wdlrunr_manuscript.b*; xelatex wdlrunr_manuscript.tex; biber --bblsafecharsset=full wdlrunr_manuscript; xelatex wdlrunr_manuscript.tex; xelatex wdlrunr_manuscript.tex; xelatex wdlrunr_manuscript.tex
 
 arch.pdf: wdlrunr.dot
 	dot -Tpdf wdlrunr.dot -o arch.pdf

@@ -38,8 +38,6 @@
 \begin{document}
 \maketitle
 
-<<<<<<< HEAD
-=======
 <<init,include=FALSE>>=
 library(knitr)
 @ 
@@ -162,8 +160,6 @@ print(xtable(x, caption = "Table of functionality for interacting with the Cromw
   \includegraphics{arch}
 \end{figure}
 
-
->>>>>>> manuscript
 
 \printbibliography
 
