@@ -1,5 +1,5 @@
-library(cRomwell)
-context("cromwell")
+library(wdlRunR)
+context("wdlRunR")
 
 cromwell_jar = getCromwellJar(cromwell_version='25')
 cromwell_log = file.path(tempdir(),'cromwell.log')
