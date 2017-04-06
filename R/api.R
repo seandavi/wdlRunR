@@ -30,7 +30,12 @@ cromwellBase <- function() {
 #' @rdname cromwellBase
 #' @export
 setCromwellBase <- function(base_url=NULL) {
-    stopifnot(is.character(base_url),length(base_url)==1)
+    if(!is.null(base_url)) {
+        stopifnot(is.character(base_url),length(base_url)==1)
+        options('cromwellBase' = base_url)
+        invisible(base_url)
+    }
+    base_url = "http://localhost:8000"
     options('cromwellBase' = base_url)
     invisible(base_url)
 }
