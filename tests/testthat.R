@@ -1,4 +1,3 @@
 library(testthat)
-library(cRomwell)
 
-test_check("cRomwell")
+test_check("wdlRunR")
