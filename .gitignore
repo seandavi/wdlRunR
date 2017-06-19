@@ -13,3 +13,5 @@ cromwell-*
 *.pdf
 *.run.xml
 *.tex
+.#*
+*#
