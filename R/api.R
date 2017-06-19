@@ -141,7 +141,16 @@ cromwell_POST = function(path,body,...) {
 #'   \item{pagesize}{if paging is used, how many records per page}
 #' }
 #'
-#' @param query terms about the workflow
+#' @param name character vector of workflow names.
+#' @param id character vector of workflow IDs.
+#' @param label character vector of workflow labels.
+#' @param status character vector of workflow status values. The available
+#'     statuses are: Submitted, Running, Aborting, Aborted, Failed, and Succeeded.
+#' @param start a \code{Date} object specifying the workflow start time. Only workflows
+#'     started after this are returned.
+#' @param end a \code{Date} object specifying the workflow end time. Only workflows
+#'     that completed after this are returned.
+#' 
 #' @param ... passed directly to httr `GET` (for including `timeouts`,
 #'     `handles`, etc.)
 #'
@@ -151,13 +160,16 @@ cromwell_POST = function(path,body,...) {
 #'
 #' @examples
 #' \dontrun{
-#' res = cromwellQuery(terms=c(status='Succeeded',name='taskName'))
+#' res = cromwellQuery(status='Succeeded')
 #' head(res)
 #' }
 #'
 #' @export
-cromwellQuery = function(query=NULL, ...) {
-    cnames = c('name', 'id', 'start', 'end', 'status')
+cromwellQuery = function(name = NULL, id = NULL, status = NULL, start = NULL, end = NULL, label = NULL, ...) {
+    cnames = c('name', 'id', 'label', 'status') # character vectors
+    dnames = c('start', 'end') # date objects required    
+    .statuses = c('Submitted','Running','Aborting','Aborted','Failed','Succeeded')
+    
     path = 'api/workflows/v1/query'
     resp = cromwell_GET(path=path,query=query,...)
     x = lapply(cnames,function(cname) {
@@ -165,7 +177,6 @@ cromwellQuery = function(query=NULL, ...) {
     })
     x = setNames(x,cnames)
     x = data.frame(x, stringsAsFactors = FALSE)
-
     #x = do.call(rbind.fill,lapply(resp$content$results,as.data.frame))
     if('start' %in% colnames(x))
         x$start = strptime(substr(as.character(x$start),1,19),format="%Y-%m-%dT%H:%M:%S",tz="UTC")
@@ -368,6 +379,8 @@ cromwellLogs = function(ids, ...) {
 #' @param workflowOptions A \code{list}, a JSON string (as a
 #'     \code{character} vector of length 1, or an
 #'     \code{\link[httr]{upload_file}} object. See details below.
+#' @param customLabels A named \code{character} vector with key-value
+#'     pairs to assign to all batch tasks.
 #' @param timeout The number of seconds to wait for a response. Batch
 #'     jobs can take quite some time for cromwell to process, so this
 #'     will typically need to be set to a large value to allow for a
@@ -385,6 +398,7 @@ cromwellLogs = function(ids, ...) {
 #' @export
 cromwellBatch = function(wdlSource,
                          workflowInputs,
+                         customLabels = NULL,
                          workflowOptions=NULL,
                          timeout = 120,
                          ...) {
@@ -405,6 +419,7 @@ cromwellBatch = function(wdlSource,
     }
     body = list(wdlSource       = wdlSource,
                 workflowInputs  = inputs,
+                customLabels = toJSON(customLabels,auto_unbox=TRUE),
                 workflowOptions = opts)
 
     return(cromwell_POST('/api/workflows/v1/batch',body = body, encode = 'multipart',
@@ -435,10 +450,11 @@ cromwellBatch = function(wdlSource,
 #'
 #' @export
 cromwellSingle = function(wdlSource,
-                         workflowInputs,
-                         workflowOptions=NULL,
-                         timeout = 120,
-                         ...) {
+                          workflowInputs,
+                          customLabels = NULL,
+                          workflowOptions=NULL,
+                          timeout = 120,
+                          ...) {
     body = list(wdlSource       = wdlSource,
                 workflowInputs  = workflowInputs,
                 workflowOptions = workflowOptions)
@@ -562,5 +578,28 @@ getCromwellJar = function(cromwell_version,destfile = file.path(tempdir(),'cromw
     invisible(fname)
 }
 
-
-
+#' Cromwell reference class
+#'
+setRefClass('wdlrunr',
+            fields = list(
+                host = 'character',
+                port = 'integer'
+            ),
+            methods = list(
+                initialize         = function(host ='localhost',
+                                              port = 8000) {
+                    "This is test documentation"
+                    initFields(host = host,port = as.integer(port))
+                },
+                getCromwellJar     = getCromwellJar,
+                version            = cromwellVersion,
+                stats              = cromwellStats,
+                backends           = cromwellBackends,
+                submit             = cromwellSingle,
+                batch              = cromwellBatch,
+                logs               = cromwellLogs,
+                outputs            = cromwellOutputs,
+                abort              = cromwellAbort,
+                metadata           = cromwellMetadata,
+                query              = cromwellQuery
+            ))
