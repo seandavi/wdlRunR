@@ -165,7 +165,7 @@ cromwell_POST = function(path,body,...) {
 #' }
 #'
 #' @export
-cromwellQuery = function(name = NULL, id = NULL, status = NULL, start = NULL, end = NULL, label = NULL, ...) {
+.cromwellQuery = function(query=NULL, ...) {
     cnames = c('name', 'id', 'label', 'status') # character vectors
     dnames = c('start', 'end') # date objects required    
     .statuses = c('Submitted','Running','Aborting','Aborted','Failed','Succeeded')
@@ -236,8 +236,7 @@ cromwellQuery = function(name = NULL, id = NULL, status = NULL, start = NULL, en
 #' str(metalist,list.len=5)
 #' }
 #'
-#' @export
-cromwellMetadata = function(ids,query=NULL,...) {
+.cromwellMetadata = function(ids,query=NULL,...) {
     retlist = lapply(ids,function(id) {
         path=sprintf('api/workflows/v1/%s/metadata',id)
         resp = cromwell_GET(path = path, query=query, ...)
@@ -263,8 +262,7 @@ cromwellMetadata = function(ids,query=NULL,...) {
 #'
 #' @examples
 #' #cromwellAbort('ID')
-#' @export
-cromwellAbort = function(id, ...) {
+.cromwellAbort = function(id, ...) {
     return(cromwell_POST(path=sprintf('api/workflows/v1/%s/abort',id),body=NULL,...))
 }
 
@@ -282,7 +280,9 @@ cromwellAbort = function(id, ...) {
 #'
 #' @importFrom httr GET
 #' @importFrom stats setNames
-
+#' @importFrom dplyr bind_rows
+#' @import magrittr
+#'
 #' @examples
 #' \dontrun{
 #' res = cromwellQuery(terms=c(status='Succeeded',name='taskName'))
@@ -291,8 +291,7 @@ cromwellAbort = function(id, ...) {
 #' str(outfilelist,list.len=5)
 #' }
 #'
-#' @export
-cromwellOutputs = function(ids, ...) {
+.cromwellOutputs = function(ids, ...) {
     retlist = lapply(ids,function(id) {
         path = sprintf('api/workflows/v1/%s/outputs', id)
         resp = cromwell_GET(path = path, ...)
@@ -305,7 +304,10 @@ cromwellOutputs = function(ids, ...) {
     retlist = setNames(retlist,ids)
     attr(retlist,'when') = Sys.time()
     class(retlist) = c('cromwell_output_list','cromwell_api',class(retlist))
-    return(retlist)
+    retval = sapply(names(x), function(y) {if(length(x[[y]])==0) return(NULL) else return(data_frame(id=y,output=names(x[[y]]),uri=unlist(x[[y]])))}) %>%
+        Filter(function(tmp) !is.null(tmp),.) %>%
+        bind_rows()
+    return(retval)
 }
 
 
@@ -343,18 +345,39 @@ cromwellOutputs = function(ids, ...) {
 #' str(loglist,list.len=5)
 #' }
 #'
-#' @export
-cromwellLogs = function(ids, ...) {
+.cromwellLogs = function(ids, ...) {
+    "Get log paths associated with one or more workflow ids
+
+parameters:
+
+ids: a character vector of ids for which to fetch the logs
+
+This will return paths to the standard out and standard error files
+ that were generated during the execution of all calls in a
+ workflow.  A call has one or more standard out and standard error
+ logs, depending on if the call was scattered or not. In the latter
+ case, one log is provided for each instance of the call that has
+ been run.
+"
+
     retlist = lapply(ids,function(id) {
         path = sprintf('api/workflows/v1/%s/logs', id)
         resp = cromwell_GET(path = path, ...)
         ret = resp$content$calls
+        if(is.null(ret)) return(NULL)
         attr(ret,'path') = path
         attr(ret,'when') = Sys.time()
         class(ret) = c('cromwell_log','cromwell_api',class(ret))
         ret
     })
     retlist = setNames(retlist,ids)
+    retlist = Filter(function(tmp) !is.null(tmp),retlist)
+    retval = bind_rows(
+        sapply(names(retlist), function(id) {
+            logval = retlist[[id]]
+            datrows = do.call(rbind,lapply(logval,function(y) y[[1]]))
+            return(data.frame(id = id,datrows))}))
+    return(retval)
     attr(retlist,'when') = Sys.time()
     class(retlist) = c('cromwell_log_list','cromwell_api',class(retlist))
     return(retlist)
@@ -395,8 +418,7 @@ cromwellLogs = function(ids, ...) {
 #'
 #' @importFrom jsonlite toJSON
 #'
-#' @export
-cromwellBatch = function(wdlSource,
+.cromwellBatch = function(wdlSource,
                          workflowInputs,
                          customLabels = NULL,
                          workflowOptions=NULL,
@@ -448,8 +470,7 @@ cromwellBatch = function(wdlSource,
 #'
 #' @importFrom httr POST
 #'
-#' @export
-cromwellSingle = function(wdlSource,
+.cromwellSingle = function(wdlSource,
                           workflowInputs,
                           customLabels = NULL,
                           workflowOptions=NULL,
@@ -479,8 +500,7 @@ cromwellSingle = function(wdlSource,
 #'
 #' @examples
 #' #cromwellBackends()
-#' @export
-cromwellBackends = function(...) {
+.cromwellBackends = function(...) {
     path = 'api/workflows/v1/backends'
     resp = cromwell_GET(path = path, ...)
     ret = resp$content
@@ -506,8 +526,7 @@ cromwellBackends = function(...) {
 #'
 #' @examples
 #' #cromwellStats()
-#' @export
-cromwellStats = function(...) {
+.cromwellStats = function(...) {
     path = 'api/engine/v1/stats'
     resp = cromwell_GET(path = path, ...)
     ret = resp$content
@@ -530,8 +549,7 @@ cromwellStats = function(...) {
 #'
 #' @examples
 #' #cromwellVersion()
-#' @export
-cromwellVersion = function(...) {
+.cromwellVersion = function(...) {
     path = 'api/engine/v1/version'
     resp = cromwell_GET(path = path, ...)
     ret = resp$content$cromwell
@@ -578,28 +596,67 @@ getCromwellJar = function(cromwell_version,destfile = file.path(tempdir(),'cromw
     invisible(fname)
 }
 
-#' Cromwell reference class
-#'
-setRefClass('wdlrunr',
-            fields = list(
-                host = 'character',
-                port = 'integer'
-            ),
-            methods = list(
-                initialize         = function(host ='localhost',
-                                              port = 8000) {
-                    "This is test documentation"
-                    initFields(host = host,port = as.integer(port))
-                },
-                getCromwellJar     = getCromwellJar,
-                version            = cromwellVersion,
-                stats              = cromwellStats,
-                backends           = cromwellBackends,
-                submit             = cromwellSingle,
-                batch              = cromwellBatch,
-                logs               = cromwellLogs,
-                outputs            = cromwellOutputs,
-                abort              = cromwellAbort,
-                metadata           = cromwellMetadata,
-                query              = cromwellQuery
-            ))
+###################################
+#
+# Classes
+#
+###################################
+
+setClass('Cromwell',
+         representation(baseUrl = "character"),
+         prototype(baseUrl = 'http://localhost:8111')
+         )
+
+###################################
+#
+# Basic 
+
+setGeneric('baseUrl', function(object) {
+    standardGeneric('baseUrl')
+})
+
+setMethod('baseUrl',signature("Cromwell"),
+          function(object) {
+              object@baseUrl
+          })
+
+setGeneric('baseUrl<-', function(object,url) {
+    standardGeneric('baseUrl<-')
+})
+
+setMethod('baseUrl<-', signature('Cromwell', 'character'),
+          function(object,url) {
+              object@baseUrl <- url
+          })
+
+setGeneric('backends', function(object, ...) {
+    standardGeneric('backends')
+})
+
+setMethod('backends', signature('Cromwell'),
+          function(object, ...) {
+              .cromwellBackends(...)
+          })
+
+setGeneric('version', function(object, ...) {
+    standardGeneric('version')
+})
+
+setMethod('version', signature('Cromwell'),
+          function(object, ...) {
+              .cromwellVersion(...)
+          })
+
+setGeneric('outputs', function(object, ids, ...) {
+    standardGeneric('outputs')
+})
+
+setMethod('outputs', signature('Cromwell', 'missing'),
+          function(object, ids) {
+              .cromwellOutputs()
+          })
+
+setMethod('outputs', signature('Cromwell', 'character'),
+          function(object, ids) {
+              .cromwellOutputs()
+          })
