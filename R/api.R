@@ -652,11 +652,16 @@ setGeneric('outputs', function(object, ids, ...) {
 })
 
 setMethod('outputs', signature('Cromwell', 'missing'),
-          function(object, ids) {
-              .cromwellOutputs()
+          function(object, ids, ...) {
+              stop("NOT IMPLEMENTED")
           })
 
 setMethod('outputs', signature('Cromwell', 'character'),
-          function(object, ids) {
-              .cromwellOutputs()
+          function(object, ids, ...) {
+              .cromwellOutputs(ids, ...)
+          })
+
+setMethod('outputs', signature('Cromwell', 'character'),
+          function(object, ids, ...) {
+              .cromwellOutputs(ids, ...)
           })
