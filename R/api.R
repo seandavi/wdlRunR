@@ -59,8 +59,8 @@ setCromwellBase <- function(base_url=NULL) {
 #' @importFrom httr modify_url
 #' @importFrom httr GET
 #'
-cromwell_GET <- function(path,query=NULL,...) {
-    url <- modify_url(cromwellBase(), path = path, query = query)
+.cromwell_GET <- function(baseUrl,path,query=NULL,...) {
+    url <- modify_url(baseUrl, path = path, query = query)
     resp <- GET(url,...)
     return(.cromwell_process_response(resp))
 }
@@ -84,8 +84,8 @@ cromwell_GET <- function(path,query=NULL,...) {
 #'
 #' @seealso \code{\link{cromwellBatch}}
 #'
-cromwell_POST = function(path,body,...) {
-    url = modify_url(cromwellBase(), path = path)
+.cromwell_POST = function(baseUrl, path,body,...) {
+    url = modify_url(baseUrl, path = path)
     resp = POST(url, body = body, ...)
     return(.cromwell_process_response(resp))
 }
@@ -418,7 +418,8 @@ This will return paths to the standard out and standard error files
 #'
 #' @importFrom jsonlite toJSON
 #'
-.cromwellBatch = function(wdlSource,
+.cromwellBatch = function(baseUrl,
+                          wdlSource,
                          workflowInputs,
                          customLabels = NULL,
                          workflowOptions=NULL,
@@ -436,15 +437,13 @@ This will return paths to the standard out and standard error files
         stop('workflowOptions should be a data.frame or a character vector of length 1')
     if(is.list(workflowOptions))
         opts = toJSON(workflowOptions)
-    else
-        opts = workflowOptions
     }
     body = list(wdlSource       = wdlSource,
                 workflowInputs  = inputs,
                 customLabels = toJSON(customLabels,auto_unbox=TRUE),
                 workflowOptions = opts)
 
-    return(cromwell_POST('/api/workflows/v1/batch',body = body, encode = 'multipart',
+    return(cromwell_POST(baseUrl,'/api/workflows/v1/batch',body = body, encode = 'multipart',
                 timeout(timeout), ...))
 }
 
@@ -500,9 +499,9 @@ This will return paths to the standard out and standard error files
 #'
 #' @examples
 #' #cromwellBackends()
-.cromwellBackends = function(...) {
+.cromwellBackends = function(baseUrl, ...) {
     path = 'api/workflows/v1/backends'
-    resp = cromwell_GET(path = path, ...)
+    resp = .cromwell_GET(baseUrl, path = path, ...)
     ret = resp$content
     attr(ret,'path') = path
     attr(ret,'when') = Sys.time()
@@ -526,9 +525,9 @@ This will return paths to the standard out and standard error files
 #'
 #' @examples
 #' #cromwellStats()
-.cromwellStats = function(...) {
+.cromwellStats = function(baseUrl,...) {
     path = 'api/engine/v1/stats'
-    resp = cromwell_GET(path = path, ...)
+    resp = .cromwell_GET(baseUrl, path = path, ...)
     ret = resp$content
     attr(ret,'path') = path
     attr(ret,'when') = Sys.time()
@@ -549,9 +548,9 @@ This will return paths to the standard out and standard error files
 #'
 #' @examples
 #' #cromwellVersion()
-.cromwellVersion = function(...) {
+.cromwellVersion = function(baseUrl, ...) {
     path = 'api/engine/v1/version'
-    resp = cromwell_GET(path = path, ...)
+    resp = .cromwell_GET(baseUrl, path = path, ...)
     ret = resp$content$cromwell
     attr(ret,'path') = path
     attr(ret,'when') = Sys.time()
@@ -589,12 +588,26 @@ This will return paths to the standard out and standard error files
 #' unlink(fp)
 #'
 #' @export
-getCromwellJar = function(cromwell_version,destfile = file.path(tempdir(),'cromwell.jar')) {
+getCromwellJar = function(release,destfile = file.path(tempdir(),'cromwell.jar')) {
     fname = destfile
-    httr::GET(sprintf('https://github.com/broadinstitute/cromwell/releases/download/%s/cromwell-%s.jar',
-                      cromwell_version,cromwell_version),write_disk(fname,overwrite = TRUE))
+    httr::GET(.releaseJarURL(release),write_disk(fname,overwrite = TRUE))
     invisible(fname)
 }
+
+availableReleases = function() {
+    releaseURL = httr::modify_url(url = 'https://api.github.com',path='/repos/broadinstitute/cromwell/releases')
+    jsonlite::fromJSON(httr::content(httr::GET(releaseURL),'text'),simplifyDataFrame=TRUE)
+}
+
+.releaseJarURL = function(release='latest') {
+    id = availableReleases()[1,'id']
+    assetURL = httr::modify_url(url = 'https://api.github.com',
+                                path=sprintf('/repos/broadinstitute/cromwell/releases/%d/assets',id))
+    tmp = jsonlite::fromJSON(httr::content(httr::GET(assetURL),'text'),simplifyDataFrame = TRUE)
+    row = grep('jar$',tmp$name)
+    return(tmp[row,'browser_download_url'])
+}
+
 
 ###################################
 #
@@ -610,6 +623,8 @@ setClass('Cromwell',
 ###################################
 #
 # Basic 
+#
+###################################
 
 setGeneric('baseUrl', function(object) {
     standardGeneric('baseUrl')
@@ -620,13 +635,14 @@ setMethod('baseUrl',signature("Cromwell"),
               object@baseUrl
           })
 
-setGeneric('baseUrl<-', function(object,url) {
+setGeneric('baseUrl<-', function(object, value) {
     standardGeneric('baseUrl<-')
 })
 
-setMethod('baseUrl<-', signature('Cromwell', 'character'),
-          function(object,url) {
-              object@baseUrl <- url
+setReplaceMethod('baseUrl', signature(object = 'Cromwell', value='character'),
+          function(object, value) {
+              object@baseUrl <- value
+              object
           })
 
 setGeneric('backends', function(object, ...) {
@@ -635,7 +651,7 @@ setGeneric('backends', function(object, ...) {
 
 setMethod('backends', signature('Cromwell'),
           function(object, ...) {
-              .cromwellBackends(...)
+              .cromwellBackends(baseUrl(object), ...)
           })
 
 setGeneric('version', function(object, ...) {
@@ -644,8 +660,24 @@ setGeneric('version', function(object, ...) {
 
 setMethod('version', signature('Cromwell'),
           function(object, ...) {
-              .cromwellVersion(...)
+              .cromwellVersion(baseUrl(object), ...)
           })
+
+setGeneric('stats', function(object, ...) {
+    standardGeneric('stats')
+})
+
+setMethod('stats', signature('Cromwell'),
+          function(object, ...) {
+              .cromwellStats(baseUrl(object), ...)
+          })
+
+###################################
+#
+# Outputs
+#
+###################################
+
 
 setGeneric('outputs', function(object, ids, ...) {
     standardGeneric('outputs')
@@ -665,3 +697,46 @@ setMethod('outputs', signature('Cromwell', 'character'),
           function(object, ids, ...) {
               .cromwellOutputs(ids, ...)
           })
+
+###################################
+#
+# Jobs 
+#
+###################################
+
+setOldClass('form_file')
+
+setClass('KeyValuePairs',
+         contains = "list")
+
+setValidity('KeyValuePairs',
+            function(object) {
+                if(!inherits(object,"list")) {
+                    stop("KeyValuePairs needs to be a list")
+                }
+                if(!all(sapply(object,length)==1)) {
+                    stop("KeyValuePairs list values must all be of length 1")
+                }
+                if(is.null(names(object)) ||
+                   !all(nchar(names(object))>0)) {
+                    stop("KeyValuePairs elements must all have names")
+                }
+            }
+            )
+
+#' importFrom httr form_file
+setClassUnion('characterOrFormFile', c('character', 'form_file'))
+setClassUnion('characterOrNULL', c('character', 'form_file'))
+setClassUnion('characterOrFormFileOrNULL', c('characterOrFormFile','NULL'))
+
+setClass('BatchTemplate',
+         representation(workflowSource = "characterOrFormFile",
+                        customLabels   = "characterOrNULL",
+                        workflowOptions = "list"))
+
+###################################
+#
+# Logs 
+#
+###################################
+

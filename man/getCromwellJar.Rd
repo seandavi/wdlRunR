@@ -4,13 +4,12 @@
 \alias{getCromwellJar}
 \title{Utility to fetch the cromwell JAR file}
 \usage{
-getCromwellJar(cromwell_version, destfile = file.path(tempdir(),
-  "cromwell.jar"))
+getCromwellJar(release, destfile = file.path(tempdir(), "cromwell.jar"))
 }
 \arguments{
-\item{cromwell_version}{string representing the version number}
-
 \item{destfile}{string The full path to the cromwell jar file location on the local system}
+
+\item{cromwell_version}{string representing the version number}
 }
 \value{
 destfile location [invisibly]
