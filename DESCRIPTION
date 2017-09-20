@@ -29,3 +29,15 @@ BiocViews:
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 6.0.1
+Collate: 
+    'api.R'
+    'class-server.R'
+    'backends.R'
+    'baseURL.R'
+    'cromwellJar.R'
+    'gcs.R'
+    'getCromwell.R'
+    'metadata.R'
+    'stats.R'
+    'version.R'
+    'wdltool.R'
