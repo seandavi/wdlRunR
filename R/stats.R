@@ -3,7 +3,7 @@
 # @param ... passed directly to httr `GET` (for including `timeouts`, `handles`, etc.)
 #' @importFrom httr GET
 .cromwellStats = function(baseUrl,...) {
-    path = 'api/engine/v1/stats'
+    path = 'engine/v1/stats'
     resp = .cromwell_GET(baseUrl, path = path, ...)
     ret = resp$content
     attr(ret,'path') = path

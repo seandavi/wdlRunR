@@ -1,45 +1,3 @@
-#' Set and get base URL and port for cromwell server
-#'
-#' The Cromwell server presents a RESTFul API. The base URL is of the form:
-#' `http://EXAMPLE.COM:PORT`. The current approach to changing that
-#' url is to set an option, `cromwellBase` to a valid URL (without trailing slash).
-#' This URL will then be used throughout the `cRomwell` package.  If no option is set,
-#' the server is assumed to be running at `http://localhost:8000`.
-#'
-#' @param base_url character(1) specifying the url and port of the
-#'     cromwell server
-#' @return A character(1) base url (default \code{http://localhost:8000})
-#' 
-#' @examples
-#' cromwellBase()
-#'
-#' # set a bogus host
-#' setCromwellBase('http://example.com:8111')
-#' cromwellBase()
-#'
-#' # and set back to NULL to get the default behavior
-#' setCromwellBase()
-#' cromwellBase()
-#'
-#' @export
-cromwellBase <- function() {
-    base_url = getOption('cromwellBase', default="http://localhost:8000")
-    return(base_url)
-}
-
-#' @rdname cromwellBase
-#' @export
-setCromwellBase <- function(base_url=NULL) {
-    if(!is.null(base_url)) {
-        stopifnot(is.character(base_url),length(base_url)==1)
-        options('cromwellBase' = base_url)
-        invisible(base_url)
-    }
-    base_url = "http://localhost:8000"
-    options('cromwellBase' = base_url)
-    invisible(base_url)
-}
-
 #' Perform a GET request to cromwell server
 #'
 #' See the docmentation at
@@ -242,25 +200,6 @@ setCromwellBase <- function(base_url=NULL) {
 #' str(outfilelist,list.len=5)
 #' }
 #'
-.cromwellOutputs = function(ids, ...) {
-    retlist = lapply(ids,function(id) {
-        path = sprintf('api/workflows/v1/%s/outputs', id)
-        resp = cromwell_GET(path = path, ...)
-        ret = resp$content$outputs
-        attr(ret,'path') = path
-        attr(ret,'when') = Sys.time()
-        class(ret) = c('cromwell_output','cromwell_api',class(ret))
-        ret
-    })
-    retlist = setNames(retlist,ids)
-    attr(retlist,'when') = Sys.time()
-    class(retlist) = c('cromwell_output_list','cromwell_api',class(retlist))
-    retval = sapply(names(x), function(y) {if(length(x[[y]])==0) return(NULL) else return(data_frame(id=y,output=names(x[[y]]),uri=unlist(x[[y]])))}) %>%
-        Filter(function(tmp) !is.null(tmp),.) %>%
-        bind_rows()
-    return(retval)
-}
-
 
 
 #' Get log paths associated with one or more workflow ids
@@ -394,7 +333,7 @@ This will return paths to the standard out and standard error files
                 customLabels = toJSON(customLabels,auto_unbox=TRUE),
                 workflowOptions = opts)
 
-    return(cromwell_POST(baseUrl,'/api/workflows/v1/batch',body = body, encode = 'multipart',
+    return(.cromwell_POST(baseUrl,'/api/workflows/v1/batch',body = body, encode = 'multipart',
                 timeout(timeout), ...))
 }
 
@@ -430,66 +369,13 @@ This will return paths to the standard out and standard error files
                 workflowInputs  = workflowInputs,
                 workflowOptions = workflowOptions)
 
-    return(cromwell_POST('/api/workflows/v1',body = body,
+    return(.cromwell_POST('/api/workflows/v1',body = body,
                 timeout(timeout), ...))
 }
 
 
 
 
-
-#
-# Classes
-#
-###################################
-
-###################################
-#
-# Outputs
-#
-###################################
-
-
-#' Get output paths associated with one or more workflow ids
-#'
-#'
-#' @param ids a character vector of Cromwell ids. See
-#'     \code{\link{cromwellQuery}} for details of how to query
-#'     Cromwell for available ids.
-#' @param ... passed directly to httr `POST` (for including
-#'     `timeouts`, `handles`, etc.)
-#' @return a list of output lists.
-#'
-#' @references \url{https://github.com/broadinstitute/cromwell#get-apiworkflowsversionidoutputs}
-#'
-#' @importFrom httr GET
-#' @importFrom stats setNames
-#' @importFrom dplyr bind_rows
-#' @import magrittr
-#'
-#' @examples
-#' \dontrun{
-#' res = cromwellQuery(terms=c(status='Succeeded',name='taskName'))
-#' head(res)
-#' outfilelist = cromwellOutputs(res$id)
-#' str(outfilelist,list.len=5)
-#' }
-#'
-setGeneric('outputs', function(object, ids, ...) {
-    standardGeneric('outputs')
-})
-
-#' @describeIn Cromwell get outputs for one or more workflow ids
-setMethod('outputs', signature('Cromwell', 'missing'),
-          function(object, ids, ...) {
-              stop("NOT IMPLEMENTED")
-          })
-
-#' @describeIn Cromwell get outputs for one or more workflow ids
-setMethod('outputs', signature('Cromwell', 'character'),
-          function(object, ids, ...) {
-              .cromwellOutputs(ids, ...)
-          })
 
 
 ###################################

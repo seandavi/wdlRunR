@@ -2,7 +2,7 @@
 NULL
 
 .cromwellVersion = function(baseUrl, ...) {
-    path = 'api/engine/v1/version'
+    path = 'engine/v1/version'
     resp = .cromwell_GET(baseUrl, path = path, ...)
     ret = resp$content$cromwell
     attr(ret,'path') = path

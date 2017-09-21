@@ -38,6 +38,7 @@ Collate:
     'gcs.R'
     'getCromwell.R'
     'metadata.R'
+    'outputs.R'
     'stats.R'
     'version.R'
     'wdltool.R'
