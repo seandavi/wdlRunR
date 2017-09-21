@@ -39,6 +39,7 @@ Collate:
     'getCromwell.R'
     'metadata.R'
     'outputs.R'
+    'query.R'
     'stats.R'
     'version.R'
     'wdltool.R'

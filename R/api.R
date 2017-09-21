@@ -18,7 +18,10 @@
 #' @importFrom httr GET
 #'
 .cromwell_GET <- function(baseUrl,path,query=NULL,...) {
-    url <- modify_url(baseUrl, path = path, query = query)
+    url <- modify_url(baseUrl, path = path)
+    if(!is.null(query)) {
+        url = modify_url(url, query=query)
+    }
     resp <- GET(url,...)
     return(.cromwell_process_response(resp))
 }
@@ -57,9 +60,9 @@
 #' @import httr
 #'
 .cromwell_process_response = function(resp) {
-    if (http_type(resp) != "application/json") {
-        stop("API did not return json", call. = FALSE)
-    }
+#    if (http_type(resp) != "application/json") {
+#        stop("API did not return json", call. = FALSE)
+#    }
 
     parsed <- httr::content(resp,'parsed')
 
@@ -84,81 +87,7 @@
     )
 }
 
-#' Get the info about cromwell workflows
-#'
-#' Each of the following terms can be specified one or more
-#' times. Simply create a named list or named character vector.
-#' 
-#' \describe{
-#'   \item{name}{The name of a job; may be specified more than once}
-#'   \item{status}{one of Succeeded, Failed, Running}
-#'   \item{id}{an id of a cromwell job}
-#'   \item{start}{a timestamp of the form "2015-11-01T07:45:52.000-05:00", including mandatory offset}
-#'   \item{end}{a timestamp of the form "2015-11-01T07:45:52.000-05:00", including mandatory offset}
-#'   \item{page}{if paging is used, what page to select}
-#'   \item{pagesize}{if paging is used, how many records per page}
-#' }
-#'
-#' @param name character vector of workflow names.
-#' @param id character vector of workflow IDs.
-#' @param label character vector of workflow labels.
-#' @param status character vector of workflow status values. The available
-#'     statuses are: Submitted, Running, Aborting, Aborted, Failed, and Succeeded.
-#' @param start a \code{Date} object specifying the workflow start time. Only workflows
-#'     started after this are returned.
-#' @param end a \code{Date} object specifying the workflow end time. Only workflows
-#'     that completed after this are returned.
-#' 
-#' @param ... passed directly to httr `GET` (for including `timeouts`,
-#'     `handles`, etc.)
-#'
-#' @return a data.frame of query results
-#'
-#' @importFrom jsonlite fromJSON
-#'
-#' @examples
-#' \dontrun{
-#' res = cromwellQuery(status='Succeeded')
-#' head(res)
-#' }
-#'
-#' @export
-.cromwellQuery = function(query=NULL, ...) {
-    cnames = c('name', 'id', 'label', 'status') # character vectors
-    dnames = c('start', 'end') # date objects required    
-    .statuses = c('Submitted','Running','Aborting','Aborted','Failed','Succeeded')
-    
-    path = 'api/workflows/v1/query'
-    resp = cromwell_GET(path=path,query=query,...)
-    x = lapply(cnames,function(cname) {
-      as.character(sapply(resp$content$results, '[[', cname))
-    })
-    x = setNames(x,cnames)
-    x = data.frame(x, stringsAsFactors = FALSE)
-    #x = do.call(rbind.fill,lapply(resp$content$results,as.data.frame))
-    if('start' %in% colnames(x))
-        x$start = strptime(substr(as.character(x$start),1,19),format="%Y-%m-%dT%H:%M:%S",tz="UTC")
-    else
-        x$start = NA
-    if('end' %in% colnames(x))
-        x$end = strptime(substr(as.character(x$end),1,19),format="%Y-%m-%dT%H:%M:%S",tz="UTC")
-    else
-        x$end = NA
-    x$end = as.POSIXct(x$end,tz=Sys.timezone())
-    x$start = as.POSIXct(x$start,tz=Sys.timezone())
-    # deal with situation when no ends exist
-    # subtraction ends up "failing", so need
-    # to catch error
-    x$duration = tryCatch({x$end-x$start},
-                          error=function(e) "")
-    # Coerce to difftime so that column is always
-    # difftime, even when only NA
-    x$duration = as.difftime(x$duration)
-    attr(x,'when') = Sys.time()
-    attr(x,'path') = path
-    class(x) = c('cromwell_query','cromwell_api','data.frame')
-    return(x)
-}
+
 
 
 #' Abort a cromwell job
