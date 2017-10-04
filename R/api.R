@@ -60,10 +60,8 @@
 #' @import httr
 #'
 .cromwell_process_response = function(resp) {
-#    if (http_type(resp) != "application/json") {
-#        stop("API did not return json", call. = FALSE)
-#    }
 
+    ## TODO: convert to jsonlite::fromJSON
     parsed <- httr::content(resp,'parsed')
 
     if (!(status_code(resp) %in% c(200,201))) {
@@ -305,47 +303,4 @@ This will return paths to the standard out and standard error files
 
 
 
-
-
-###################################
-#
-# Jobs 
-#
-###################################
-
-setOldClass('form_file')
-
-setClass('KeyValuePairs',
-         contains = "list")
-
-setValidity('KeyValuePairs',
-            function(object) {
-                if(!inherits(object,"list")) {
-                    stop("KeyValuePairs needs to be a list")
-                }
-                if(!all(sapply(object,length)==1)) {
-                    stop("KeyValuePairs list values must all be of length 1")
-                }
-                if(is.null(names(object)) ||
-                   !all(nchar(names(object))>0)) {
-                    stop("KeyValuePairs elements must all have names")
-                }
-            }
-            )
-
-#' importFrom httr form_file
-setClassUnion('characterOrFormFile', c('character', 'form_file'))
-setClassUnion('characterOrNULL', c('character', 'form_file'))
-setClassUnion('characterOrFormFileOrNULL', c('characterOrFormFile','NULL'))
-
-setClass('BatchTemplate',
-         representation(workflowSource = "characterOrFormFile",
-                        customLabels   = "characterOrNULL",
-                        workflowOptions = "list"))
-
-###################################
-#
-# Logs 
-#
-###################################
 
