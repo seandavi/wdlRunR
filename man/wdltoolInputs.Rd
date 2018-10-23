@@ -4,7 +4,8 @@
 \alias{wdltoolInputs}
 \title{return inputs from wdltool}
 \usage{
-wdltoolInputs(wdlfile, wdltoolJar = Sys.getenv("WDLTOOL_JAR", "wdltool.jar"))
+wdltoolInputs(wdlfile, wdltoolJar = Sys.getenv("WDLTOOL_JAR",
+  "wdltool.jar"))
 }
 \arguments{
 \item{wdlfile}{The filename of a WDL file from which to get inputs.}

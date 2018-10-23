@@ -4,8 +4,8 @@
 \alias{cromwellBatch}
 \title{Submit a cromwell batch job}
 \usage{
-cromwellBatch(wdlSource, workflowInputs, workflowOptions = NULL,
-  timeout = 120, ...)
+cromwellBatch(wdlSource, workflowInputs, customLabels = NULL,
+  workflowOptions = NULL, timeout = 120, ...)
 }
 \arguments{
 \item{wdlSource}{Represents the
@@ -17,6 +17,9 @@ cromwellBatch(wdlSource, workflowInputs, workflowOptions = NULL,
 json array or a JSON string (as a \code{character} vector of
 length 1), or an \code{\link[httr]{upload_file}} object. See
 details below.}
+
+\item{customLabels}{A named \code{character} vector with key-value
+pairs to assign to all batch tasks.}
 
 \item{workflowOptions}{A \code{list}, a JSON string (as a
 \code{character} vector of length 1, or an

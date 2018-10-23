@@ -4,10 +4,24 @@
 \alias{cromwellQuery}
 \title{Get the info about cromwell workflows}
 \usage{
-cromwellQuery(query = NULL, ...)
+cromwellQuery(name = NULL, id = NULL, status = NULL, start = NULL,
+  end = NULL, label = NULL, ...)
 }
 \arguments{
-\item{query}{terms about the workflow}
+\item{name}{character vector of workflow names.}
+
+\item{id}{character vector of workflow IDs.}
+
+\item{status}{character vector of workflow status values. The available
+statuses are: Submitted, Running, Aborting, Aborted, Failed, and Succeeded.}
+
+\item{start}{a \code{Date} object specifying the workflow start time. Only workflows
+started after this are returned.}
+
+\item{end}{a \code{Date} object specifying the workflow end time. Only workflows
+that completed after this are returned.}
+
+\item{label}{character vector of workflow labels.}
 
 \item{...}{passed directly to httr `GET` (for including `timeouts`,
 `handles`, etc.)}
@@ -32,7 +46,7 @@ times. Simply create a named list or named character vector.
 }
 \examples{
 \dontrun{
-res = cromwellQuery(terms=c(status='Succeeded',name='taskName'))
+res = cromwellQuery(status='Succeeded')
 head(res)
 }
 

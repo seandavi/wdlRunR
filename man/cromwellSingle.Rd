@@ -4,8 +4,8 @@
 \alias{cromwellSingle}
 \title{Submit a single cromwell job}
 \usage{
-cromwellSingle(wdlSource, workflowInputs, workflowOptions = NULL,
-  timeout = 120, ...)
+cromwellSingle(wdlSource, workflowInputs, customLabels = NULL,
+  workflowOptions = NULL, timeout = 120, ...)
 }
 \arguments{
 \item{wdlSource}{A \code{list}, a JSON string (as a \code{character} vector of length 1,
