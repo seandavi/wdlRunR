@@ -157,6 +157,8 @@ cromwell_POST = function(path,body,...) {
 #' @return a data.frame of query results
 #'
 #' @importFrom jsonlite fromJSON
+#' @importFrom lubridate fast_strptime
+#' @importFrom tibble as_tibble
 #'
 #' @examples
 #' \dontrun{
@@ -166,28 +168,35 @@ cromwell_POST = function(path,body,...) {
 #'
 #' @export
 cromwellQuery = function(name = NULL, id = NULL, status = NULL, start = NULL, end = NULL, label = NULL, ...) {
-    cnames = c('name', 'id', 'label', 'status') # character vectors
-    dnames = c('start', 'end') # date objects required    
+    cnames = c('name', 'id', 'status') # character vectors
+    dnames = c('submission', 'start', 'end') # date objects required
+
     .statuses = c('Submitted','Running','Aborting','Aborted','Failed','Succeeded')
-    
+
+    query = list(name=name, id=id, status=status, start=start, end=end, label=label)
     path = 'api/workflows/v1/query'
     resp = cromwell_GET(path=path,query=query,...)
-    x = lapply(cnames,function(cname) {
+    x = lapply(c(cnames,dnames),function(cname) {
       as.character(sapply(resp$content$results, '[[', cname))
     })
-    x = setNames(x,cnames)
+    x = setNames(x,c(cnames,dnames))
     x = data.frame(x, stringsAsFactors = FALSE)
     #x = do.call(rbind.fill,lapply(resp$content$results,as.data.frame))
     if('start' %in% colnames(x))
-        x$start = strptime(substr(as.character(x$start),1,19),format="%Y-%m-%dT%H:%M:%S",tz="UTC")
+        x$start = fast_strptime(as.character(x$start),format="%Y-%m-%dT%H:%M:%OS%z")
     else
         x$start = NA
     if('end' %in% colnames(x))
-        x$end = strptime(substr(as.character(x$end),1,19),format="%Y-%m-%dT%H:%M:%S",tz="UTC")
+        x$end = fast_strptime(as.character(x$end),format="%Y-%m-%dT%H:%M:%OS%z")
     else
         x$end = NA
+    if('submission' %in% colnames(x))
+      x$submission = fast_strptime(as.character(x$submission),format="%Y-%m-%dT%H:%M:%OS%z")
+    else
+      x$submission = NA
     x$end = as.POSIXct(x$end,tz=Sys.timezone())
     x$start = as.POSIXct(x$start,tz=Sys.timezone())
+    x$submission = as.POSIXct(x$submission,tz=Sys.timezone())
     # deal with situation when no ends exist
     # subtraction ends up "failing", so need
     # to catch error
@@ -196,9 +205,10 @@ cromwellQuery = function(name = NULL, id = NULL, status = NULL, start = NULL, en
     # Coerce to difftime so that column is always
     # difftime, even when only NA
     x$duration = as.difftime(x$duration)
+    x = as_tibble(x)
     attr(x,'when') = Sys.time()
     attr(x,'path') = path
-    class(x) = c('cromwell_query','cromwell_api','data.frame')
+    class(x) = c('cromwell_query','cromwell_api',class(x))
     return(x)
 }
 
@@ -244,13 +254,17 @@ cromwellMetadata = function(ids,query=NULL,...) {
         ret = resp$content
         attr(ret,'path') = path
         attr(ret,'when') = Sys.time()
-        class(ret) = c('cromwell_output','cromwell_api',class(ret))
+        class(ret) = c('cromwell_metadata','cromwell_api',class(ret))
         ret
     })
     retlist = setNames(retlist,ids)
     attr(retlist,'when') = Sys.time()
-    class(retlist) = c('cromwell_output_list','cromwell_api',class(retlist))
+    class(retlist) = c('cromwell_metadata_list','cromwell_api',class(retlist))
     return(retlist)
+}
+
+print.cromwell_metadata_list = function(x, ...) {
+  cat(sprintf("<Cromwell Metadata List>\nlength: %d", length(x)))
 }
 
 #' Abort a cromwell job
@@ -490,6 +504,11 @@ cromwellBackends = function(...) {
     return(ret)
 }
 
+print.cromwell_backends = function(x, ...) {
+  cat(sprintf("Supported backends: \n    %s\nDefault backend: \n    %s", 
+                paste(x$supportedBackends,collapse = '\n    '), x$defaultBackend))
+}
+
 #' Get current statistics for cromwell endpoint
 #'
 #' This endpoint returns some basic statistics on the current state of
@@ -508,7 +527,7 @@ cromwellBackends = function(...) {
 #' #cromwellStats()
 #' @export
 cromwellStats = function(...) {
-    path = 'api/engine/v1/stats'
+    path = '/engine/v1/stats'
     resp = cromwell_GET(path = path, ...)
     ret = resp$content
     attr(ret,'path') = path
@@ -532,7 +551,7 @@ cromwellStats = function(...) {
 #' #cromwellVersion()
 #' @export
 cromwellVersion = function(...) {
-    path = 'api/engine/v1/version'
+    path = '/engine/v1/version'
     resp = cromwell_GET(path = path, ...)
     ret = resp$content$cromwell
     attr(ret,'path') = path
@@ -541,6 +560,9 @@ cromwellVersion = function(...) {
     return(ret)
 }
 
+print.cromwell_version = function(x, ...) {
+  cat(sprintf("Cromwell server version: %s", x))
+}
 
 
 #' Utility to fetch the cromwell JAR file
