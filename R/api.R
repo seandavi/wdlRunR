@@ -601,17 +601,18 @@ getCromwellJar = function(cromwell_version,destfile = file.path(tempdir(),'cromw
 }
 
 #' Cromwell reference class
+#' @importFrom R6 R6Class
 #'
-setRefClass('wdlrunr',
-            fields = list(
-                host = 'character',
-                port = 'integer'
-            ),
-            methods = list(
+wdlrunr = R6::R6Class('wdlrunr',
+            public = list(
+                host = NULL,
+                port = NULL,
                 initialize         = function(host ='localhost',
                                               port = 8000) {
-                    "This is test documentation"
-                    initFields(host = host,port = as.integer(port))
+                  self$host = host
+                  self$port = as.integer(port)
+                    
+                    
                 },
                 getCromwellJar     = getCromwellJar,
                 version            = cromwellVersion,
