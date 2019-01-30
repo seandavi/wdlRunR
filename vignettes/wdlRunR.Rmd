@@ -13,7 +13,8 @@ vignette: >
 
 Follow development at [github](https://github.com/seandavi/wdlRunR).
 
-This package provides a simple api to the [Broad cromwell workflow engine](https://github.com/broadinstitute/cromwell).
+This package provides a simple api to the [Broad cromwell workflow
+engine](https://github.com/broadinstitute/cromwell).
 
 ## Install
 
@@ -77,21 +78,24 @@ Cromwell. We then run the server and put the log file into a
 
 ```{r}
 library(wdlRunR)
-cromwell_jar = getCromwellJar(cromwell_version='24')
+cromwell_jar = getCromwellJar(cromwell_version='36')
 cromwell_log = file.path(tempdir(),'cromwell.log')
 system(sprintf('java -jar %s server > %s 2>&1 &', cromwell_jar, cromwell_log))
 # let server start up
 Sys.sleep(20)
 ```
 
-Cromwell should now be running in the background and we can verify by checking for processes with "cromwell" in the name.
+Cromwell should now be running in the background and we can verify by
+checking for processes with "cromwell" in the name.
 
 ```{r}
 system('ps aux | grep cromwell')
 ```
 # Workflows
 
-The simplest example (and one that runs in the time needed for a demo!) is a "Hello, WDL" workflow. Right now, we simply describe a WDL workflow as text or as a text file (see below).
+The simplest example (and one that runs in the time needed for a
+demo!) is a "Hello, WDL" workflow. Right now, we simply describe a WDL
+workflow as text or as a text file (see below).
 
 ```{r}
 hello_wdl = "task hello {
@@ -202,7 +206,9 @@ z = cromwellBatch(wdlSource = hello_wdl_sleep,workflowInputs=wdlInputs)
 sleep(10)
 ```
 
-At this point, checking `cromwellQuery()` will show running jobs (if done within 60 seconds, of course). Limiting to "Running" jobs is also easy.
+At this point, checking `cromwellQuery()` will show running jobs (if
+done within 60 seconds, of course). Limiting to "Running" jobs is also
+easy.
 
 ```{r eval=FALSE}
 cromwellQuery(term="status=Running")

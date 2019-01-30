@@ -31,12 +31,12 @@ cromwellBase <- function() {
 #' @export
 setCromwellBase <- function(base_url=NULL) {
     if(!is.null(base_url)) {
-        stopifnot(is.character(base_url),length(base_url)==1)
-        options('cromwellBase' = base_url)
-        invisible(base_url)
+      stopifnot(is.character(base_url),length(base_url)==1)
+      options('cromwellBase' = base_url)
+    } else {
+      base_url = cromwellBase()
+      options('cromwellBase' = base_url)
     }
-    base_url = "http://localhost:8000"
-    options('cromwellBase' = base_url)
     invisible(base_url)
 }
 
@@ -84,7 +84,7 @@ cromwell_GET <- function(path,query=NULL,...) {
 #'
 #' @seealso \code{\link{cromwellBatch}}
 #'
-cromwell_POST = function(path,body,...) {
+cromwell_POST <- function(path,body,...) {
     url = modify_url(cromwellBase(), path = path)
     resp = POST(url, body = body, ...)
     return(.cromwell_process_response(resp))
@@ -98,7 +98,7 @@ cromwell_POST = function(path,body,...) {
 #'
 #' @import httr
 #'
-.cromwell_process_response = function(resp) {
+.cromwell_process_response <- function(resp) {
     if (http_type(resp) != "application/json") {
         stop("API did not return json", call. = FALSE)
     }
@@ -167,7 +167,7 @@ cromwell_POST = function(path,body,...) {
 #' }
 #'
 #' @export
-cromwellQuery = function(name = NULL, id = NULL, status = NULL, start = NULL, end = NULL, label = NULL, ...) {
+cromwellQuery <- function(name = NULL, id = NULL, status = NULL, start = NULL, end = NULL, label = NULL, ...) {
     cnames = c('name', 'id', 'status') # character vectors
     dnames = c('submission', 'start', 'end') # date objects required
 
@@ -247,7 +247,7 @@ cromwellQuery = function(name = NULL, id = NULL, status = NULL, start = NULL, en
 #' }
 #'
 #' @export
-cromwellMetadata = function(ids,query=NULL,...) {
+cromwellMetadata <- function(ids,query=NULL,...) {
     retlist = lapply(ids,function(id) {
         path=sprintf('api/workflows/v1/%s/metadata',id)
         resp = cromwell_GET(path = path, query=query, ...)
@@ -263,7 +263,7 @@ cromwellMetadata = function(ids,query=NULL,...) {
     return(retlist)
 }
 
-print.cromwell_metadata_list = function(x, ...) {
+print.cromwell_metadata_list <- function(x, ...) {
   cat(sprintf("<Cromwell Metadata List>\nlength: %d", length(x)))
 }
 
@@ -278,7 +278,7 @@ print.cromwell_metadata_list = function(x, ...) {
 #' @examples
 #' #cromwellAbort('ID')
 #' @export
-cromwellAbort = function(id, ...) {
+cromwellAbort <- function(id, ...) {
     return(cromwell_POST(path=sprintf('api/workflows/v1/%s/abort',id),body=NULL,...))
 }
 
@@ -306,7 +306,7 @@ cromwellAbort = function(id, ...) {
 #' }
 #'
 #' @export
-cromwellOutputs = function(ids, ...) {
+cromwellOutputs <- function(ids, ...) {
     retlist = lapply(ids,function(id) {
         path = sprintf('api/workflows/v1/%s/outputs', id)
         resp = cromwell_GET(path = path, ...)
@@ -358,7 +358,7 @@ cromwellOutputs = function(ids, ...) {
 #' }
 #'
 #' @export
-cromwellLogs = function(ids, ...) {
+cromwellLogs <- function(ids, ...) {
     retlist = lapply(ids,function(id) {
         path = sprintf('api/workflows/v1/%s/logs', id)
         resp = cromwell_GET(path = path, ...)
@@ -410,7 +410,7 @@ cromwellLogs = function(ids, ...) {
 #' @importFrom jsonlite toJSON
 #'
 #' @export
-cromwellBatch = function(wdlSource,
+cromwellBatch <- function(wdlSource,
                          workflowInputs,
                          customLabels = NULL,
                          workflowOptions=NULL,
@@ -463,7 +463,7 @@ cromwellBatch = function(wdlSource,
 #' @importFrom httr POST
 #'
 #' @export
-cromwellSingle = function(wdlSource,
+cromwellSingle <- function(wdlSource,
                           workflowInputs,
                           customLabels = NULL,
                           workflowOptions=NULL,
@@ -494,7 +494,7 @@ cromwellSingle = function(wdlSource,
 #' @examples
 #' #cromwellBackends()
 #' @export
-cromwellBackends = function(...) {
+cromwellBackends <- function(...) {
     path = 'api/workflows/v1/backends'
     resp = cromwell_GET(path = path, ...)
     ret = resp$content
@@ -504,7 +504,7 @@ cromwellBackends = function(...) {
     return(ret)
 }
 
-print.cromwell_backends = function(x, ...) {
+print.cromwell_backends <- function(x, ...) {
   cat(sprintf("Supported backends: \n    %s\nDefault backend: \n    %s", 
                 paste(x$supportedBackends,collapse = '\n    '), x$defaultBackend))
 }
@@ -526,7 +526,7 @@ print.cromwell_backends = function(x, ...) {
 #' @examples
 #' #cromwellStats()
 #' @export
-cromwellStats = function(...) {
+cromwellStats <- function(...) {
     path = '/engine/v1/stats'
     resp = cromwell_GET(path = path, ...)
     ret = resp$content
@@ -550,7 +550,7 @@ cromwellStats = function(...) {
 #' @examples
 #' #cromwellVersion()
 #' @export
-cromwellVersion = function(...) {
+cromwellVersion <- function(...) {
     path = '/engine/v1/version'
     resp = cromwell_GET(path = path, ...)
     ret = resp$content$cromwell
@@ -560,7 +560,7 @@ cromwellVersion = function(...) {
     return(ret)
 }
 
-print.cromwell_version = function(x, ...) {
+print.cromwell_version <- function(x, ...) {
   cat(sprintf("Cromwell server version: %s", x))
 }
 
@@ -593,7 +593,8 @@ print.cromwell_version = function(x, ...) {
 #' unlink(fp)
 #'
 #' @export
-getCromwellJar = function(cromwell_version,destfile = file.path(tempdir(),'cromwell.jar')) {
+getCromwellJar <- function(cromwell_version,destfile = file.path(tempdir(),'cromwell.jar')) {
+  "Get the cromwell JAR file"
     fname = destfile
     httr::GET(sprintf('https://github.com/broadinstitute/cromwell/releases/download/%s/cromwell-%s.jar',
                       cromwell_version,cromwell_version),write_disk(fname,overwrite = TRUE))
@@ -603,7 +604,7 @@ getCromwellJar = function(cromwell_version,destfile = file.path(tempdir(),'cromw
 #' Cromwell reference class
 #' @importFrom R6 R6Class
 #'
-wdlrunr = R6::R6Class('wdlrunr',
+WDLRunR <- R6::R6Class('WDLRunR',
             public = list(
                 host = NULL,
                 port = NULL,
