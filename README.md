@@ -1,4 +1,4 @@
-# The wdlRunR package
+# The wdlRunR package -- DEPRECATED AND NO LONGER MAINTAINED
 
 Follow development at [github](https://github.com/seandavi/wdlRunR).
 
